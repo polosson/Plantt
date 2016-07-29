@@ -1,0 +1,91 @@
+
+html, body {
+	font-size: 12px;
+	font-family: Arial, sans;
+	background-color: #FFF;
+	color: #000;
+}
+
+a, a:active, a:hover, a:visited, a:focus, select, select:active, select:hover, select:focus {
+	outline: 0 !important;
+}
+
+scheduler {
+	position: relative;
+	display: block;
+	width: 100%;
+	background-color: #FFF;
+	border: 1px solid #DDD;
+	min-height: 100px;
+}
+scheduler .header {
+	display: block;
+	width: 100%;
+	padding: 5px 15px;
+	background-color: #EEE;
+}
+scheduler .header .prevMonth {
+	float: left;
+}
+scheduler .header .nextMonth {
+	float: right;
+}
+scheduler .header .monthTitle {
+	text-align: center;
+	padding-top: 4px;
+	font-size: 1.3em;
+	font-weight: bold;
+}
+
+
+scheduler table {
+	width: 100%;
+	height: 200px;
+	table-layout: fixed;
+}
+scheduler table tr td {
+	border-right: 1px solid #DDD;
+	padding: 0; margin: 0;
+	cursor: pointer;
+	vertical-align: top;
+	text-align: center;
+}
+scheduler table thead tr td {
+	height: 20px;
+	background-color: #F5F5F5;
+	font-weight: bold;
+}
+scheduler table tbody tr td {
+	color: #666;
+}
+scheduler table tbody tr td:nth-child(odd) {
+	background-color: #FAFAFA;
+}
+scheduler table td.today {
+	background-color: #FFDBCE !important;
+}
+
+
+scheduler .eventsContainer {
+	position: absolute;
+	top: 70px; bottom: 0;
+	left: 0; right: 0;
+	border: 0px solid red;
+	z-index: 100;
+}
+scheduler event {
+	position: absolute;
+	text-align: center;
+	background-color: #46b8da;
+	color: #FFF;
+	padding: 10px 4px;
+	width: 61px;
+	cursor: move;
+	box-shadow: 1px 2px 3px rgba(0,0,0,0.5);
+}
+scheduler event.overLeft {
+	border-radius: 50px 0 0 50px;
+}
+scheduler event.overRight {
+	border-radius: 0 50px 50px 0;
+}

@@ -1,0 +1,31 @@
+
+<div class="header">
+	<div class="btn btn-default prevMonth" ng-click="prevMonth()"><</div>
+	<div class="btn btn-default nextMonth" ng-click="nextMonth()">></div>
+	<div class="monthTitle">
+		<a href="#" ng-click="nowMonth()">{{currMonth | date: 'MMMM yyyy'}}</a>
+	</div>
+	<div class="clearfix"></div>
+</div>
+<table>
+	<thead>
+		<tr>
+			<td ng-repeat="day in enumDays" title="{{day.title}}"
+				ng-class="{'today': day.date.getDate() === currDate.getDate() && day.date.getMonth() === currDate.getMonth() && day.date.getYear() === currDate.getYear()}">
+				{{day.num}}
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td ng-repeat="day in enumDays" title="{{day.title}}"
+				ng-class="{'today': day.date.getDate() === currDate.getDate() && day.date.getMonth() === currDate.getMonth() && day.date.getYear() === currDate.getYear()}">
+				<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+				<span ng-show="day.nbEvents > 0">{{day.nbEvents}}</span>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<div class="eventsContainer">
+	<event ng-repeat="ev in renderedEvents" event-id="{{ev.id}}">{{ev.title}}</event>
+</div>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html ng-app="planttEx">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name=viewport content="width=device-width, initial-scale=1">
+
+	<title>SchedBert Angular Scheduler</title>
+
+	<link href="css/vendor/bootstrap.min.css"	rel="stylesheet" type="text/css" />
+	<link href="plantt.css"					rel="stylesheet" type="text/css" />
+
+	<!--<script src="js/vendor/jquery-2.2.0.min.js"></script>-->
+	<script src="js/vendor/angular-1.5.8.min.js"></script>
+
+</head>
+<body class="container-fluid">
+	<section class="row">
+		<div class="col-md-12">
+			<h2>Plantt - AngularJS Scheduler - Demo</h2>
+		</div>
+	</section>
+	<section class="row">
+		<div class="col-md-12">
+			<scheduler ng-controller="planttExample"></scheduler>
+		</div>
+	</section>
+	<section class="row">
+		<div class="col-md-12">
+			<h3>Plantt module example: how to use</h3>
+			<h4>HTML (default style dependant of Bootstrap)</h4>
+			<pre>
+&lt;!DOCTYPE html>
+&lt;html ng-app="planttExample">
+	&lt;head>
+		&lt;link href="css/vendor/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		&lt;link href="plantt.css" rel="stylesheet" type="text/css" />
+		&lt;script src="js/vendor/angular-1.5.8.min.js">&lt;/script>
+		&lt;script src="plantt.js">&lt;/script>
+	&lt;/head>
+	&lt;body class="container-fluid">
+		&lt;scheduler ng-controller="planttExample">&lt;/scheduler>
+	&lt;/body>
+&lt;/html>
+			</pre>
+			<h4>Javascript (Angular dependant)</h4>
+			<pre>
+var planttExample = angular.module("planttExample", ["plantt.module"]);
+
+planttExample.controller("planttExample", function($scope){
+
+	$scope.events = [
+		{ id: 0,  title: 'Opps Lala',	type: 'normal', startDate: new Date(2016, 6-1, 21, 8), endDate: new Date(2016, 7-1, 4, 19) },
+		{ id: 1,  title: 'Wouzah',	type: 'normal', startDate: new Date(2016, 7-1, 14, 8), endDate: new Date(2016, 7-1, 15, 19) },
+		{ id: 2,  title: 'Hoydih',	type: 'urgent', startDate: new Date(2016, 7-1, 21, 8), endDate: new Date(2016, 7-1, 25, 19) },
+		{ id: 3,  title: 'Surpuissant', type: 'urgent', startDate: new Date(2016, 7-1, 21, 8), endDate: new Date(2016, 7-1, 24, 19) },
+		{ id: 10, title: 'À cheval',	type: 'normal', startDate: new Date(2016, 7-1, 29, 8), endDate: new Date(2016, 8-1, 2, 19) },
+		{ id: 11, title: 'AoutFirst',	type: 'normal', startDate: new Date(2016, 8-1, 6, 8),  endDate: new Date(2016, 8-1, 12, 19) }
+	];
+
+});
+			</pre>
+			<h4>JSON example</h4>
+			<pre>
+
+			</pre>
+		</div>
+	</section>
+
+	<script src="plantt.js"></script>
+	<script src="js/example.js"></script>
+
+</body>
+</html>
