@@ -1,6 +1,6 @@
 /*
  *
- * SchedBert Angular Module : HTML Scheduler
+ * Plantt Angular Module : HTML Scheduler
  * Licence MIT, @ Polosson 2016
  *
  */
