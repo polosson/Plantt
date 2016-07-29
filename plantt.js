@@ -36,7 +36,9 @@ angular.module('plantt.module', [])
 					for (var d=1; d <= daysInMonth(scope.currMonth); d++) {
 						var dayDate = angular.copy(scope.currMonth);
 						dayDate.setDate(d);
-						scope.enumDays.push({num: d, date: dayDate, title: dateFilter(dayDate, 'EEEE'), nbEvents: 0});
+						var now = new Date();
+						var today = (now.getDate() === d && now.getMonth() === dayDate.getMonth() && now.getFullYear() === dayDate.getFullYear());
+						scope.enumDays.push({num: d, date: dayDate, title: dateFilter(dayDate, 'EEEE'), nbEvents: 0, today:today});
 					}
 
 					// Populate the list of all *rendered* events

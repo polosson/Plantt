@@ -11,7 +11,7 @@
 	<thead>
 		<tr>
 			<td ng-repeat="day in enumDays" title="{{day.title}}"
-				ng-class="{'today': day.date.getDate() === currDate.getDate() && day.date.getMonth() === currDate.getMonth() && day.date.getYear() === currDate.getYear()}">
+				ng-class="{'today': day.today}">
 				{{day.num}}
 			</td>
 		</tr>
@@ -19,7 +19,7 @@
 	<tbody>
 		<tr>
 			<td ng-repeat="day in enumDays" title="{{day.title}}"
-				ng-class="{'today': day.date.getDate() === currDate.getDate() && day.date.getMonth() === currDate.getMonth() && day.date.getYear() === currDate.getYear()}">
+				ng-class="{'today': day.today}">
 				<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
 				<span ng-show="day.nbEvents > 0">{{day.nbEvents}}</span>
 			</td>
