@@ -1,5 +1,5 @@
 /*
- * Usage example of the Schedbert AngularJS module
+ * Usage example of the Plantt AngularJS module
  * MIT licence, @ Polosson 2016
  *
  */
