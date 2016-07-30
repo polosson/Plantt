@@ -98,6 +98,7 @@ angular.module('plantt.module', [])
 
 				// Set a bunch of variables used to calculate the event's offsets
 				var gridWidth	= $document.find('thead').prop('offsetWidth');
+				var gridHeight	= $document.find('tbody').prop('offsetHeight');
 				var gridLength	= daysInMonth(scope.currMonth);
 				var cellWidth	= gridWidth / gridLength;
 				var one_day		= 1000*60*60*24;
@@ -124,7 +125,8 @@ angular.module('plantt.module', [])
 				for (var n = 1; n <= eventLength; n++) {
 					var N = startDay + n;
 					var D = new Date(startYear, startMonth, N, 12);
-					if (D.getFullYear() !== scope.currMonth.getFullYear()) continue;
+					if (D.getFullYear() !== scope.currMonth.getFullYear())
+						continue;
 					if (D.getMonth() !== scope.currMonth.getMonth()){
 						daysExceed += 1;
 						continue;
@@ -134,13 +136,14 @@ angular.module('plantt.module', [])
 					offsetTop = decalTop * (eventHeight + 10);
 				}
 
-
-//				console.log(startDay, 'eme jour =', parseInt(offsetLeft), 'px left;', eventLength, 'jours =', parseInt(eventWidth+offsetWidth), 'px large;', extraClass);
 				// Place the event in DOM with CSS
 				element.css('top', offsetTop+'px');
 				element.css('left', offsetLeft+'px');
 				element.css('width', (eventWidth - (daysExceed * cellWidth))+'px');
 				element.addClass(extraClass);
+
+				gridHeight = Math.max((offsetTop+100), gridHeight);
+				$document.find('tbody').find('td').css('height', gridHeight+'px');
 			}
 		};
 	}]);

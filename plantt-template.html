@@ -20,12 +20,11 @@
 		<tr>
 			<td ng-repeat="day in enumDays" title="{{day.title}}"
 				ng-class="{'today': day.today}">
-				<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
 				<span ng-show="day.nbEvents > 0">{{day.nbEvents}}</span>
 			</td>
 		</tr>
 	</tbody>
 </table>
 <div class="eventsContainer">
-	<event ng-repeat="ev in renderedEvents" event-id="{{ev.id}}">{{ev.title}}</event>
+	<event ng-repeat="ev in renderedEvents" event-id="{{ev.id}}" ng-class="[ev.type]">{{ev.title}}</event>
 </div>
