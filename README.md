@@ -1,6 +1,8 @@
 # Plantt
 AngularJS module : Simple scheduler on a timeline
 
+*This is a Work In Progress project, a lot of new features are comming*
+
 ## Installation
 
 Just import AngularJS, and the Plantt's javacript and CSS files:
@@ -13,7 +15,11 @@ Then, make sure the file **plantt-template.html** is readable into your project'
 
 ## Usage
 
-Insert an element **<scheduler>** into your HTML, attach your controller to it, then inject the module in your app:
+Insert an element **<scheduler>** into your HTML:
+
+    <scheduler ng-controller="planttExample"></scheduler>
+
+Then, attach your controller to it, then inject the module in your app:
 
     var planttApp = angular.module("planttApp", ["plantt.module"]);
 
