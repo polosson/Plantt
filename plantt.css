@@ -1,6 +1,5 @@
 
 html, body {
-	font-size: 12px;
 	font-family: Arial, sans;
 	background-color: #FFF;
 	color: #000;
@@ -17,6 +16,8 @@ scheduler {
 	background-color: #FFF;
 	border: 1px solid #DDD;
 	min-height: 100px;
+	font-size: 0.9em;
+	margin: 25px 0 25px 0;
 }
 scheduler .header {
 	display: block;
@@ -24,17 +25,14 @@ scheduler .header {
 	padding: 5px 15px;
 	background-color: #EEE;
 }
-scheduler .header .prevMonth {
+scheduler .header .prevActions {
 	float: left;
 }
-scheduler .header .nextMonth {
+scheduler .header .nextActions {
 	float: right;
 }
-scheduler .header .monthTitle {
+scheduler .header .centerActions {
 	text-align: center;
-	padding-top: 4px;
-	font-size: 1.3em;
-	font-weight: bold;
 }
 
 
@@ -46,42 +44,61 @@ scheduler table tr td {
 	border-right: 1px solid #DDD;
 	padding: 0; margin: 0;
 	cursor: pointer;
-	vertical-align: bottom;
+	vertical-align: middle;
 	text-align: center;
 }
-scheduler table thead tr td {
-	height: 20px;
+scheduler table tr.monthLine td {
+	font-size: 1.2em;
 	background-color: #F5F5F5;
-	font-weight: bold;
+	height: 45px;
 }
+scheduler table tr.dayLine td {
+	font-weight: bold;
+	background-color: #F5F5F5;
+}
+
 scheduler table tbody tr td {
 	color: #BBB;
-	height: 100px;
+	vertical-align: bottom;
 }
 scheduler table tbody tr td:nth-child(odd) {
 	background-color: #FAFAFA;
 }
+scheduler table tbody tr td:nth-child(even) {
+	background-color: #FFF;
+}
+
 scheduler table td.today {
 	background-color: #FFDBCE !important;
+}
+scheduler table td.sunday {
+	border-right: 1px solid #FFB8B8 ;
+}
+scheduler table td.month {
+	border-right: 1px solid #F55;
+	height: 30px;
+}
+scheduler table td.month:last-child {
+	border: none;
 }
 
 
 scheduler .eventsContainer {
-	position: absolute;
-	top: 70px; bottom: 0;
-	left: 0; right: 0;
-	border: 0px solid red;
+	width: 100%;
 	z-index: 100;
 }
 scheduler event {
 	position: absolute;
 	text-align: center;
+	box-sizing: border-box;
+	margin-top: 125px;
 	background-color: #46b8da;
 	color: #FFF;
 	padding: 10px 4px;
 	width: 61px;
 	cursor: move;
 	box-shadow: 1px 2px 3px rgba(0,0,0,0.5);
+	z-index: 200;
 }
 scheduler event.overLeft {
 	border-radius: 50px 0 0 50px;
@@ -89,6 +106,12 @@ scheduler event.overLeft {
 scheduler event.overRight {
 	border-radius: 0 50px 50px 0;
 }
-scheduler event.urgent {
-	background-color: #D88447;
+scheduler event.past {
+	background-color: #888 !important;
+}
+scheduler event.current {
+	border-left: 8px solid #DB6548;
+	border-right: 8px solid #DB6548;
+	border-top: 2px dashed #DB6548;
+	border-bottom: 2px dashed #DB6548;
 }
