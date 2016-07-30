@@ -15,7 +15,7 @@ Then, make sure the file **plantt-template.html** is readable into your project'
 
 ## Usage
 
-Insert an element **<scheduler>** into your HTML:
+Insert an element **scheduler** into your HTML:
 
     <scheduler ng-controller="planttExample"></scheduler>
 
