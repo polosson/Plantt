@@ -1,7 +1,9 @@
 # Plantt
-AngularJS module : Simple scheduler on a timeline
+### AngularJS module : Simple scheduler on a timeline
 
 *This is a Work In Progress project, a lot of new features are comming*
+
+Check the **live demo** (kept updated) here : [code.polosson.com/Plantt/](http://www.code.polosson.com/Plantt/)
 
 ## Installation
 
