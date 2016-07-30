@@ -25,9 +25,21 @@ Then, attach your controller to it, then inject the module in your app:
 
     planttApp.controller("planttExample", function($scope){
         $scope.events = [
-            { id: 0, title: 'Test', type: 'normal', startDate: new Date(2016, 8-1, 20, 8), endDate: new Date(2016, 8-1, 25, 19) }
+            {
+                id: 0, title: 'Test', type: 'normal',
+                startDate: new Date(2016, 8-1, 20, 8),
+                endDate: new Date(2016, 8-1, 25, 19)
+            }
         ]
     }
+
+The following data is needed in the objects of events collection:
+ - **id** (int)
+ - **title** (string)
+ - **type** (string)
+ - **startDate** (date object)
+ - **endDate** (date object)
+
 
 ### That's it!
 Have fun :)
