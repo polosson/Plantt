@@ -15,11 +15,11 @@ Then, make sure the file **plantt-template.html** is readable into your project'
 
 ## Usage
 
-Insert an element **scheduler** into your HTML:
+Insert an element **scheduler** into your HTML, and attach your controller to it:
 
     <scheduler ng-controller="planttExample"></scheduler>
 
-Then, attach your controller to it, then inject the module in your app:
+Finally, inject the module in your app and define your controller:
 
     var planttApp = angular.module("planttApp", ["plantt.module"]);
 
@@ -33,6 +33,7 @@ Then, attach your controller to it, then inject the module in your app:
         ]
     }
 
+Please not that your controller must have a **$scope.events** variable, which must be an array.  
 The following data is needed in the objects of events collection:
  - **id** (int)
  - **title** (string)
