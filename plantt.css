@@ -9,6 +9,7 @@ a, a:active, a:hover, a:visited, a:focus, select, select:active, select:hover, s
 	outline: 0 !important;
 }
 
+/***** Main Scheduler element *****/
 scheduler {
 	position: relative;
 	display: block;
@@ -36,6 +37,7 @@ scheduler .header .centerActions {
 }
 
 
+/***** Scheduler grid table *****/
 scheduler table {
 	width: 100%;
 	table-layout: fixed;
@@ -47,6 +49,8 @@ scheduler table tr td {
 	vertical-align: middle;
 	text-align: center;
 }
+
+/***** Scheduler grid table HEAD *****/
 scheduler table tr.monthLine td {
 	font-size: 1.2em;
 	background-color: #F5F5F5;
@@ -57,6 +61,7 @@ scheduler table tr.dayLine td {
 	background-color: #F5F5F5;
 }
 
+/***** Scheduler grid table BODY *****/
 scheduler table tbody tr td {
 	color: #BBB;
 	vertical-align: bottom;
@@ -68,6 +73,7 @@ scheduler table tbody tr td:nth-child(even) {
 	background-color: #FFF;
 }
 
+/***** Scheduler grid special cells *****/
 scheduler table td.today {
 	background-color: #FFDBCE !important;
 }
@@ -83,10 +89,13 @@ scheduler table td.month:last-child {
 }
 
 
+/***** Scheduler events container *****/
 scheduler .eventsContainer {
 	width: 100%;
 	z-index: 100;
 }
+
+/***** Scheduler events *****/
 scheduler event {
 	position: absolute;
 	text-align: center;
@@ -106,6 +115,8 @@ scheduler event.overLeft {
 scheduler event.overRight {
 	border-radius: 0 50px 50px 0;
 }
+
+/***** Scheduler events special classes *****/
 scheduler event.past {
 	background-color: #888 !important;
 }
