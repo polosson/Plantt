@@ -53,7 +53,7 @@ angular.module('plantt.module', [])
 	/*
 	 * SCHEDULER directive
 	 */
-	.directive('scheduler', ['$document', '$timeout', '$filter', 'dateFilter', function($document, $timeout, $filter, dateFilter) {
+	.directive('scheduler', ['$window', '$document', '$timeout', '$filter', 'dateFilter', function($window, $document, $timeout, $filter, dateFilter) {
 		return {
 			restrict: 'E',							// DOM Element only : <scheduler></scheduler>
 			templateUrl: 'plantt-template.html',	// Load HTML template for the view
@@ -162,6 +162,12 @@ angular.module('plantt.module', [])
 
 				// Call the renderer for the first time
 				scope.renderView();
+
+				angular.element($window).bind('resize', function(){
+					$timeout(function(){
+						scope.renderView();
+					}, 100);
+				});
 
 				/*
 				 * Offset view to previous day
