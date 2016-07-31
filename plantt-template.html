@@ -20,13 +20,13 @@
 <table>
 	<thead>
 		<tr class="monthLine">
-			<td ng-repeat="month in enumMonths" colspan="{{month.numDays}}" class="month">{{month.name}}</td>
+			<th ng-repeat="month in enumMonths" colspan="{{month.numDays}}" class="month">{{month.name}}</th>
 		</tr>
 		<tr class="dayLine">
-			<td ng-repeat="day in enumDays" title="{{day.title}}"
+			<th ng-repeat="day in enumDays" title="{{day.title}}"
 				ng-class="{'today': day.today, 'sunday': day.date.getDay() === 0, 'month': day.isLastOfMonth}">
 				<span ng-show="cellWidth > 18">{{day.num}}</span>
-			</td>
+			</th>
 		</tr>
 	</thead>
 </table>

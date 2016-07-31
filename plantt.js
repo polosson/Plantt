@@ -58,8 +58,7 @@ angular.module('plantt.module', [])
 			restrict: 'E',							// DOM Element only : <scheduler></scheduler>
 			templateUrl: 'plantt-template.html',	// Load HTML template for the view
 			link: function(scope){
-				var eventHeightBase  = 40 + 10;										// Estimated mean of the height of events
-				var gridMarginBottom = 50;											// Margin to apply between lowest event and the bottom of grid
+				scope.eventHeightBase  = 40 + 10;									// Estimated mean of the height of events
 				scope.currDate   = addDaysToDate(new Date(), 0);					// Today's date
 				scope.viewStart  = addDaysToDate(angular.copy(scope.currDate), -7);	// Firt day to display in view. Default: today minus 7 days
 				scope.viewEnd	 = addDaysToDate(angular.copy(scope.currDate), 14);	// Last day to display in view. Default: today plus 14 days
@@ -135,7 +134,6 @@ angular.module('plantt.module', [])
 							'top': 0,
 							'width': '100px'
 						};
-						evt.calcHeight = 0;
 						scope.renderedEvents.push(angular.copy(evt));	// Render the event
 					});
 					// Last loop: calc vertical positions to avoid collisions
@@ -151,17 +149,13 @@ angular.module('plantt.module', [])
 								if (dayBeforeEvent.nbEvents === 0 && dayAfterEvent.nbEvents === 0)
 									line = 0;
 							}
-							evt.locScale.top = (line * eventHeightBase)+'px';
+							evt.locScale.top = (line * scope.eventHeightBase)+'px';
 							line += 1;
 						});
 						// Set the margin-top of element to avoid overlapping the header (buttons & days grid)
 						var headHeight	  = $document.find('scheduler').find('div')[0].offsetHeight;
 						var topGridHeight = $document.find('thead').prop('offsetHeight');
-						$document.find('event').css('margin-top', (headHeight + topGridHeight)+'px');
-
-						// Extends the view vertically to fit the elements (with margin)
-						var gridHeight = gridMarginBottom + (scope.renderedEvents.length * eventHeightBase);
-						$document.find('tbody').find('td').css('height', gridHeight+'px');
+						$document.find('event').css('margin-top', (headHeight + topGridHeight + 10)+'px');
 					}, 0);
 				};
 
@@ -266,6 +260,28 @@ angular.module('plantt.module', [])
 					scope.renderView();
 				};
 
+			}
+		};
+	}])
+	/*
+	 * GRID CELLS Directive
+	 */
+	.directive('td', ['$document', '$rootScope',  function($document, $rootScope){
+		return {
+			restrict: 'E',
+			link: function(scope, element){
+				var gridMarginBottom = 50;				// Margin to apply between lowest event and the bottom of grid
+
+				// Double-click on a cell of the grid throws the event "dayselect" to all other scopes
+				element.bind('dblclick', function(e){
+					var dayInView = Math.floor(e.layerX / scope.cellWidth);
+					var selectedDate = addDaysToDate(angular.copy(scope.viewStart), dayInView);
+					$rootScope.$broadcast('daySelect', selectedDate);
+				});
+
+				// Extends the view vertically to fit the elements (with margin)
+				var gridHeight = gridMarginBottom + (scope.renderedEvents.length * scope.eventHeightBase);
+				$document.find('tbody').find('td').css('height', gridHeight+'px');
 			}
 		};
 	}])
