@@ -61,13 +61,13 @@ angular.module('plantt.module', [])
 				if (!scope.events) scope.events = [];	// Populate the list of events, if doesn't exists in the app controller
 				scope.renderedEvents = [];				// Used to restrict the events list at only rendered events (memory saving)
 				scope.currDate   = addDaysToDate(new Date(), 0);					// Today's date
-				scope.viewStart  = addDaysToDate(angular.copy(scope.currDate), -7);					// Firt day to display in view. Default: today minus 7 days
-				scope.viewEnd	 = addDaysToDate(angular.copy(scope.currDate), 14);					// Last day to display in view. Default: today plus 14 days
+				scope.viewStart  = addDaysToDate(angular.copy(scope.currDate), -7);	// Firt day to display in view. Default: today minus 7 days
+				scope.viewEnd	 = addDaysToDate(angular.copy(scope.currDate), 14);	// Last day to display in view. Default: today plus 14 days
 				scope.viewPeriod = daysInPeriod(scope.viewStart, scope.viewEnd);	// Number of days within the view.
 				scope.gridWidth	 = $document.find('tbody').prop('offsetWidth');
 				scope.cellWidth	 = scope.gridWidth / (scope.viewPeriod + 1);
-				scope.enumDays	 = [];					// List of objects describing all days within the view. Objects are in the form { day#, dateObj, dayName, nbEvents, todaydateObj }
-				scope.enumMonths = [];					// List of objects describing all months within the view. Objects are in the form { month#, monthName, nbEvents }
+				scope.enumDays	 = [];					// List of objects describing all days within the view.
+				scope.enumMonths = [];					// List of objects describing all months within the view.
 				var eventHeightBase = 40 + 10;
 				recalcGrid();
 				/*
@@ -165,6 +165,26 @@ angular.module('plantt.module', [])
 				scope.prevDecade = function(){
 					scope.viewStart = addDaysToDate(angular.copy(scope.viewStart), -10);
 					scope.viewEnd	= addDaysToDate(angular.copy(scope.viewEnd), -10);
+					recalcGrid();
+				};
+				/*
+				 * Zoom IN view (-1 day on each side)
+				 */
+				scope.zoomIn = function(step){
+					if (daysInPeriod(scope.viewStart, scope.viewEnd) <= 2)
+						return;
+					scope.viewStart  = addDaysToDate(angular.copy(scope.viewStart), +step);
+					scope.viewEnd	 = addDaysToDate(angular.copy(scope.viewEnd), -step);
+					recalcGrid();
+				};
+				/*
+				 * Zoom OUT view (+1 day on each side)
+				 */
+				scope.zoomOut = function(step){
+					if (daysInPeriod(scope.viewStart, scope.viewEnd) >= 365)
+						return;
+					scope.viewStart  = addDaysToDate(angular.copy(scope.viewStart), -step);
+					scope.viewEnd	 = addDaysToDate(angular.copy(scope.viewEnd), +step);
 					recalcGrid();
 				};
 				/*
