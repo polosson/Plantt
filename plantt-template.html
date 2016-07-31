@@ -41,7 +41,7 @@
 			</tr>
 		</tbody>
 	</table>
-	<event ng-repeat="ev in renderedEvents" event-id="{{ev.id}}"
+	<event ng-repeat="ev in renderedEvents" event-id="{{ev.id}}" title="{{ev.title}}"
 		   ng-style="ev.locScale"
 		   ng-class="[ev.type]">
 		#{{ev.id}} - {{ev.title}}
