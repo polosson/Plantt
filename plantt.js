@@ -70,6 +70,7 @@ angular.module('plantt.module', [])
 				scope.enumMonths = [];					// List of objects describing all months within the view.
 				var eventHeightBase = 40 + 10;
 				recalcGrid();
+
 				/*
 				 * Recalculate the Grid and the rendered events for the view
 				 */
@@ -151,6 +152,16 @@ angular.module('plantt.module', [])
 						$document.find('tbody').find('td').css('height', gridHeight+'px');
 					}, 0);
 				}
+
+				/**
+				 * Common function to relay errors elsewhere (todo)
+				 *
+				 * @param {STRING} msg The message to show
+				 */
+				scope.throwError = function(msg){
+					console.log(msg);
+				};
+
 				/*
 				 * Offset view to previous day
 				 */
@@ -168,11 +179,25 @@ angular.module('plantt.module', [])
 					recalcGrid();
 				};
 				/*
+				 * Set the start date for view
+				 */
+				scope.setStartView = function(year, month, day){
+					var date = addDaysToDate(new Date(year, month-1, day), 0);
+					if (date.getTime() >= scope.viewEnd.getTime()) {
+						scope.throwError("Aborting view draw: start date would be after end date.");
+						return;
+					}
+					scope.viewStart = date;
+					recalcGrid();
+				};
+				/*
 				 * Zoom IN view (-1 day on each side)
 				 */
 				scope.zoomIn = function(step){
-					if (daysInPeriod(scope.viewStart, scope.viewEnd) <= 2)
+					if (daysInPeriod(scope.viewStart, scope.viewEnd) <= 2) {
+						scope.throwError("Aborting view draw: reached minimum days to show.");
 						return;
+					}
 					scope.viewStart  = addDaysToDate(angular.copy(scope.viewStart), +step);
 					scope.viewEnd	 = addDaysToDate(angular.copy(scope.viewEnd), -step);
 					recalcGrid();
@@ -181,8 +206,10 @@ angular.module('plantt.module', [])
 				 * Zoom OUT view (+1 day on each side)
 				 */
 				scope.zoomOut = function(step){
-					if (daysInPeriod(scope.viewStart, scope.viewEnd) >= 365)
+					if (daysInPeriod(scope.viewStart, scope.viewEnd) >= 365) {
+						scope.throwError("Aborting view draw: reached maximum days to show.");
 						return;
+					}
 					scope.viewStart  = addDaysToDate(angular.copy(scope.viewStart), -step);
 					scope.viewEnd	 = addDaysToDate(angular.copy(scope.viewEnd), +step);
 					recalcGrid();
@@ -209,6 +236,18 @@ angular.module('plantt.module', [])
 				scope.nextDecade = function(){
 					scope.viewStart = addDaysToDate(angular.copy(scope.viewStart), 10);
 					scope.viewEnd	= addDaysToDate(angular.copy(scope.viewEnd), 10);
+					recalcGrid();
+				};
+				/*
+				 * Set the end date for view
+				 */
+				scope.setEndView = function(year, month, day){
+					var date = addDaysToDate(new Date(year, month-1, day), 0);
+					if (date.getTime() <= scope.viewStart.getTime()) {
+						scope.throwError("Aborting view draw: end date would be before start date.");
+						return;
+					}
+					scope.viewEnd = date;
 					recalcGrid();
 				};
 
