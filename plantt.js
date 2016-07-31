@@ -154,6 +154,11 @@ angular.module('plantt.module', [])
 							evt.locScale.top = (line * eventHeightBase)+'px';
 							line += 1;
 						});
+						// Set the margin-top of element to avoid overlapping the header (buttons & days grid)
+						var headHeight	  = $document.find('scheduler').find('div')[0].offsetHeight;
+						var topGridHeight = $document.find('thead').prop('offsetHeight');
+						$document.find('event').css('margin-top', (headHeight + topGridHeight)+'px');
+
 						// Extends the view vertically to fit the elements (with margin)
 						var gridHeight = gridMarginBottom + (scope.renderedEvents.length * eventHeightBase);
 						$document.find('tbody').find('td').css('height', gridHeight+'px');
@@ -163,6 +168,7 @@ angular.module('plantt.module', [])
 				// Call the renderer for the first time
 				scope.renderView();
 
+				// Call the renderer when window is resized
 				angular.element($window).bind('resize', function(){
 					$timeout(function(){
 						scope.renderView();
