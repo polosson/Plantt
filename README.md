@@ -13,7 +13,8 @@ Just import AngularJS, and the Plantt's javacript and CSS files:
     <script src="js/vendor/angular-1.5.8.min.js"></script>
     <script src="plantt.js"></script>
 
-Then, make sure the file **plantt-template.html** is readable into your project's root folder.
+Then, make sure the file **plantt-template.html** is readable into your project's root folder. You can use this file
+to see how functions are called, then modify it to suits your needs.
 
 ## Usage
 
@@ -35,7 +36,7 @@ Finally, inject the module in your app and define your controller:
         ]
     }
 
-Please not that your controller must have a **$scope.events** variable, which must be an array.  
+Please not that your controller must have a **$scope.events** variable, which must be an array.
 The following data is needed in the objects of events collection:
  - **id** (int)
  - **title** (string)
