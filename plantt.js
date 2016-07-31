@@ -101,8 +101,7 @@ angular.module('plantt.module', [])
 						if (lastMonth != dayDate.getMonth()) {
 							scope.enumMonths.push({
 								num: dayDate.getMonth(),
-								name: dateFilter(dayDate, 'MMMM yyyy'),
-								nbEvents: 0
+								name: dateFilter(dayDate, 'MMMM yyyy')
 							});
 							lastMonth = dayDate.getMonth();
 							monthNumDays = 1;
@@ -132,7 +131,7 @@ angular.module('plantt.module', [])
 						scope.renderedEvents.push(angular.copy(evt));	// Render the event
 					});
 
-					// Extends the view vertically to fit the elements
+					// Vertical calculations to avoid collisions
 					$timeout(function(){
 						var line = 0;
 						angular.forEach(scope.renderedEvents, function(evt){
@@ -232,6 +231,8 @@ angular.module('plantt.module', [])
 				if (thisEvent.startDate.getTime() < scope.currDate.getTime() && thisEvent.endDate.getTime() > scope.currDate.getTime()) {
 					extraClass += 'current ';	// to illustrate the fact it's currently active
 				}
+				// Add some classes to the element
+				element.addClass(extraClass);
 
 				// Place and scale the event's element horizontally in DOM
 				thisEvent.locScale.left		= offsetLeft+'px';
@@ -244,12 +245,6 @@ angular.module('plantt.module', [])
 					if (!thisDay) continue;
 					thisDay.nbEvents += 1;
 				}
-
-				// Add some class to the element
-				element.addClass(extraClass);
-
-				// Add 1 to the bnEvents variable in the list of all days,
-				// for each days of the event
 
 			}
 		};
