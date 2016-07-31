@@ -186,9 +186,10 @@ angular.module('plantt.module', [])
 				/*
 				 * Offset view to previous 10 days
 				 */
-				scope.prevDecade = function(){
-					scope.viewStart = addDaysToDate(angular.copy(scope.viewStart), -10);
-					scope.viewEnd	= addDaysToDate(angular.copy(scope.viewEnd), -10);
+				scope.prevCustom = function(days){
+					if (!days) days = 15;
+					scope.viewStart = addDaysToDate(angular.copy(scope.viewStart), -days);
+					scope.viewEnd	= addDaysToDate(angular.copy(scope.viewEnd), -days);
 					scope.renderView();
 				};
 				/*
@@ -246,9 +247,10 @@ angular.module('plantt.module', [])
 				/*
 				 * Offset view to next 10 days
 				 */
-				scope.nextDecade = function(){
-					scope.viewStart = addDaysToDate(angular.copy(scope.viewStart), 10);
-					scope.viewEnd	= addDaysToDate(angular.copy(scope.viewEnd), 10);
+				scope.nextCustom = function(days){
+					if (!days) days = 15;
+					scope.viewStart = addDaysToDate(angular.copy(scope.viewStart), days);
+					scope.viewEnd	= addDaysToDate(angular.copy(scope.viewEnd), days);
 					scope.renderView();
 				};
 				/*
