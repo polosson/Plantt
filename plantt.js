@@ -383,7 +383,7 @@ angular.module('plantt.module', [])
 
 				// Click-Drag an event to change its dates
 				var dragInit	 = false;
-				var startDeltaX = 0, grabDeltaX = 0, offsetDay = 0;
+				var startDeltaX = 0, grabDeltaX = 0, offsetDay = 0, offsetTop = 0;
 				element.bind('mousedown', grabStart);
 				element.bind('mousemove', grabMove);
 				element.bind('mouseup',   grabEnd);
@@ -391,8 +391,9 @@ angular.module('plantt.module', [])
 
 				function grabStart (e) {
 					e.preventDefault();
-					startDeltaX	 = e.layerX / scope.cellWidth;
-					grabDeltaX	 = 0;
+					startDeltaX	= e.layerX / scope.cellWidth;
+					grabDeltaX	= 0;
+					offsetTop	= parseInt(element.css('top'));
 					element.css({'opacity': 0.5, 'z-index': 1000});
 				}
 				function grabMove (e) {
@@ -403,7 +404,8 @@ angular.module('plantt.module', [])
 					grabDeltaX += e.movementX;
 					offsetDay	= Math.round((startDeltaX + grabDeltaX) / scope.cellWidth);
 					offsetLeft += e.movementX;
-					element.css({left: offsetLeft+'px'});
+					offsetTop  += e.movementY;
+					element.css({left: offsetLeft+'px', top: offsetTop+'px'});
 				}
 				function grabEnd (){
 					if (!dragInit)
