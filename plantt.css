@@ -103,17 +103,49 @@ scheduler event {
 	margin-top: 125px;
 	background-color: #46b8da;
 	color: #FFF;
-	padding: 10px 4px;
+	padding: 0;
 	width: 61px;
-	cursor: move;
+	border-radius: 5px;
 	box-shadow: 1px 2px 3px rgba(0,0,0,0.5);
 	z-index: 200;
 }
+scheduler event handle {
+	display: block;
+	position: absolute;
+	background-color: rgba(0,0,0,0.1);
+	height: 100%;
+	width: 10%;
+	min-width: 5px;
+	z-index: 300;
+}
+scheduler event handle.leftHandle {
+	left: 0;
+	cursor: w-resize;
+	border-radius: 5px 0 0 5px;
+}
+scheduler event handle.rightHandle {
+	right: 0;
+	cursor: e-resize;
+	border-radius: 0 5px 5px 0;
+}
+scheduler event label {
+	display: block;
+	padding: 10px 10%;
+	margin: 0;
+	cursor: move;
+}
+
 scheduler event.overLeft {
 	border-radius: 50px 0 0 50px;
 }
+scheduler event.overLeft handle.leftHandle {
+	display: none;
+}
 scheduler event.overRight {
 	border-radius: 0 50px 50px 0;
+}
+scheduler event.overRight handle.rightHandle {
+	display: none;
 }
 
 /***** Scheduler events special classes *****/
@@ -121,8 +153,29 @@ scheduler event.past {
 	background-color: #888 !important;
 }
 scheduler event.current {
-	border-left: 8px solid #DB6548;
-	border-right: 8px solid #DB6548;
-	border-top: 2px dashed #DB6548;
-	border-bottom: 2px dashed #DB6548;
+	background: linear-gradient(45deg, transparent, transparent 33px, rgba(255,0,0,0.15) 33px, rgba(255,0,0,0.15) 66px, transparent 66px, transparent);
+	background-size: 100px;
+	background-position: 0 0;
+
+	-webkit-animation: animStripes 2s linear infinite;
+	-moz-animation: animStripes 2s linear infinite;
+	-o-animation: animStripes 2s linear infinite;
+	animation: animStripes 2s linear infinite;
+}
+
+@-webkit-keyframes animStripes {
+    from { background-position: 0 0; }
+	to { background-position: 100px 0; }
+}
+@-moz-keyframes animStripes {
+    from { background-position: 0 0; }
+	to { background-position: 100px 0; }
+}
+@-o-keyframes animStripes {
+    from { background-position: 0 0; }
+	to { background-position: 100px 0; }
+}
+@keyframes animStripes {
+    from { background-position: 0 0; }
+	to { background-position: 100px 0; }
 }
