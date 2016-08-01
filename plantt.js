@@ -273,36 +273,49 @@ angular.module('plantt.module', [])
 	/*
 	 * GRID Directive
 	 */
-	.directive('tbody', ['$rootScope',  function($rootScope){
+	.directive('tbody', ['$document', '$rootScope',  function($document, $rootScope){
 		return {
 			restrict: 'E',
 			link: function(scope, element) {
-				var dragInit = false;
-				var selStart = null;
-				var selEnd   = null;
+				var eventHelper = $document.find('eventhelper');
+				var dragInit = false, startWidth = 0, selStart = null, selEnd   = null;
+				element.bind('mousedown', grabGridStart);
+				element.bind('mousemove', grabGridMove);
+				element.bind('mouseup',   grabGridEnd);
+//				element.bind('mouseout',  grabGridEnd);
 
 				// Click-drag on grid emits the event "periodSelect" to all other scopes
-				element.bind('mousedown', function(e){
-					e.preventDefault();
+				function grabGridStart (e){
+					e.preventDefault(); e.stopPropagation();
 					var dayInView = Math.floor(e.layerX / scope.cellWidth);
 					selStart = addDaysToDate(angular.copy(scope.viewStart), dayInView);
-				});
-				element.bind('mousemove', function(e){
-					if(e.buttons === 1)
+					eventHelper.css({display: 'block'});
+					eventHelper.css({top: (e.layerY-145)+'px', left: (e.layerX)+'px'});
+				}
+				function grabGridMove (e){
+					if(e.buttons === 1) {
+						e.preventDefault(); e.stopPropagation();
 						dragInit = true;
-				});
-				element.bind('mouseup', function(e) {
+						startWidth += e.movementX;
+						if (startWidth <= 0)
+							return;
+						eventHelper.css({width: (startWidth - 2)+'px'});
+					}
+				};
+				function grabGridEnd (e) {
+					startWidth  = 0;
+					eventHelper.css({width: '0px', display: 'none'});
 					if (!dragInit) return;
 					if (!selStart) return;
-					e.preventDefault();
+					e.preventDefault(); e.stopPropagation();
 					var dayInView = Math.floor(e.layerX / scope.cellWidth);
 					selEnd  = addDaysToDate(angular.copy(scope.viewStart), dayInView);
 					if (selStart.getTime() < selEnd.getTime()) {
 						$rootScope.$broadcast('periodSelect', {start: selStart, end: selEnd});
 						scope.throwError(3, "The DOM event 'periodSelect' was emitted in rootScope.");
 					}
-					dragInit = false;
-				});
+					dragInit	= false;
+				};
 			}
 		};
 	}])

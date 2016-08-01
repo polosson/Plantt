@@ -96,7 +96,7 @@ scheduler .eventsContainer {
 }
 
 /***** Scheduler events *****/
-scheduler event {
+scheduler event, scheduler eventhelper {
 	position: absolute;
 	text-align: center;
 	box-sizing: border-box;
@@ -163,6 +163,19 @@ scheduler event.current {
 	animation: animStripes 5s linear infinite;
 }
 
+/***** Scheduler event helper (when drag & drop) *****/
+scheduler eventhelper {
+	display: none;
+	top: 0;
+	width: 0;
+	height: 40px;
+	background: none;
+	border: 2px dashed red;
+	color: #555;
+	font-size: 0.8em;
+}
+
+/***** Animations *****/
 @-webkit-keyframes animStripes {
     from { background-position: 0 0; }
 	to { background-position: 100px 0; }
