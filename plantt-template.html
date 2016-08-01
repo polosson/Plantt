@@ -44,6 +44,8 @@
 	<event ng-repeat="ev in renderedEvents" event-id="{{ev.id}}" title="{{ev.title}}"
 		   ng-style="ev.locScale"
 		   ng-class="[ev.type]">
-		#{{ev.id}} - {{ev.title}}
+		<handle class="leftHandle"></handle>
+		<handle class="rightHandle"></handle>
+		<label>#{{ev.id}} - {{ev.title}}</label>
 	</event>
 </div>
