@@ -333,7 +333,7 @@ angular.module('plantt.module', [])
 	/*
 	 * GRID HEADER Directive
 	 */
-	.directive('thead', ['$document', '$rootScope',  function($document, $rootScope){
+	.directive('thead', ['$timeout',  function($timeout){
 		return {
 			restrict: 'E',
 			link: function(scope, element) {
@@ -357,7 +357,10 @@ angular.module('plantt.module', [])
 						var deltaDay = Math.round(grabDeltaX / scope.cellWidth);
 						scope.viewStart = addDaysToDate(angular.copy(scope.viewStart), -deltaDay);
 						scope.viewEnd	= addDaysToDate(angular.copy(scope.viewEnd), -deltaDay);
-						scope.renderView();
+						grabDeltaX = 0;
+						$timeout(function(){
+							scope.renderView();
+						}, 0);
 						return;
 					}
 				}
