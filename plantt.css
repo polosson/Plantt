@@ -157,10 +157,10 @@ scheduler event.current {
 	background-size: 100px;
 	background-position: 0 0;
 
-	-webkit-animation: animStripes 2s linear infinite;
-	-moz-animation: animStripes 2s linear infinite;
-	-o-animation: animStripes 2s linear infinite;
-	animation: animStripes 2s linear infinite;
+	-webkit-animation: animStripes 5s linear infinite;
+	-moz-animation: animStripes 5s linear infinite;
+	-o-animation: animStripes 5s linear infinite;
+	animation: animStripes 5s linear infinite;
 }
 
 @-webkit-keyframes animStripes {

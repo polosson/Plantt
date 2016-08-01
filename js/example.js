@@ -72,4 +72,15 @@ planttEx.controller("planttExample", function($scope, $timeout){
 		}, 0);
 	});
 
+	// Listen to the "eventScale" DOM event, to store the new positions of the event limits in time
+	$scope.$on('eventScale', function(e, event, side, deltaDays){
+		if (side === 'left')
+			event.startDate = addDaysToDate(angular.copy(event.startDate), deltaDays);
+		else if (side === 'right')
+			event.endDate	= addDaysToDate(angular.copy(event.endDate), deltaDays);
+		$timeout(function(){
+			$scope.renderView();
+		}, 0);
+	});
+
 });

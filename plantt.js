@@ -344,13 +344,13 @@ angular.module('plantt.module', [])
 
 				var dragInit	= false, grabDeltaX  = 0;
 				function grabHeadStart(e) {
-					e.preventDefault();
+					e.preventDefault(); e.stopPropagation();
 					grabDeltaX	= 0;
 				}
 				function grabHeadMove(e) {
 					if(e.buttons !== 1)
 						return;
-					e.preventDefault();
+					e.preventDefault(); e.stopPropagation();
 					dragInit = true;
 					grabDeltaX += e.movementX;
 					if (Math.abs(grabDeltaX) >= scope.cellWidth) {
@@ -367,7 +367,7 @@ angular.module('plantt.module', [])
 				function grabHeadEnd(e) {
 					if (!dragInit)
 						return;
-					e.preventDefault();
+					e.preventDefault(); e.stopPropagation();
 					dragInit = false;
 					grabDeltaX = 0;
 				}
@@ -434,7 +434,7 @@ angular.module('plantt.module', [])
 				element.bind('mouseout',  grabEventEnd);
 
 				function grabEventStart (e) {
-					e.preventDefault();
+					e.preventDefault(); e.stopPropagation();
 					startDeltaX	= e.layerX / scope.cellWidth;
 					grabDeltaX	= 0;
 					offsetTop	= parseInt(element.css('top'));
@@ -443,7 +443,7 @@ angular.module('plantt.module', [])
 				function grabEventMove (e) {
 					if(e.buttons !== 1)
 						return;
-					e.preventDefault();
+					e.preventDefault(); e.stopPropagation();
 					dragInit = true;
 					grabDeltaX += e.movementX;
 					offsetDay	= Math.round((startDeltaX + grabDeltaX) / scope.cellWidth);
@@ -451,9 +451,10 @@ angular.module('plantt.module', [])
 					offsetTop  += e.movementY;
 					element.css({left: offsetLeft+'px', top: offsetTop+'px'});
 				}
-				function grabEventEnd (){
+				function grabEventEnd (e){
 					if (!dragInit)
 						return;
+					e.preventDefault(); e.stopPropagation();
 					var event = $filter('filter')(scope.events, {id: thisEvent.id}, true)[0];
 					$rootScope.$broadcast('eventMove', event, offsetDay);
 					scope.throwError(3, "The DOM event 'eventMove' was emitted in rootScope.");
@@ -461,7 +462,63 @@ angular.module('plantt.module', [])
 					startDeltaX = 0; grabDeltaX  = 0;
 					element.css({opacity: 1});
 				}
+			}
+		};
+	}])
+	/*
+	 * EVENTS HANDLES Directive
+	 */
+	.directive('handle', ['$rootScope', '$filter', function($rootScope, $filter){
+		return {
+			restrict: 'E',
+			link: function(scope, element, attrs) {
 
+				// Click-Drag an event to change its dates
+				var dragInit	= false;
+				var startDeltaX = 0, grabDeltaX = 0, offsetDay = 0, side = attrs.handleSide, thisEvent, offsetLeft = 0, offsetWidth = 0;
+				var parentEvent = element.parent();
+				element.bind('mousedown', grabHandleStart);
+				element.bind('mousemove', grabHandleMove);
+				element.bind('mouseup',   grabHandleEnd);
+				element.bind('mouseout',  grabHandleEnd);
+
+				function grabHandleStart (e) {
+					e.preventDefault(); e.stopPropagation();
+					thisEvent = $filter('filter')(scope.events, {id: +attrs.eventId}, true)[0];
+					startDeltaX	= e.layerX;
+					grabDeltaX	= 0;
+					offsetLeft  = parentEvent.prop('offsetLeft');
+					offsetWidth = parentEvent.prop('offsetWidth');
+					parentEvent.css({'opacity': 0.5, 'z-index': 1000});
+				}
+				function grabHandleMove (e) {
+					if(e.buttons !== 1)
+						return;
+					e.preventDefault(); e.stopPropagation();
+					dragInit = true;
+					grabDeltaX  += e.movementX;
+					if (side === 'left') {
+						offsetLeft  += e.movementX;
+						offsetWidth -= e.movementX;
+						offsetDay	 = Math.round((grabDeltaX - startDeltaX) / scope.cellWidth);
+					}
+					else if (side === 'right') {
+						offsetWidth += e.movementX;
+						offsetDay	 = Math.round((startDeltaX + grabDeltaX) / scope.cellWidth);
+					}
+					else return;
+					parentEvent.css({left: offsetLeft+'px', width: offsetWidth+'px'});
+				}
+				function grabHandleEnd (e){
+					if (!dragInit)
+						return;
+					e.preventDefault(); e.stopPropagation();
+					$rootScope.$broadcast('eventScale', thisEvent, side, offsetDay);
+					scope.throwError(3, "The DOM event 'eventScale' was emitted in rootScope.");
+					dragInit = false;
+					startDeltaX = 0; grabDeltaX  = 0;
+					parentEvent.css({opacity: 1});
+				}
 			}
 		};
 	}]);
