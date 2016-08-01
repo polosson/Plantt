@@ -331,6 +331,47 @@ angular.module('plantt.module', [])
 		};
 	}])
 	/*
+	 * GRID HEADER Directive
+	 */
+	.directive('thead', ['$document', '$rootScope',  function($document, $rootScope){
+		return {
+			restrict: 'E',
+			link: function(scope, element) {
+				element.bind('mousedown', grabHeadStart);
+				element.bind('mousemove', grabHeadMove);
+				element.bind('mouseup',   grabHeadEnd);
+				element.bind('mouseout',  grabHeadEnd);
+
+				var dragInit	= false, grabDeltaX  = 0;
+				function grabHeadStart(e) {
+					e.preventDefault();
+					grabDeltaX	= 0;
+				}
+				function grabHeadMove(e) {
+					if(e.buttons !== 1)
+						return;
+					e.preventDefault();
+					dragInit = true;
+					grabDeltaX += e.movementX;
+					if (Math.abs(grabDeltaX) >= scope.cellWidth) {
+						var deltaDay = Math.round(grabDeltaX / scope.cellWidth);
+						scope.viewStart = addDaysToDate(angular.copy(scope.viewStart), -deltaDay);
+						scope.viewEnd	= addDaysToDate(angular.copy(scope.viewEnd), -deltaDay);
+						scope.renderView();
+						return;
+					}
+				}
+				function grabHeadEnd(e) {
+					if (!dragInit)
+						return;
+					e.preventDefault();
+					dragInit = false;
+					grabDeltaX = 0;
+				}
+			}
+		};
+	}])
+	/*
 	 * EVENTS Directive
 	 */
 	.directive('event', ['$document', '$rootScope', '$timeout', '$filter', function($document, $rootScope, $timeout, $filter){
@@ -382,21 +423,21 @@ angular.module('plantt.module', [])
 				}
 
 				// Click-Drag an event to change its dates
-				var dragInit	 = false;
+				var dragInit	= false;
 				var startDeltaX = 0, grabDeltaX = 0, offsetDay = 0, offsetTop = 0;
-				element.bind('mousedown', grabStart);
-				element.bind('mousemove', grabMove);
-				element.bind('mouseup',   grabEnd);
-				element.bind('mouseout',  grabEnd);
+				element.bind('mousedown', grabEventStart);
+				element.bind('mousemove', grabEventMove);
+				element.bind('mouseup',   grabEventEnd);
+				element.bind('mouseout',  grabEventEnd);
 
-				function grabStart (e) {
+				function grabEventStart (e) {
 					e.preventDefault();
 					startDeltaX	= e.layerX / scope.cellWidth;
 					grabDeltaX	= 0;
 					offsetTop	= parseInt(element.css('top'));
 					element.css({'opacity': 0.5, 'z-index': 1000});
 				}
-				function grabMove (e) {
+				function grabEventMove (e) {
 					if(e.buttons !== 1)
 						return;
 					e.preventDefault();
@@ -407,7 +448,7 @@ angular.module('plantt.module', [])
 					offsetTop  += e.movementY;
 					element.css({left: offsetLeft+'px', top: offsetTop+'px'});
 				}
-				function grabEnd (){
+				function grabEventEnd (){
 					if (!dragInit)
 						return;
 					var event = $filter('filter')(scope.events, {id: thisEvent.id}, true)[0];
