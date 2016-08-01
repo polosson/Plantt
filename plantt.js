@@ -68,11 +68,18 @@ angular.module('plantt.module', [])
 				/**
 				 * Common function to relay errors elsewhere (todo)
 				 *
-				 * @param {STRING} lvl The level of the error (0 = Fatal; 1 = Warning; 2 = Notice)
+				 * @param {STRING} lvl The level of the error (0 = Fatal; 1 = Warning; 2 = Notice, 3 = Info)
 				 * @param {STRING} msg The message to show
 				 */
 				scope.throwError = function(lvl, msg){
-					console.log('Plantt error throwing (level '+lvl+'):', msg);
+					var level = '';
+					switch (lvl) {
+						case 0: level = 'FATAL ERROR';
+						case 1: level = 'WARNING';
+						case 2: level = 'Notice';
+						case 3: level = 'Info';
+					}
+					console.log('Plantt '+level+' throwed:', msg);
 				};
 
 
@@ -264,24 +271,59 @@ angular.module('plantt.module', [])
 		};
 	}])
 	/*
+	 * GRID Directive
+	 */
+	.directive('tbody', ['$rootScope',  function($rootScope){
+		return {
+			restrict: 'E',
+			link: function(scope, element) {
+				var dragInit = false;
+				var selStart = null;
+				var selEnd   = null;
+
+				// Click-drag on grid emits the event "periodSelect" to all other scopes
+				element.bind('mousedown', function(e){
+					e.preventDefault();
+					var dayInView = Math.floor(e.layerX / scope.cellWidth);
+					selStart = addDaysToDate(angular.copy(scope.viewStart), dayInView);
+				});
+				element.bind('mousemove', function(e){
+					if(e.buttons === 1)
+						dragInit = true;
+				});
+				element.bind('mouseup', function(e) {
+					if (!dragInit) return;
+					e.preventDefault();
+					var dayInView = Math.floor(e.layerX / scope.cellWidth);
+					selEnd  = addDaysToDate(angular.copy(scope.viewStart), dayInView);
+					$rootScope.$broadcast('periodSelect', {start: selStart, end: selEnd});
+					scope.throwError(3, "The event 'periodSelect' was emitted in rootScope.");
+					dragInit = false;
+				});
+			}
+		};
+	}])
+	/*
 	 * GRID CELLS Directive
 	 */
 	.directive('td', ['$document', '$rootScope',  function($document, $rootScope){
 		return {
 			restrict: 'E',
-			link: function(scope, element){
+			link: function(scope, element) {
 				var gridMarginBottom = 50;				// Margin to apply between lowest event and the bottom of grid
-
-				// Double-click on a cell of the grid throws the event "dayselect" to all other scopes
-				element.bind('dblclick', function(e){
-					var dayInView = Math.floor(e.layerX / scope.cellWidth);
-					var selectedDate = addDaysToDate(angular.copy(scope.viewStart), dayInView);
-					$rootScope.$broadcast('daySelect', selectedDate);
-				});
 
 				// Extends the view vertically to fit the elements (with margin)
 				var gridHeight = gridMarginBottom + (scope.renderedEvents.length * scope.eventHeightBase);
 				$document.find('tbody').find('td').css('height', gridHeight+'px');
+
+				// Double-click on a cell of the grid emits the event "dayselect" to all other scopes
+				element.bind('dblclick', function(e){
+					e.preventDefault();
+					var dayInView = Math.floor(e.layerX / scope.cellWidth);
+					var selectedDate = addDaysToDate(angular.copy(scope.viewStart), dayInView);
+					$rootScope.$broadcast('daySelect', selectedDate);
+					scope.throwError(3, "The event 'daySelect' was emitted in rootScope.");
+				});
 			}
 		};
 	}])

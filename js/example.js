@@ -19,11 +19,14 @@ planttEx.controller("planttExample", function($scope, $timeout){
 		{ id: 7, title: 'À cheval', type: 'normal', startDate: new Date(2016, 7-1, 29, 8), endDate: new Date(2016, 8-1, 2, 19) },
 		{ id: 8, title: 'AoutFirst', type: 'normal', startDate: new Date(2016, 8-1, 6, 8), endDate: new Date(2016, 8-1, 12, 19) },
 		{ id: 9, title: 'Aout Second one', type: 'urgent', startDate: new Date(2016, 8-1, 14, 8), endDate: new Date(2016, 8-1, 14, 19) },
-		{ id: 10, title: 'Aout Third event', type: 'urgent', startDate: new Date(2016, 8-1, 8, 8), endDate: new Date(2016, 8-1, 10, 19) }
+		{ id: 10, title: 'Aout Third event', type: 'urgent', startDate: new Date(2016, 8-1, 8, 8), endDate: new Date(2016, 8-1, 10, 19) },
+		{ id: 11, title: 'Buggy One', type: 'urgent', startDate: new Date(2016, 8-1, 2, 8), endDate: new Date(2016, 8-1, 6, 19) }
 	];
 
 	$scope.$on('daySelect', function(e, date){
 		var name = prompt('New event title:');
+		if (!name) return;
+		if (name === "") return;
 		var end  = new Date(date.getTime() + 1000*60*60);
 		var id   = $scope.events.length + 1;
 		var newEvent = {
@@ -34,9 +37,27 @@ planttEx.controller("planttExample", function($scope, $timeout){
 			endDate: end
 		};
 		$scope.events.push(newEvent);
-		
 		$timeout(function(){
 			$scope.renderView();
 		}, 0);
 	});
+
+	$scope.$on('periodSelect', function(e, dates){
+		var name = prompt('New event title:');
+		if (!name) return;
+		if (name === "") return;
+		var id   = $scope.events.length + 1;
+		var newEvent = {
+			id: id,
+			title: name,
+			type: 'normal',
+			startDate: dates.start,
+			endDate: dates.end
+		};
+		$scope.events.push(newEvent);
+		$timeout(function(){
+			$scope.renderView();
+		}, 0);
+	});
+
 });
