@@ -38,6 +38,7 @@
 			<ul>
 				<li>Double-click on the grid to add an event on a single day</li>
 				<li>Click & drag on the grid to add an event on the corresponding period</li>
+				<li>Click & drag an event to move it on the timeline<br /><small>(be quiet, there is an issue if you're too fast)</small></li>
 			</ul>
 		</div>
 		<div class="col-sm-4 text-center">
@@ -79,7 +80,9 @@
 			<pre>
 var planttExample = angular.module("planttExample", ["plantt.module"]);
 
-planttExample.controller("planttExample", function($scope){
+planttExample.controller("planttExample", function($scope, $timeout){
+
+// Create the events list
   $scope.events = [
     { id: 0,  title: "Event One",    type: 'normal', startDate: new Date(2016, 6-1, 21, 8), endDate: new Date(2016, 7-1, 4, 19) },
     { id: 1,  title: "Wouzah",	     type: 'normal', startDate: new Date(2016, 7-1, 14, 8), endDate: new Date(2016, 7-1, 15, 19) },
@@ -88,13 +91,39 @@ planttExample.controller("planttExample", function($scope){
     { id: 10, title: "It's now Bud", type: 'normal', startDate: new Date(2016, 7-1, 29, 8), endDate: new Date(2016, 8-1, 2, 19) },
     { id: 11, title: "Aout First",   type: 'normal', startDate: new Date(2016, 8-1, 6, 8),  endDate: new Date(2016, 8-1, 12, 19) }
   ];
-});
-			</pre>
-			<h4>AJAX with JSON example</h4>
-			<pre>
 
-			</pre>
+  // Listen to the "daySelect" DOM event, to add a new event
+  $scope.$on('daySelect', function(e, date){
+    // Do something
+    $timeout(function(){
+      $scope.renderView();
+    }, 0);
+  });
+
+  // Listen to the "periodSelect" DOM event, to add a new event
+  $scope.$on('periodSelect', function(e, dates){
+    // Do something
+    $timeout(function(){
+      $scope.renderView();
+    }, 0);
+  });
+
+  // Listen to the "eventMove" DOM event, to store the new position of the event in time
+  $scope.$on('eventMove', function(e, event, deltaDays){
+    // Do something
+    $timeout(function(){
+      $scope.renderView();
+    }, 0);
+  });
+
+
+});</pre>
+			<h4>Recommandations</h4>
+			<p>
+
+			</p>
 		</div>
+
 	</section>
 
 	<script src="plantt.js"></script>
