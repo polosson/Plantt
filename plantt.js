@@ -293,11 +293,14 @@ angular.module('plantt.module', [])
 				});
 				element.bind('mouseup', function(e) {
 					if (!dragInit) return;
+					if (!selStart) return;
 					e.preventDefault();
 					var dayInView = Math.floor(e.layerX / scope.cellWidth);
 					selEnd  = addDaysToDate(angular.copy(scope.viewStart), dayInView);
-					$rootScope.$broadcast('periodSelect', {start: selStart, end: selEnd});
-					scope.throwError(3, "The event 'periodSelect' was emitted in rootScope.");
+					if (selStart.getTime() < selEnd.getTime()) {
+						$rootScope.$broadcast('periodSelect', {start: selStart, end: selEnd});
+						scope.throwError(3, "The DOM event 'periodSelect' was emitted in rootScope.");
+					}
 					dragInit = false;
 				});
 			}
@@ -322,7 +325,7 @@ angular.module('plantt.module', [])
 					var dayInView = Math.floor(e.layerX / scope.cellWidth);
 					var selectedDate = addDaysToDate(angular.copy(scope.viewStart), dayInView);
 					$rootScope.$broadcast('daySelect', selectedDate);
-					scope.throwError(3, "The event 'daySelect' was emitted in rootScope.");
+					scope.throwError(3, "The DOM event 'daySelect' was emitted in rootScope.");
 				});
 			}
 		};
@@ -330,7 +333,7 @@ angular.module('plantt.module', [])
 	/*
 	 * EVENTS Directive
 	 */
-	.directive('event', ['$document', '$timeout', '$filter', function($document, $timeout, $filter){
+	.directive('event', ['$document', '$rootScope', '$timeout', '$filter', function($document, $rootScope, $timeout, $filter){
 		return {
 			restrict: 'E',
 			link: function(scope, element, attrs) {
@@ -360,7 +363,7 @@ angular.module('plantt.module', [])
 					extraClass += 'past ';	// to illustrate the fact it's in the past
 				}
 				// If the event is CURRENTLY active (over today)
-				if (thisEvent.startDate.getTime() < scope.currDate.getTime() && thisEvent.endDate.getTime() > scope.currDate.getTime()) {
+				if (thisEvent.startDate.getTime() <= scope.currDate.getTime() && thisEvent.endDate.getTime() >= scope.currDate.getTime()) {
 					extraClass += 'current ';	// to illustrate the fact it's currently active
 				}
 				// Add some classes to the element
@@ -376,6 +379,41 @@ angular.module('plantt.module', [])
 					var thisDay = $filter('filter')(scope.enumDays, {time: D.getTime()}, true)[0];
 					if (!thisDay) continue;
 					thisDay.nbEvents += 1;
+				}
+
+				// Click-Drag an event to change its dates
+				var dragInit	 = false;
+				var startDeltaX = 0, grabDeltaX = 0, offsetDay = 0;
+				element.bind('mousedown', grabStart);
+				element.bind('mousemove', grabMove);
+				element.bind('mouseup',   grabEnd);
+				element.bind('mouseout',  grabEnd);
+
+				function grabStart (e) {
+					e.preventDefault();
+					startDeltaX	 = e.layerX / scope.cellWidth;
+					grabDeltaX	 = 0;
+					element.css({'opacity': 0.5, 'z-index': 1000});
+				}
+				function grabMove (e) {
+					if(e.buttons !== 1)
+						return;
+					e.preventDefault();
+					dragInit = true;
+					grabDeltaX += e.movementX;
+					offsetDay	= Math.round((startDeltaX + grabDeltaX) / scope.cellWidth);
+					offsetLeft += e.movementX;
+					element.css({left: offsetLeft+'px'});
+				}
+				function grabEnd (){
+					if (!dragInit)
+						return;
+					var event = $filter('filter')(scope.events, {id: thisEvent.id}, true)[0];
+					$rootScope.$broadcast('eventMove', event, offsetDay);
+					scope.throwError(3, "The DOM event 'eventMove' was emitted in rootScope.");
+					dragInit = false;
+					startDeltaX = 0; grabDeltaX  = 0;
+					element.css({opacity: 1});
 				}
 
 			}

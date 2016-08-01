@@ -7,7 +7,7 @@
 
 var planttEx = angular.module("planttEx", ["plantt.module"]);
 
-planttEx.controller("planttExample", function($scope, $timeout){
+planttEx.controller("planttExample", function($scope, $filter, $timeout){
 
 	$scope.events = [
 		{ id: 1, title: 'Opps Lala', type: 'normal', startDate: new Date(2016, 6-1, 21, 8), endDate: new Date(2016, 7-1, 4, 19) },
@@ -55,6 +55,14 @@ planttEx.controller("planttExample", function($scope, $timeout){
 			endDate: dates.end
 		};
 		$scope.events.push(newEvent);
+		$timeout(function(){
+			$scope.renderView();
+		}, 0);
+	});
+
+	$scope.$on('eventMove', function(e, event, deltaDays){
+		event.startDate = addDaysToDate(angular.copy(event.startDate), deltaDays);
+		event.endDate	= addDaysToDate(angular.copy(event.endDate), deltaDays);
 		$timeout(function(){
 			$scope.renderView();
 		}, 0);
