@@ -478,6 +478,7 @@ angular.module('plantt.module', [])
 					startDeltaX = 0; grabDeltaX  = 0;
 				}
 
+				// Double-click an event element to emit the custom event "eventOpen" to all other scopes
 				element.bind('dblclick', function(e){
 					e.preventDefault(); e.stopPropagation();
 					var event = $filter('filter')(scope.events, {id: thisEvent.id}, true)[0];

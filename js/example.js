@@ -83,4 +83,10 @@ planttEx.controller("planttExample", function($scope, $timeout){
 		}, 0);
 	});
 
+	// Listen to the "eventOpen" DOM event
+	$scope.$on('eventOpen', function(e, event){
+		console.log(event);
+		alert('Opening event "' + event.title +'"');
+	});
+
 });
