@@ -92,16 +92,26 @@ angular.module('plantt.module', [])
 					scope.gridWidth	 = $document.find('tbody').prop('offsetWidth');			// Width of the rendered grid
 					scope.viewPeriod = daysInPeriod(scope.viewStart, scope.viewEnd, false);	// Number of days in period of the view
 					scope.cellWidth	 = scope.gridWidth / (scope.viewPeriod + 1);			// Width of the cells of the grid
+					scope.linesFill	 = {};
+					scope.renderedEvents  = [];		// Empty the rendered events list
 
 					// First Loop: on all view's days, to define the grid
-					var lastMonth	 = -1, monthNumDays = 1, nbMonths	 = 0;
-					for (var d=0; d <= scope.viewPeriod; d++) {
+					var lastMonth = -1, monthNumDays = 1, nbMonths = 0, nbLines = 10;
+					for (var d = 0; d <= scope.viewPeriod; d++) {
 						var dayDate = addDaysToDate(angular.copy(scope.viewStart), d);
 						var today = (scope.currDate.getTime() === dayDate.getTime());
 						var isLastOfMonth = (daysInMonth(dayDate) === dayDate.getDate());
+
+						// Populate the lines filling
+						for (var l = 1; l <= nbLines; l++) {
+							scope.linesFill[l] = [];
+							for (var ld = 0; ld <= scope.viewPeriod; ld++)
+								scope.linesFill[l].push(false);
+						}
 						// Populate the list of all days
 						scope.enumDays.push({
 							num: dateFilter(dayDate, 'dd'),
+							offset: d,
 							date: dayDate,
 							time: dayDate.getTime(),
 							title: dateFilter(dayDate, 'EEEE dd MMMM'),
@@ -124,9 +134,8 @@ angular.module('plantt.module', [])
 							scope.enumMonths[nbMonths-1].numDays = monthNumDays;
 						}
 					}
-					// Second loop: populate the list of all *RENDERED* events
-					// (used to restrict the events list at only rendered events for memory saving)
-					scope.renderedEvents = [];
+
+					// Second loop: Filter and calculate the temp list events to be rendered
 					angular.forEach(scope.events, function(evt){
 						var eStart	= evt.startDate.getTime(),
 							eEnd	= evt.endDate.getTime(),
@@ -136,38 +145,70 @@ angular.module('plantt.module', [])
 							return true;
 						if (eStart > vEnd)								// Do not render event if it's AFTER the view's period
 							return true;
+
+						// Calculate the left and width offsets for the event's element
+						var offsetDays	= -daysInPeriod(evt.startDate, scope.viewStart, true);
+						var eventLength = daysInPeriod(evt.endDate, evt.startDate, false) + 1;
+						var eventWidth	= eventLength * scope.cellWidth;
+						var offsetLeft	= offsetDays * scope.cellWidth;
+
+						var daysExceed	= 0, extraClass	= evt.type+' ';
+						// If the event's START date is BEFORE the current displayed view
+						if (offsetDays < 0) {
+							offsetLeft = 0;				// to stick the element to extreme left
+							daysExceed = -offsetDays;	// to trim the total element's width
+							extraClass += 'overLeft ';	// to decorate the element's left boundary
+						}
+						// If the event's END date is AFTER the current displayed month
+						if (evt.endDate.getTime() > scope.viewEnd.getTime()) {
+							daysExceed = daysInPeriod(scope.viewEnd, evt.endDate, false);
+							extraClass += 'overRight ';	// to decorate the element's right boundary
+						}
+						// If the event's END date is BEFORE TODAY
+						if (evt.endDate.getTime() < scope.currDate.getTime()) {
+							extraClass += 'past ';	// to illustrate the fact it's in the past
+						}
+						// If the event is CURRENTLY active (over today)
+						if (evt.startDate.getTime() <= scope.currDate.getTime() && evt.endDate.getTime() >= scope.currDate.getTime()) {
+							extraClass += 'current ';	// to illustrate the fact it's currently active
+						}
+						// Add some classes to the element
+						evt.extraClasses = extraClass;
+
+						// Store the number of events in enumDays array, and calculate the line (Y-axis) for the event
+						evt.line = 0;
+						for (var n = 0; n < eventLength; n++) {
+							var D = addDaysToDate(angular.copy(evt.startDate), n);
+							var thisDay = $filter('filter')(scope.enumDays, {time: D.getTime()}, true)[0];
+							if (!thisDay) continue;
+							thisDay.nbEvents += 1;
+
+							var dayFilled = false;
+							angular.forEach(scope.linesFill, function(thisLine, numLine){
+								if (thisLine[thisDay.offset] === false && !dayFilled) {
+									thisLine[thisDay.offset] = thisDay.num+': '+evt.title;
+									dayFilled = true;
+									evt.line = Math.max(evt.line, parseInt(numLine)-1);
+									scope.linesFill[evt.line+1][thisDay.offset] = thisDay.num+': '+evt.title;
+								}
+							});
+						}
+
+						// Place and scale the event's element in DOM
 						evt.locScale = {
-							'left': 0,
-							'top': 0,
-							'width': '100px'
+							'left': offsetLeft+'px',
+							'width': (eventWidth - (daysExceed * scope.cellWidth))+'px',
+							'top': (evt.line * scope.eventHeightBase)+'px'
 						};
-						scope.renderedEvents.push(angular.copy(evt));	// Render the event
+
+						// Store the event in the temp list
+						scope.renderedEvents.push(angular.copy(evt));
 					});
-					// Last loop: calc vertical positions to avoid collisions
-					$timeout(function(){
-						var line = 0;
-						angular.forEach(scope.renderedEvents, function(evt){
-							var DB = addDaysToDate(angular.copy(evt.startDate), -1);
-							var DA = addDaysToDate(angular.copy(evt.endDate), +1);
-							var dayBeforeEvent = $filter('filter')(scope.enumDays, {time: DB.getTime()}, true)[0];
-							var dayAfterEvent  = $filter('filter')(scope.enumDays, {time: DA.getTime()}, true)[0];
-							// If no event before AND after the event, return to top
-							if (dayBeforeEvent && dayAfterEvent) {
-								if (dayBeforeEvent.nbEvents === 0 && dayAfterEvent.nbEvents === 0)
-									line = 0;
-							}
-							evt.locScale.top = (line * scope.eventHeightBase)+'px';
-							line += 1;
-						});
-						// Set the margin-top of element to avoid overlapping the header (buttons & days grid)
-						var headHeight	  = $document.find('scheduler').find('div')[0].offsetHeight;
-						var topGridHeight = $document.find('thead').prop('offsetHeight');
-						$document.find('event').css('margin-top', (headHeight + topGridHeight + 10)+'px');
-					}, 0);
 				};
 
 				// Call the renderer for the first time
 				scope.renderView();
+
 
 				// Call the renderer when window is resized
 				angular.element($window).bind('resize', function(){
@@ -391,57 +432,16 @@ angular.module('plantt.module', [])
 	/*
 	 * EVENTS Directive
 	 */
-	.directive('event', ['$document', '$rootScope', '$timeout', '$filter', function($document, $rootScope, $timeout, $filter){
+	.directive('event', ['$rootScope', '$filter', function($rootScope, $filter){
 		return {
 			restrict: 'E',
 			link: function(scope, element, attrs) {
 				// Get the element's corresponding rendered event, by its ID
 				var thisEvent	= $filter('filter')(scope.renderedEvents, {id: +attrs.eventId}, true)[0];
 
-				// Calculate the left and width offsets for the event's element
-				var offsetDays	= -daysInPeriod(thisEvent.startDate, scope.viewStart, true);
-				var eventLength = daysInPeriod(thisEvent.endDate, thisEvent.startDate, false) + 1;
-				var eventWidth	= eventLength * scope.cellWidth;
-				var offsetLeft	= offsetDays * scope.cellWidth;
-
-				var daysExceed	= 0, extraClass	= '';
-				// If the event's START date is BEFORE the current displayed view
-				if (offsetDays < 0) {
-					offsetLeft = 0;				// to stick the element to extreme left
-					daysExceed = -offsetDays;	// to trim the total element's width
-					extraClass += 'overLeft ';	// to decorate the element's left boundary
-				}
-				// If the event's END date is AFTER the current displayed month
-				if (thisEvent.endDate.getTime() > scope.viewEnd.getTime()) {
-					daysExceed = daysInPeriod(scope.viewEnd, thisEvent.endDate, false);
-					extraClass += 'overRight ';	// to decorate the element's right boundary
-				}
-				// If the event's END date is BEFORE TODAY
-				if (thisEvent.endDate.getTime() < scope.currDate.getTime()) {
-					extraClass += 'past ';	// to illustrate the fact it's in the past
-				}
-				// If the event is CURRENTLY active (over today)
-				if (thisEvent.startDate.getTime() <= scope.currDate.getTime() && thisEvent.endDate.getTime() >= scope.currDate.getTime()) {
-					extraClass += 'current ';	// to illustrate the fact it's currently active
-				}
-				// Add some classes to the element
-				element.addClass(extraClass);
-
-				// Place and scale the event's element horizontally in DOM
-				thisEvent.locScale.left		= offsetLeft+'px';
-				thisEvent.locScale.width	= (eventWidth - (daysExceed * scope.cellWidth))+'px';
-
-				// Store the number of events in enumDays array
-				for (var n = 0; n < eventLength; n++) {
-					var D = addDaysToDate(angular.copy(thisEvent.startDate), n);
-					var thisDay = $filter('filter')(scope.enumDays, {time: D.getTime()}, true)[0];
-					if (!thisDay) continue;
-					thisDay.nbEvents += 1;
-				}
-
 				// Click-Drag an event to change its dates (emits the event "eventMove" to all other scopes)
 				var dragInit	= false;
-				var startDeltaX = 0, grabDeltaX = 0, offsetDay = 0, offsetTop = 0;
+				var startDeltaX = 0, grabDeltaX = 0, offsetDay = 0, offsetLeft = 0, offsetTop = 0;
 				element.bind('mousedown', grabEventStart);
 				element.bind('mousemove', grabEventMove);
 				element.bind('mouseup',   grabEventEnd);
@@ -451,6 +451,7 @@ angular.module('plantt.module', [])
 					e.preventDefault(); e.stopPropagation();
 					startDeltaX	= e.layerX / scope.cellWidth;
 					grabDeltaX	= 0;
+					offsetLeft	= parseInt(element.css('left'));
 					offsetTop	= parseInt(element.css('top'));
 					element.css({'opacity': 0.5, 'z-index': 1000});
 				}
@@ -461,8 +462,8 @@ angular.module('plantt.module', [])
 					dragInit = true;
 					grabDeltaX += e.movementX;
 					offsetDay	= Math.round((startDeltaX + grabDeltaX) / scope.cellWidth);
-					offsetLeft += e.movementX;
-					offsetTop  += e.movementY;
+					offsetLeft += e.movementX;													// @ToTEST : use e.pageX instead
+					offsetTop  += e.movementY;													// @ToTEST : use e.pageY instead
 					element.css({left: offsetLeft+'px', top: offsetTop+'px'});
 				}
 				function grabEventEnd (e){
