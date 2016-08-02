@@ -462,11 +462,12 @@ angular.module('plantt.module', [])
 					dragInit = true;
 					grabDeltaX += e.movementX;
 					offsetDay	= Math.round((startDeltaX + grabDeltaX) / scope.cellWidth);
-					offsetLeft += e.movementX;													// @ToTEST : use e.pageX instead
-					offsetTop  += e.movementY;													// @ToTEST : use e.pageY instead
+					offsetLeft += e.movementX;
+					offsetTop  += e.movementY;
 					element.css({left: offsetLeft+'px', top: offsetTop+'px'});
 				}
 				function grabEventEnd (e){
+					element.css({opacity: 1});
 					if (!dragInit)
 						return;
 					e.preventDefault(); e.stopPropagation();
@@ -475,8 +476,14 @@ angular.module('plantt.module', [])
 					scope.throwError(3, "The DOM event 'eventMove' was emitted in rootScope.");
 					dragInit = false;
 					startDeltaX = 0; grabDeltaX  = 0;
-					element.css({opacity: 1});
 				}
+
+				element.bind('dblclick', function(e){
+					e.preventDefault(); e.stopPropagation();
+					var event = $filter('filter')(scope.events, {id: thisEvent.id}, true)[0];
+					$rootScope.$broadcast('eventOpen', event);
+					scope.throwError(3, "The DOM event 'eventOpen' was emitted in rootScope.");
+				});
 			}
 		};
 	}])
