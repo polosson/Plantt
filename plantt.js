@@ -279,12 +279,11 @@ angular.module('plantt.module', [])
 			link: function(scope, element) {
 				var eventHelper = $document.find('eventhelper');
 				var dragInit = false, startWidth = 0, selStart = null, selEnd   = null;
+
+				// Click-drag on grid emits the event "periodSelect" to all other scopes
 				element.bind('mousedown', grabGridStart);
 				element.bind('mousemove', grabGridMove);
 				element.bind('mouseup',   grabGridEnd);
-//				element.bind('mouseout',  grabGridEnd);
-
-				// Click-drag on grid emits the event "periodSelect" to all other scopes
 				function grabGridStart (e){
 					e.preventDefault(); e.stopPropagation();
 					var dayInView = Math.floor(e.layerX / scope.cellWidth);
@@ -301,7 +300,7 @@ angular.module('plantt.module', [])
 							return;
 						eventHelper.css({width: (startWidth - 2)+'px'});
 					}
-				};
+				}
 				function grabGridEnd (e) {
 					startWidth  = 0;
 					eventHelper.css({width: '0px', display: 'none'});
@@ -315,7 +314,7 @@ angular.module('plantt.module', [])
 						scope.throwError(3, "The DOM event 'periodSelect' was emitted in rootScope.");
 					}
 					dragInit	= false;
-				};
+				}
 			}
 		};
 	}])
@@ -350,6 +349,8 @@ angular.module('plantt.module', [])
 		return {
 			restrict: 'E',
 			link: function(scope, element) {
+
+				// Click-drag on grid header to move the view to the left or right
 				element.bind('mousedown', grabHeadStart);
 				element.bind('mousemove', grabHeadMove);
 				element.bind('mouseup',   grabHeadEnd);
@@ -378,9 +379,9 @@ angular.module('plantt.module', [])
 					}
 				}
 				function grabHeadEnd(e) {
+					e.preventDefault(); e.stopPropagation();
 					if (!dragInit)
 						return;
-					e.preventDefault(); e.stopPropagation();
 					dragInit = false;
 					grabDeltaX = 0;
 				}
@@ -438,7 +439,7 @@ angular.module('plantt.module', [])
 					thisDay.nbEvents += 1;
 				}
 
-				// Click-Drag an event to change its dates
+				// Click-Drag an event to change its dates (emits the event "eventMove" to all other scopes)
 				var dragInit	= false;
 				var startDeltaX = 0, grabDeltaX = 0, offsetDay = 0, offsetTop = 0;
 				element.bind('mousedown', grabEventStart);
