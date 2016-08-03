@@ -53,32 +53,42 @@ Insert an element **`scheduler`** into your HTML, and attach your controller to 
 
 Finally, inject the module in your app and define your controller:
 
-    var planttApp = angular.module("planttApp", ["plantt.module"]);
-
-    planttApp.controller("planttExample", function($scope){
-    
-    	// Basic settings (optional)
-    	$scope.eventHeight	= 50;	// Height of events elements in pixels
-    	$scope.eventMargin	= 10;	// Margin above events elements for spacing
-    	$scope.nbLines		= 6;	// Maximum number of lines we can draw in timeline
+	var yourApp = angular.module("yourApp", ["plantt.module"]);
 	
-	    // Create the events list
-        $scope.events = [
-            {
-                id: 0, title: 'Test', type: 'normal',
-                startDate: new Date(2016, 8-1, 20, 8),
-                endDate: new Date(2016, 8-1, 25, 19)
-            }
-        ]
-    }
+	yourApp.controller("planttExample", function($scope){
+	
+		// Basic settings (optional)
+		$scope.eventHeight	= 50;	// Height of events elements in pixels
+		$scope.eventMargin	= 10;	// Margin above events elements for spacing
+		$scope.nbLines		= 6;	// Maximum number of lines we can draw in timeline
+		
+		// Create the events list
+		$scope.events = [
+		    {
+			id: 0, title: 'Test', type: 'normal',
+			startDate: new Date(2016, 8-1, 20, 8),
+			endDate: new Date(2016, 8-1, 25, 19)
+		    }
+		]
+		
+		// Listen to the "eventMove" DOM event, to store the new dates of the event
+		$scope.$on('eventMove', function(e, event, deltaDays){
+			event.startDate = addDaysToDate(angular.copy(event.startDate), deltaDays);
+			event.endDate	= addDaysToDate(angular.copy(event.endDate), deltaDays);
+			$timeout(function(){
+				$scope.renderView();
+			}, 0);
+		});
+	}
 
-Please note that your controller must have a **`$scope.events`** variable, which must be an Array object.  
-The following data is needed in the objects of events collection:
- - **id** (int)
- - **title** (string)
- - **type** (string)
- - **startDate** (date object)
- - **endDate** (date object)
+To be noticed:
+  - Your controller must have a **`$scope.events`** variable, which must be an Array object. The following data is needed in the objects of events collection:
+    - **id** (int)
+    - **title** (string)
+    - **type** (string)
+    - **startDate** (date object)
+    - **endDate** (date object)
+  - You must use the `$timeout` function to call the `$scope.renderView()` function in order to refresh the view.
 
 
 ### That's it!
