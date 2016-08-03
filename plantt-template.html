@@ -34,19 +34,19 @@
 	<table>
 		<tbody>
 			<tr>
-				<td ng-repeat="day in enumDays" title="{{day.title}}"
+				<td ng-repeat="day in enumDays" title="{{day.title}}" height="{{gridHeight}}"
 					ng-class="{'today': day.today, 'sunday': day.date.getDay() === 0, 'month': day.isLastOfMonth}">
 					<span ng-show="day.nbEvents > 0">{{day.nbEvents}}</span>
 				</td>
 			</tr>
 		</tbody>
 	</table>
-	<event ng-repeat="ev in renderedEvents" event-id="{{ev.id}}" title="{{ev.title}}"
+	<event ng-repeat="ev in renderedEvents" event-id="{{ev.id}}" title="#{{ev.id}} - {{ev.title}}"
 		   ng-style="ev.locScale"
 		   ng-class="[ev.extraClasses]">
 		<handle class="leftHandle"  event-id="{{ev.id}}" handle-side="left"></handle>
 		<handle class="rightHandle" event-id="{{ev.id}}" handle-side="right"></handle>
-		<label>#{{ev.id}} - {{ev.title}}</label>
+		<label>{{ev.title}}</label>
 	</event>
-	<eventhelper></eventhelper>
+	<eventhelper>New event</eventhelper>
 </div>

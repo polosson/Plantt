@@ -83,14 +83,19 @@ var planttExample = angular.module("planttExample", ["plantt.module"]);
 
 planttExample.controller("planttExample", function($scope, $timeout){
 
-// Create the events list
+  // Basic settings (optional)
+  $scope.eventHeight = 50;  // Height of events elements in pixels
+  $scope.eventMargin = 10;  // Margin above events elements for spacing
+  $scope.nbLines     = 6;   // Maximum number of lines we can draw in timeline
+
+  // Create the events list
   $scope.events = [
     { id: 0,  title: "Event One",    type: 'normal', startDate: new Date(2016, 6-1, 21, 8), endDate: new Date(2016, 7-1, 4, 19) },
-    { id: 1,  title: "Wouzah",	     type: 'normal', startDate: new Date(2016, 7-1, 14, 8), endDate: new Date(2016, 7-1, 15, 19) },
+    { id: 1,  title: "Testing",	     type: 'normal', startDate: new Date(2016, 7-1, 14, 8), endDate: new Date(2016, 7-1, 15, 19) },
     { id: 2,  title: "Hoydih",       type: 'urgent', startDate: new Date(2016, 7-1, 21, 8), endDate: new Date(2016, 7-1, 25, 19) },
-    { id: 3,  title: "À cheval",     type: 'urgent', startDate: new Date(2016, 7-1, 21, 8), endDate: new Date(2016, 7-1, 24, 19) },
+    { id: 3,  title: "Another one",  type: 'urgent', startDate: new Date(2016, 7-1, 21, 8), endDate: new Date(2016, 7-1, 24, 19) },
     { id: 10, title: "It's now Bud", type: 'normal', startDate: new Date(2016, 7-1, 29, 8), endDate: new Date(2016, 8-1, 2, 19) },
-    { id: 11, title: "Aout First",   type: 'normal', startDate: new Date(2016, 8-1, 6, 8),  endDate: new Date(2016, 8-1, 12, 19) }
+    { id: 11, title: "Milestone 1",  type: 'normal', startDate: new Date(2016, 8-1, 6, 8),  endDate: new Date(2016, 8-1, 12, 19) }
   ];
 
   // Listen to the "daySelect" DOM event, to add a new event
@@ -119,7 +124,12 @@ planttExample.controller("planttExample", function($scope, $timeout){
 
 
 });</pre>
-			<h4>Recommandations</h4>
+		</div>
+
+	</section>
+	<section class="row">
+		<div class="col-md-12">
+			<h3>Documentation</h3>
 			<p>
 
 			</p>

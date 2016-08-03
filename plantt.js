@@ -58,15 +58,24 @@ angular.module('plantt.module', [])
 			restrict: 'E',							// DOM Element only : <scheduler></scheduler>
 			templateUrl: 'plantt-template.html',	// Load HTML template for the view
 			link: function(scope){
-				scope.eventHeightBase  = 40 + 10;									// Estimated mean of the height of events
+				// Create the list of events variable, if not present in the app controller
+				if (!scope.events)
+					scope.events = [];
+				// Options that can be overwritten in app controller
+				if (!scope.eventHeight)
+					scope.eventHeight	= 50;				// Height of events elements in pixels
+				if (!scope.eventMargin)
+					scope.eventMargin	= 10;				// Margin above events elements for spacing
+				if (!scope.nbLines)
+					scope.nbLines		= 5;				// Maximum number of lines we can draw in timeline
+				scope.nbLines += 1;							// With one line more to be safe
+				// View essentials
 				scope.currDate   = addDaysToDate(new Date(), 0);					// Today's date
 				scope.viewStart  = addDaysToDate(angular.copy(scope.currDate), -7);	// Firt day to display in view. Default: today minus 7 days
 				scope.viewEnd	 = addDaysToDate(angular.copy(scope.currDate), 14);	// Last day to display in view. Default: today plus 14 days
-				if (!scope.events)
-					scope.events = [];												// Create the list of events variable, if not present in the app controller
 
 				/**
-				 * Common function to relay errors elsewhere (todo)
+				 * Common function to relay errors elsewhere (@todo)
 				 *
 				 * @param {STRING} lvl The level of the error (0 = Fatal; 1 = Warning; 2 = Notice, 3 = Info)
 				 * @param {STRING} msg The message to show
@@ -96,14 +105,14 @@ angular.module('plantt.module', [])
 					scope.renderedEvents  = [];		// Empty the rendered events list
 
 					// First Loop: on all view's days, to define the grid
-					var lastMonth = -1, monthNumDays = 1, nbMonths = 0, nbLines = 10;
+					var lastMonth = -1, monthNumDays = 1, nbMonths = 0;
 					for (var d = 0; d <= scope.viewPeriod; d++) {
 						var dayDate = addDaysToDate(angular.copy(scope.viewStart), d);
 						var today = (scope.currDate.getTime() === dayDate.getTime());
 						var isLastOfMonth = (daysInMonth(dayDate) === dayDate.getDate());
 
 						// Populate the lines filling
-						for (var l = 1; l <= nbLines; l++) {
+						for (var l = 1; l <= scope.nbLines; l++) {
 							scope.linesFill[l] = [];
 							for (var ld = 0; ld <= scope.viewPeriod; ld++)
 								scope.linesFill[l].push(false);
@@ -135,7 +144,7 @@ angular.module('plantt.module', [])
 						}
 					}
 
-					// Second loop: Filter and calculate the temp list events to be rendered
+					// Second loop: Filter and calculate the placement of all events to be rendered
 					angular.forEach(scope.events, function(evt){
 						var eStart	= evt.startDate.getTime(),
 							eEnd	= evt.endDate.getTime(),
@@ -198,12 +207,27 @@ angular.module('plantt.module', [])
 						evt.locScale = {
 							'left': offsetLeft+'px',
 							'width': (eventWidth - (daysExceed * scope.cellWidth))+'px',
-							'top': (evt.line * scope.eventHeightBase)+'px'
+							'top': (evt.line * (scope.eventHeight + scope.eventMargin))+'px',
+							'height': scope.eventHeight+'px'
 						};
 
 						// Store the event in the temp list
 						scope.renderedEvents.push(angular.copy(evt));
 					});
+
+
+					// Calculate the view height to fit the elements (with margins)
+					var gridMarginBottom = 40;			// Margin to apply at the bottom of grid, below last line
+					var filledLines = 0;
+					for (var l = 1; l <= scope.nbLines; l++) {
+						for (var ld = 0; ld <= scope.viewPeriod; ld++) {
+							if (scope.linesFill[l][ld] !== false) {
+								filledLines += 1;
+								break;
+							}
+						}
+					}
+					scope.gridHeight = ((filledLines+1) * (scope.eventHeight + scope.eventMargin)) + gridMarginBottom;
 				};
 
 				// Call the renderer for the first time
@@ -318,13 +342,14 @@ angular.module('plantt.module', [])
 		return {
 			restrict: 'E',
 			link: function(scope, element) {
-				var eventHelper = $document.find('eventhelper');
-				var dragInit = false, startWidth = 0, selStart = null, selEnd   = null;
 
 				// Click-drag on grid emits the event "periodSelect" to all other scopes
+				var eventHelper = $document.find('eventhelper');
+				var dragInit = false, startWidth = 0, selStart = null, selEnd   = null;
 				element.bind('mousedown', grabGridStart);
 				element.bind('mousemove', grabGridMove);
 				element.bind('mouseup',   grabGridEnd);
+
 				function grabGridStart (e){
 					e.preventDefault(); e.stopPropagation();
 					var dayInView = Math.floor(e.layerX / scope.cellWidth);
@@ -366,12 +391,6 @@ angular.module('plantt.module', [])
 		return {
 			restrict: 'E',
 			link: function(scope, element) {
-				var gridMarginBottom = 50;				// Margin to apply between lowest event and the bottom of grid
-
-				// Extends the view vertically to fit the elements (with margin)
-				var gridHeight = gridMarginBottom + (scope.renderedEvents.length * scope.eventHeightBase);
-				$document.find('tbody').find('td').css('height', gridHeight+'px');
-
 				// Double-click on a cell of the grid emits the event "dayselect" to all other scopes
 				element.bind('dblclick', function(e){
 					e.preventDefault();

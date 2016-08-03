@@ -98,13 +98,11 @@ scheduler .eventsContainer {
 /***** Scheduler events *****/
 scheduler event, scheduler eventhelper {
 	position: absolute;
-	text-align: center;
 	box-sizing: border-box;
+	height: 50px;
 	margin-top: 125px;
 	background-color: #46b8da;
-	color: #FFF;
 	padding: 0;
-	width: 61px;
 	border-radius: 5px;
 	box-shadow: 1px 2px 3px rgba(0,0,0,0.5);
 	z-index: 200;
@@ -130,9 +128,15 @@ scheduler event handle.rightHandle {
 }
 scheduler event label {
 	display: block;
-	padding: 10px 10%;
+	padding: 17px 10%;
+	text-align: center;
+	font-size: 8pt;
+	color: #FFF;
 	margin: 0;
 	cursor: move;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 
 scheduler event.overLeft {
@@ -153,8 +157,8 @@ scheduler event.past {
 	background-color: #888 !important;
 }
 scheduler event.current {
-	background: linear-gradient(45deg, transparent, transparent 33px, rgba(255,0,0,0.15) 33px, rgba(255,0,0,0.15) 66px, transparent 66px, transparent);
-	background-size: 100px;
+	background: linear-gradient(45deg, transparent, transparent 40px, rgba(255,0,0,0.15) 40px, rgba(255,0,0,0.15) 80px, transparent 80px, transparent);
+	background-size: 120px;
 	background-position: 0 0;
 
 	-webkit-animation: animStripes 5s linear infinite;
@@ -168,11 +172,14 @@ scheduler eventhelper {
 	display: none;
 	top: 0;
 	width: 0;
-	height: 40px;
-	background: none;
+	background-color: #FFF;
 	border: 2px dashed red;
 	color: #555;
-	font-size: 0.8em;
+	text-align: center;
+	padding: 17px 0;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 
 /***** Animations *****/
