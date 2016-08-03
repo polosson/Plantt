@@ -88,8 +88,7 @@ angular.module('plantt.module', [])
 						case 2: level = 'Notice';
 						case 3: level = 'Info';
 					}
-					$rootScope.$broadcast('planttError', { level: level, message: msg });
-					console.log('Plantt '+level+' throwed:', msg);
+					$rootScope.$broadcast('planttError', { level: lvl, levelName: level, message: msg });
 				};
 
 
@@ -212,7 +211,7 @@ angular.module('plantt.module', [])
 							'height': scope.eventHeight+'px'
 						};
 
-						// Store the event in the temp list
+						// Actually RENDER the event on the timeline
 						scope.renderedEvents.push(angular.copy(evt));
 					});
 
@@ -347,9 +346,7 @@ angular.module('plantt.module', [])
 				// Click-drag on grid emits the event "periodSelect" to all other scopes
 				var eventHelper = $document.find('eventhelper');
 				var dragInit = false, startWidth = 0, selStart = null, selEnd   = null;
-				element.bind('mousedown', grabGridStart);
-				element.bind('mousemove', grabGridMove);
-				element.bind('mouseup',   grabGridEnd);
+				element.on('mousedown', grabGridStart);
 
 				function grabGridStart (e){
 					e.preventDefault(); e.stopPropagation();
@@ -357,6 +354,8 @@ angular.module('plantt.module', [])
 					selStart = addDaysToDate(angular.copy(scope.viewStart), dayInView);
 					eventHelper.css({display: 'block'});
 					eventHelper.css({top: (e.layerY-145)+'px', left: (e.layerX)+'px'});
+					$document.on('mousemove', grabGridMove);
+					$document.on('mouseup',   grabGridEnd);
 				}
 				function grabGridMove (e){
 					if(e.buttons === 1) {
@@ -371,6 +370,8 @@ angular.module('plantt.module', [])
 				function grabGridEnd (e) {
 					startWidth  = 0;
 					eventHelper.css({width: '0px', display: 'none'});
+					$document.off('mousemove', grabGridMove);
+					$document.off('mouseup',   grabGridEnd);
 					if (!dragInit) return;
 					if (!selStart) return;
 					e.preventDefault(); e.stopPropagation();
@@ -380,7 +381,7 @@ angular.module('plantt.module', [])
 						$rootScope.$broadcast('periodSelect', {start: selStart, end: selEnd});
 						scope.throwError(3, "The DOM event 'periodSelect' was emitted in rootScope.");
 					}
-					dragInit	= false;
+					dragInit = false;
 				}
 			}
 		};
@@ -388,12 +389,12 @@ angular.module('plantt.module', [])
 	/*
 	 * GRID CELLS Directive
 	 */
-	.directive('td', function($document, $rootScope){
+	.directive('td', function($rootScope){
 		return {
 			restrict: 'E',
 			link: function(scope, element) {
 				// Double-click on a cell of the grid emits the event "dayselect" to all other scopes
-				element.bind('dblclick', function(e){
+				element.on('dblclick', function(e){
 					e.preventDefault();
 					var dayInView = Math.floor(e.layerX / scope.cellWidth);
 					var selectedDate = addDaysToDate(angular.copy(scope.viewStart), dayInView);
@@ -406,21 +407,20 @@ angular.module('plantt.module', [])
 	/*
 	 * GRID HEADER Directive
 	 */
-	.directive('thead', function($timeout){
+	.directive('thead', function($document, $timeout){
 		return {
 			restrict: 'E',
 			link: function(scope, element) {
 
 				// Click-drag on grid header to move the view to the left or right
-				element.bind('mousedown', grabHeadStart);
-				element.bind('mousemove', grabHeadMove);
-				element.bind('mouseup',   grabHeadEnd);
-				element.bind('mouseout',  grabHeadEnd);
+				element.on('mousedown', grabHeadStart);
 
 				var dragInit	= false, grabDeltaX  = 0;
 				function grabHeadStart(e) {
 					e.preventDefault(); e.stopPropagation();
 					grabDeltaX	= 0;
+					$document.on('mousemove', grabHeadMove);
+					$document.on('mouseup',   grabHeadEnd);
 				}
 				function grabHeadMove(e) {
 					if(e.buttons !== 1)
@@ -445,6 +445,8 @@ angular.module('plantt.module', [])
 						return;
 					dragInit = false;
 					grabDeltaX = 0;
+					$document.off('mousemove', grabHeadMove);
+					$document.off('mouseup',   grabHeadEnd);
 				}
 			}
 		};
@@ -452,20 +454,15 @@ angular.module('plantt.module', [])
 	/*
 	 * EVENTS Directive
 	 */
-	.directive('event', function($rootScope, $filter){
+	.directive('event', function($document, $rootScope, $filter){
 		return {
 			restrict: 'E',
 			link: function(scope, element, attrs) {
-				// Get the element's corresponding rendered event, by its ID
-				var thisEvent	= $filter('filter')(scope.renderedEvents, {id: +attrs.eventId}, true)[0];
 
 				// Click-Drag an event to change its dates (emits the event "eventMove" to all other scopes)
 				var dragInit	= false;
 				var startDeltaX = 0, grabDeltaX = 0, offsetDay = 0, offsetLeft = 0, offsetTop = 0;
-				element.bind('mousedown', grabEventStart);
-				element.bind('mousemove', grabEventMove);
-				element.bind('mouseup',   grabEventEnd);
-				element.bind('mouseout',  grabEventEnd);
+				element.on('mousedown', grabEventStart);
 
 				function grabEventStart (e) {
 					e.preventDefault(); e.stopPropagation();
@@ -474,6 +471,8 @@ angular.module('plantt.module', [])
 					offsetLeft	= parseInt(element.css('left'));
 					offsetTop	= parseInt(element.css('top'));
 					element.css({'opacity': 0.5, 'z-index': 1000});
+					$document.on('mousemove', grabEventMove);
+					$document.on('mouseup',   grabEventEnd);
 				}
 				function grabEventMove (e) {
 					if(e.buttons !== 1)
@@ -491,18 +490,24 @@ angular.module('plantt.module', [])
 					if (!dragInit)
 						return;
 					e.preventDefault(); e.stopPropagation();
-					var event = $filter('filter')(scope.events, {id: thisEvent.id}, true)[0];
-					$rootScope.$broadcast('eventMove', event, offsetDay);
-					scope.throwError(3, "The DOM event 'eventMove' was emitted in rootScope.");
+					var thisEvent = $filter('filter')(scope.events, {id: +attrs.eventId}, true)[0];
+					if (thisEvent) {
+						$rootScope.$broadcast('eventMove', thisEvent, offsetDay);
+						scope.throwError(3, "The DOM event 'eventMove' was emitted in rootScope.");
+					}
 					dragInit = false;
 					startDeltaX = 0; grabDeltaX  = 0;
+					$document.off('mousemove', grabEventMove);
+					$document.off('mouseup', grabEventEnd);
 				}
 
 				// Double-click an event element to emit the custom event "eventOpen" to all other scopes
-				element.bind('dblclick', function(e){
+				element.on('dblclick', function(e){
 					e.preventDefault(); e.stopPropagation();
-					var event = $filter('filter')(scope.events, {id: thisEvent.id}, true)[0];
-					$rootScope.$broadcast('eventOpen', event);
+					var thisEvent = $filter('filter')(scope.events, {id: +attrs.eventId}, true)[0];
+					if (!thisEvent)
+						return;
+					$rootScope.$broadcast('eventOpen', thisEvent);
 					scope.throwError(3, "The DOM event 'eventOpen' was emitted in rootScope.");
 				});
 			}
@@ -511,28 +516,26 @@ angular.module('plantt.module', [])
 	/*
 	 * EVENTS HANDLES Directive
 	 */
-	.directive('handle', function($rootScope, $filter){
+	.directive('handle', function($document, $rootScope, $filter){
 		return {
 			restrict: 'E',
 			link: function(scope, element, attrs) {
 
-				// Click-Drag an event to change its dates
+				// Click-Drag an event handles to change its start or end dates
 				var dragInit	= false;
-				var startDeltaX = 0, grabDeltaX = 0, offsetDay = 0, side = attrs.handleSide, thisEvent, offsetLeft = 0, offsetWidth = 0;
+				var startDeltaX = 0, grabDeltaX = 0, offsetDay = 0, side = attrs.handleSide, offsetLeft = 0, offsetWidth = 0;
 				var parentEvent = element.parent();
-				element.bind('mousedown', grabHandleStart);
-				element.bind('mousemove', grabHandleMove);
-				element.bind('mouseup',   grabHandleEnd);
-				element.bind('mouseout',  grabHandleEnd);
+				element.on('mousedown', grabHandleStart);
 
 				function grabHandleStart (e) {
 					e.preventDefault(); e.stopPropagation();
-					thisEvent = $filter('filter')(scope.events, {id: +attrs.eventId}, true)[0];
 					startDeltaX	= e.layerX;
 					grabDeltaX	= 0;
 					offsetLeft  = parentEvent.prop('offsetLeft');
 					offsetWidth = parentEvent.prop('offsetWidth');
 					parentEvent.css({'opacity': 0.5, 'z-index': 1000});
+					$document.on('mousemove', grabHandleMove);
+					$document.on('mouseup',   grabHandleEnd);
 				}
 				function grabHandleMove (e) {
 					if(e.buttons !== 1)
@@ -556,11 +559,16 @@ angular.module('plantt.module', [])
 					if (!dragInit)
 						return;
 					e.preventDefault(); e.stopPropagation();
-					$rootScope.$broadcast('eventScale', thisEvent, side, offsetDay);
-					scope.throwError(3, "The DOM event 'eventScale' was emitted in rootScope.");
+					var thisEvent = $filter('filter')(scope.events, {id: +attrs.eventId}, true)[0];
+					if (thisEvent) {
+						$rootScope.$broadcast('eventScale', thisEvent, side, offsetDay);
+						scope.throwError(3, "The DOM event 'eventScale' was emitted in rootScope.");
+					}
 					dragInit = false;
 					startDeltaX = 0; grabDeltaX  = 0;
 					parentEvent.css({opacity: 1});
+					$document.off('mousemove', grabHandleMove);
+					$document.off('mouseup', grabHandleEnd);
 				}
 			}
 		};

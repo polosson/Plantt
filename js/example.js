@@ -68,6 +68,11 @@ planttEx.controller("planttExample", function($scope, $timeout){
 		}, 0);
 	});
 
+	// Listen to the "planttError" DOM event, to do something when an error occurs
+	$scope.$on('planttError', function(e, err){
+		console.log('Plantt '+err.levelName+' ('+err.level+'):', err.message);
+	});
+
 	// Listen to the "eventMove" DOM event, to store the new position of the event in time
 	$scope.$on('eventMove', function(e, event, deltaDays){
 		event.startDate = addDaysToDate(angular.copy(event.startDate), deltaDays);
