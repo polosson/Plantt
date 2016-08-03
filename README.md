@@ -83,9 +83,9 @@ Finally, inject the module in your app and define your controller:
 
 To be noticed:
   - Your controller must have a **`$scope.events`** variable, which must be an Array object. The following data is needed in the objects of events collection:
-    - **id** (int)
-    - **title** (string)
-    - **type** (string)
+    - **id** (int, must be unique)
+    - **title** (string, as you wish)
+    - **type** (string, corresponding to one or more CSS classes)
     - **startDate** (date object)
     - **endDate** (date object)
   - You must use the `$timeout` function to call the `$scope.renderView()` function in order to refresh the view.
