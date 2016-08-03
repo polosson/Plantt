@@ -53,7 +53,7 @@ angular.module('plantt.module', [])
 	/*
 	 * SCHEDULER directive
 	 */
-	.directive('scheduler', ['$window', '$document', '$timeout', '$filter', 'dateFilter', function($window, $document, $timeout, $filter, dateFilter) {
+	.directive('scheduler', function($window, $document, $timeout, $rootScope, $filter, dateFilter) {
 		return {
 			restrict: 'E',							// DOM Element only : <scheduler></scheduler>
 			templateUrl: 'plantt-template.html',	// Load HTML template for the view
@@ -88,6 +88,7 @@ angular.module('plantt.module', [])
 						case 2: level = 'Notice';
 						case 3: level = 'Info';
 					}
+					$rootScope.$broadcast('planttError', { level: level, message: msg });
 					console.log('Plantt '+level+' throwed:', msg);
 				};
 
@@ -334,11 +335,11 @@ angular.module('plantt.module', [])
 
 			}
 		};
-	}])
+	})
 	/*
 	 * GRID Directive
 	 */
-	.directive('tbody', ['$document', '$rootScope',  function($document, $rootScope){
+	.directive('tbody', function($document, $rootScope){
 		return {
 			restrict: 'E',
 			link: function(scope, element) {
@@ -383,11 +384,11 @@ angular.module('plantt.module', [])
 				}
 			}
 		};
-	}])
+	})
 	/*
 	 * GRID CELLS Directive
 	 */
-	.directive('td', ['$document', '$rootScope',  function($document, $rootScope){
+	.directive('td', function($document, $rootScope){
 		return {
 			restrict: 'E',
 			link: function(scope, element) {
@@ -401,11 +402,11 @@ angular.module('plantt.module', [])
 				});
 			}
 		};
-	}])
+	})
 	/*
 	 * GRID HEADER Directive
 	 */
-	.directive('thead', ['$timeout',  function($timeout){
+	.directive('thead', function($timeout){
 		return {
 			restrict: 'E',
 			link: function(scope, element) {
@@ -447,11 +448,11 @@ angular.module('plantt.module', [])
 				}
 			}
 		};
-	}])
+	})
 	/*
 	 * EVENTS Directive
 	 */
-	.directive('event', ['$rootScope', '$filter', function($rootScope, $filter){
+	.directive('event', function($rootScope, $filter){
 		return {
 			restrict: 'E',
 			link: function(scope, element, attrs) {
@@ -506,11 +507,11 @@ angular.module('plantt.module', [])
 				});
 			}
 		};
-	}])
+	})
 	/*
 	 * EVENTS HANDLES Directive
 	 */
-	.directive('handle', ['$rootScope', '$filter', function($rootScope, $filter){
+	.directive('handle', function($rootScope, $filter){
 		return {
 			restrict: 'E',
 			link: function(scope, element, attrs) {
@@ -563,4 +564,4 @@ angular.module('plantt.module', [])
 				}
 			}
 		};
-	}]);
+	});
