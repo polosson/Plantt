@@ -9,10 +9,10 @@ var planttEx = angular.module("planttEx", ["plantt.module"]);
 
 planttEx.controller("planttExample", function($scope, $timeout){
 	// Basic settings (optional)
-	$scope.eventHeight	= 50;					// Height of events elements in pixels
-	$scope.eventMargin	= 10;					// Margin above events elements for spacing
-	$scope.nbLines		= 6;					// Maximum number of lines we can draw in timeline
-	$scope.autoLock		= true;					// To enable the automatic lock of past events
+	$scope.eventHeight		= 50;				// Height of events elements in pixels
+	$scope.eventMargin		= 10;				// Margin above events elements for spacing
+	$scope.nbLines			= 6;				// Maximum number of lines we can draw in timeline
+	$scope.autoLock			= true;				// To enable the automatic lock of past events
 	$scope.lockMarginDays	= 15;				// Number of days before today for the automatic lock to take effect
 	$scope.formatDayLong	= 'EEEE dd MMMM';	// The JS date format for the long display of dates
 	$scope.formatDayShort	= 'dd/MM/yyyy';		// The JS date format for the short display of dates
@@ -29,13 +29,13 @@ planttEx.controller("planttExample", function($scope, $timeout){
 		{ id: 4, title: 'July Ruby',				type: 'urgent', startDate: addDaysToDate(now, -12), endDate: addDaysToDate(now, -10) },
 		{ id: 5, title: 'Old one',					type: 'urgent', startDate: addDaysToDate(now, -18), endDate: addDaysToDate(now, -6) },
 		{ id: 6, title: 'Outdated event',			type: 'urgent', startDate: addDaysToDate(now, -4), endDate: addDaysToDate(now, -2) },
-		{ id: 7, title: 'In progress, low priority',type: 'normal', startDate: addDaysToDate(now, -2), endDate: addDaysToDate(now, 3) },
+		{ id: 7, title: 'In progress, low priority',type: 'normal', startDate: addDaysToDate(now, -2), endDate: addDaysToDate(now, 2) },
 		{ id: 8, title: 'Full Week Holidays',		type: 'normal', startDate: addDaysToDate(now, 4), endDate: addDaysToDate(now, 10) },
 		{ id: 9, title: 'Something to do soon',		type: 'normal', startDate: addDaysToDate(now, 2), endDate: addDaysToDate(now, 6) },
 		{ id: 10, title: 'In progress, hi-priority',type: 'urgent', startDate: addDaysToDate(now, 0), endDate: addDaysToDate(now, 4) },
 		{ id: 11, title: 'Fiesta on the beach',		type: 'urgent', startDate: addDaysToDate(now, 12), endDate: addDaysToDate(now, 20) },
-		{ id: 12, title: '1 day',					type: 'normal', startDate: addDaysToDate(now, 13), endDate: addDaysToDate(now, 13) },
-		{ id: 13, title: 'Testing',					type: 'urgent', startDate: addDaysToDate(now, 7), endDate: addDaysToDate(now, 8) },
+		{ id: 12, title: '1 day', lock: true,		type: 'normal', startDate: addDaysToDate(now, 13), endDate: addDaysToDate(now, 13) },
+		{ id: 13, title: 'Testing',					type: 'urgent', startDate: addDaysToDate(now, 8), endDate: addDaysToDate(now, 9) },
 		{ id: 14, title: 'Near future event',		type: 'normal', startDate: addDaysToDate(now, 30), endDate: addDaysToDate(now, 35) },
 		{ id: 15, title: 'Far future event',		type: 'normal', startDate: addDaysToDate(now, 92), endDate: addDaysToDate(now, 98) }
 	];
