@@ -190,17 +190,17 @@ scheduler eventhelper {
 /***** Animations *****/
 @-webkit-keyframes animStripes {
     from { background-position: 0 0; }
-	to { background-position: 100px 0; }
+	to { background-position: 120px 0; }
 }
 @-moz-keyframes animStripes {
     from { background-position: 0 0; }
-	to { background-position: 100px 0; }
+	to { background-position: 120px 0; }
 }
 @-o-keyframes animStripes {
     from { background-position: 0 0; }
-	to { background-position: 100px 0; }
+	to { background-position: 120px 0; }
 }
 @keyframes animStripes {
     from { background-position: 0 0; }
-	to { background-position: 100px 0; }
+	to { background-position: 120px 0; }
 }
