@@ -295,11 +295,13 @@ angular.module('plantt.module', [])
 					scope.renderView();
 				};
 				/*
-				 * Center view to current day (-7 ; +14 days)
+				 * Center view to current day (defaults -7, +14 days)
 				 */
-				scope.centerView = function(){
-					scope.viewStart  = addDaysToDate(new Date(), -7);
-					scope.viewEnd	 = addDaysToDate(new Date(), 14);
+				scope.centerView = function(daysBefore, daysAfter){
+					if (!daysBefore) daysBefore = 7;
+					if (!daysAfter) daysAfter = 14;
+					scope.viewStart  = addDaysToDate(new Date(), -daysBefore);
+					scope.viewEnd	 = addDaysToDate(new Date(), daysAfter);
 					scope.renderView();
 				};
 				/*
