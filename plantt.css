@@ -156,7 +156,8 @@ scheduler event.past {
 	background-color: #888 !important;
 }
 scheduler event.locked {
-	background-color: #AAA !important;
+	border: 3px dashed red;
+	box-shadow: none;
 }
 scheduler event.locked label {
 	cursor: not-allowed;
