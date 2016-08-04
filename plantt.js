@@ -195,11 +195,13 @@ angular.module('plantt.module', [])
 							extraClass += 'past ';	// to illustrate the fact it's in the past
 						}
 						if (evt.startDate.getTime() < (scope.currDate.getTime() - ((scope.lockMarginDays - 1) * 24*60*60*1000))) {
-							if (scope.autoLock === true) {
+							if (scope.autoLock === true)
 								evt.lock = true;			// to lock the element on the view (not modifiable anymore)
-								extraClass += 'locked ';
-							}
 						}
+						// If the event has the lock value set to true
+						if (evt.lock === true)
+							extraClass += 'locked ';
+
 						// If the event is CURRENTLY active (over today)
 						if (evt.startDate.getTime() <= scope.currDate.getTime() && evt.endDate.getTime() >= scope.currDate.getTime()) {
 							extraClass += 'current ';	// to illustrate the fact it's currently active
