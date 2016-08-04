@@ -16,7 +16,8 @@ This angular widget takes a **list** of "events" (i.e. items defined in time by 
 
 ### Interface
  - **Daily grid** (one column = one day) with numbers (day in month) and month-year labels in header
- - Current day and current events **highlighted with CSS class**
+ - **Automatic vertical positioning** to avoid collisions
+ - Current day and current events **highlighted with CSS classes**
  - **Custom CSS allowed** for all aspects of the UI (see `plantt.css` for examples)
  - **Drag & drop** support (for desktop only at the moment) to visually move and resize events
  - Fully **independant of the controller**, allowing you to make anything you want with this widget !
@@ -24,14 +25,14 @@ This angular widget takes a **list** of "events" (i.e. items defined in time by 
  - Emits **custom DOM events** to handle callbacks for every UI actions (`daySelect`, `periodSelect`, `eventMove`, `eventScale`, `eventOpen`, `planttError`)
 
 
-### Interactions
+### Available interactions
 
  - **Interface**
    - Click & drag the grid header to move the view left or right
- - **Adding events**
+ - **Add events**
    - Double-click on the grid to add an event on a single day
    - Click & drag on the grid to add an event on the corresponding period
- - **Changing events**
+ - **Change events**
    - Click & drag an event to move it on the timeline and set its dates
    - Click & drag event's handles to extend or shrink an event and set its dates
  - **Other event-related actions**
@@ -58,9 +59,11 @@ Insert an element **`scheduler`** into your HTML, and attach your controller to 
 
     <scheduler ng-controller="planttExample"></scheduler>
 
-Finally, inject the module in your app and define your controller:
+Then, inject the module in your app:
 
 	var yourApp = angular.module("yourApp", ["plantt.module"]);
+
+Finally, define your own controller:
 
 	yourApp.controller("planttExample", function($scope){
 
@@ -87,6 +90,8 @@ Finally, inject the module in your app and define your controller:
 			}, 0);
 		});
 
+		// (...)
+
 		// Listen to the "planttError" DOM event, to do something when an error occurs
 		$scope.$on('planttError', function(e, err){
 			console.log('Plantt '+err.levelName+' ('+err.level+'):', err.message);
@@ -104,4 +109,6 @@ Finally, inject the module in your app and define your controller:
 
 ### That's it!
 
-Have fun :)
+Be sure to read (the documentation)[http://www.code.polosson.com/Plantt/#doc] for full details on scope variables, methods and custom DOM events.
+
+Have fun ! :)
