@@ -202,9 +202,10 @@ planttExample.controller("planttCtrl", function($scope, $timeout){
 			<h2>Documentation</h2>
 			<h3>Scope</h3>
 			<p>
-				The module's scope is shared with the controller's scope.<br />
-				You can access everything you need from all of thoses:
+				The Plantt module's directives scope is shared with the controller's $scope.<br />
+				You can access (read/write) everything you need from all of thoses:
 			</p>
+
 			<a id="variables"></a>
 			<h4>Variables</h4>
 			<table class="table table-bordered table-striped">
@@ -253,6 +254,7 @@ planttExample.controller("planttCtrl", function($scope, $timeout){
 					<td>Maximum number of lines we can draw in timeline</td>
 				</tr>
 			</table>
+
 			<a id="methods"></a>
 			<h4>Methods</h4>
 			<table class="table table-bordered table-striped">
@@ -352,6 +354,51 @@ planttExample.controller("planttCtrl", function($scope, $timeout){
 					<td>
 				</tr>
 			</table>
+
+			<a id="utils"></a>
+			<h4>Utility functions</h4>
+			<p>
+				The Plantt module comes with 3 <b>global</b> utility functions (accessible everywhere):
+			</p>
+			<table class="table table-bordered table-striped">
+				<tr>
+					<th width="220">Function name</th>
+					<th>Description</th>
+					<th>Function parameters</th>
+					<th>Function returns</th>
+				</tr>
+				<tr>
+					<td><code>daysInMonth()</code></td>
+					<td>To get the number of days in the date's month</td>
+					<td>
+						<code>date</code> <i>(Date object)</i> The date from which we want the number of days of its month
+					</td>
+					<td><i>(Integer)</i> The number of days in the given date's month (28, 29, 30, or 31)</td>
+				</tr>
+				<tr>
+					<td><code>daysInPeriod()</code></td>
+					<td>To get the number of days in a period between two dates</td>
+					<td>
+						<code>date1</code> <i>(Date object)</i> The date for the period start<br />
+						<code>date2</code> <i>(Date object)</i> The date for the period end<br />
+						<code>wantDiff</code> <i>(Boolean)</i> Set to <code>True</code> to get it signed (default <code>false</code>)
+					</td>
+					<td>
+						<i>(Integer)</i> The number of days in the period between date1 and date2.<br />
+						If <code>wantDiff</code> is true, the result can be < 0 (useful to test if the end is before the start)
+					</td>
+				</tr>
+				<tr>
+					<td><code>addDaysToDate()</code></td>
+					<td>To add or remove some days to a given date (used for offsets)</td>
+					<td>
+						<code>date</code> <i>(Date object)</i> The original date<br />
+						<code>days</code> <i>(Integer, signed)</i> The number of days to offset in future (+) or past (-) to the date.
+					</td>
+					<td><i>(Date object)</i> The resulting date, with hours normalized to <i>12:00:00.000</i> (noon).</td>
+				</tr>
+			</table>
+
 			<a id="events"></a>
 			<h4>Events</h4>
 			<p>
