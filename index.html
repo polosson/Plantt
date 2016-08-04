@@ -21,6 +21,7 @@
 
 </head>
 <body class="container-fluid">
+	<a id="top"></a>
 
 	<section class="row">
 		<div class="col-md-12">
@@ -60,10 +61,12 @@
 		</div>
 	</section>
 
+	<a id="example"></a>
 	<section class="row">
 		<div class="col-md-12">
 			<h2>Plantt module, how to use: example</h2>
 			<p>Here is the code for the example displayed above:</p>
+			<a id="exhtml"></a>
 			<h4>HTML (default style depends on Bootstrap)</h4>
 			<pre>
 &lt;!DOCTYPE html>
@@ -88,6 +91,7 @@
   &lt;/body>
 &lt;/html>
 			</pre>
+			<a id="exjs"></a>
 			<h4>Javascript (depends on AngularJS only)</h4>
 			<pre>
 var planttExample = angular.module("planttExample", ["plantt.module"]);
@@ -192,7 +196,7 @@ planttExample.controller("planttCtrl", function($scope, $timeout){
 });</pre>
 		</div>
 	</section>
-
+	<a id="doc"></a>
 	<section class="row">
 		<div class="col-md-12">
 			<h2>Documentation</h2>
@@ -201,6 +205,7 @@ planttExample.controller("planttCtrl", function($scope, $timeout){
 				The module's scope is shared with the controller's scope.<br />
 				You can access everything you need from all of thoses:
 			</p>
+			<a id="variables"></a>
 			<h4>Variables</h4>
 			<table class="table table-bordered table-striped">
 				<tr>
@@ -248,6 +253,7 @@ planttExample.controller("planttCtrl", function($scope, $timeout){
 					<td>Maximum number of lines we can draw in timeline</td>
 				</tr>
 			</table>
+			<a id="methods"></a>
 			<h4>Methods</h4>
 			<table class="table table-bordered table-striped">
 				<tr>
@@ -346,6 +352,7 @@ planttExample.controller("planttCtrl", function($scope, $timeout){
 					<td>
 				</tr>
 			</table>
+			<a id="events"></a>
 			<h4>Events</h4>
 			<p>
 				The Plantt module emits some custom DOM events in rootScope.<br />
