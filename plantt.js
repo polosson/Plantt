@@ -40,9 +40,10 @@ function daysInPeriod(date1, date2, wantDiff) {
  * @returns {DATE} The resulting date object, normalized to noon (12:00:00.000)
  */
 function addDaysToDate(date, days) {
-	date.setTime( date.getTime()+ days * 1000*60*60*24 );
-	date.setHours(12); date.setMinutes(0); date.setSeconds(0); date.setMilliseconds(0);
-	return date;
+	var mdate = new Date(date.getTime());
+	mdate.setTime( mdate.getTime()+ days * 1000*60*60*24 );
+	mdate.setHours(12); mdate.setMinutes(0); mdate.setSeconds(0); mdate.setMilliseconds(0);
+	return mdate;
 }
 
 
@@ -74,9 +75,9 @@ angular.module('plantt.module', [])
 				if (typeof scope.lockMarginDays === 'undefined')
 					scope.lockMarginDays	= 0;			// Number of days before today for the automatic lock to take effect
 				// View essentials
-				scope.currDate   = addDaysToDate(new Date(), 0);					// Today's date
-				scope.viewStart  = addDaysToDate(angular.copy(scope.currDate), -7);	// Firt day to display in view. Default: today minus 7 days
-				scope.viewEnd	 = addDaysToDate(angular.copy(scope.currDate), 14);	// Last day to display in view. Default: today plus 14 days
+				scope.currDate   = addDaysToDate(new Date(), 0);		// Today's date
+				scope.viewStart  = addDaysToDate(scope.currDate, -7);	// Firt day to display in view. Default: today minus 7 days
+				scope.viewEnd	 = addDaysToDate(scope.currDate, 14);	// Last day to display in view. Default: today plus 14 days
 				// To be calculated by the browser
 				scope.headerHeight = 40;
 				scope.theadHeight  = 63;
@@ -115,7 +116,7 @@ angular.module('plantt.module', [])
 					// First Loop: on all view's days, to define the grid
 					var lastMonth = -1, monthNumDays = 1, nbMonths = 0;
 					for (var d = 0; d <= scope.viewPeriod; d++) {
-						var dayDate = addDaysToDate(angular.copy(scope.viewStart), d);
+						var dayDate = addDaysToDate(scope.viewStart, d);
 						var today = (scope.currDate.getTime() === dayDate.getTime());
 						var isLastOfMonth = (daysInMonth(dayDate) === dayDate.getDate());
 
@@ -202,7 +203,7 @@ angular.module('plantt.module', [])
 						// Store the number of events in enumDays array, and calculate the line (Y-axis) for the event
 						evt.line = 0;
 						for (var n = 0; n < eventLength; n++) {
-							var D = addDaysToDate(angular.copy(evt.startDate), n);
+							var D = addDaysToDate(evt.startDate, n);
 							var thisDay = $filter('filter')(scope.enumDays, {time: D.getTime()}, true)[0];
 							if (!thisDay) continue;
 							thisDay.nbEvents += 1;
@@ -261,8 +262,8 @@ angular.module('plantt.module', [])
 				 * Offset view to previous day
 				 */
 				scope.prevDay = function(){
-					scope.viewStart = addDaysToDate(angular.copy(scope.viewStart), -1);
-					scope.viewEnd	= addDaysToDate(angular.copy(scope.viewEnd), -1);
+					scope.viewStart = addDaysToDate(scope.viewStart, -1);
+					scope.viewEnd	= addDaysToDate(scope.viewEnd, -1);
 					scope.renderView();
 				};
 				/*
@@ -270,8 +271,8 @@ angular.module('plantt.module', [])
 				 */
 				scope.prevCustom = function(days){
 					if (!days) days = 15;
-					scope.viewStart = addDaysToDate(angular.copy(scope.viewStart), -days);
-					scope.viewEnd	= addDaysToDate(angular.copy(scope.viewEnd), -days);
+					scope.viewStart = addDaysToDate(scope.viewStart, -days);
+					scope.viewEnd	= addDaysToDate(scope.viewEnd, -days);
 					scope.renderView();
 				};
 				/*
@@ -294,8 +295,8 @@ angular.module('plantt.module', [])
 						scope.throwError(2, "Aborting view draw: reached minimum days to show.");
 						return;
 					}
-					scope.viewStart  = addDaysToDate(angular.copy(scope.viewStart), +step);
-					scope.viewEnd	 = addDaysToDate(angular.copy(scope.viewEnd), -step);
+					scope.viewStart  = addDaysToDate(scope.viewStart, +step);
+					scope.viewEnd	 = addDaysToDate(scope.viewEnd, -step);
 					scope.renderView();
 				};
 				/*
@@ -306,8 +307,8 @@ angular.module('plantt.module', [])
 						scope.throwError(2, "Aborting view draw: reached maximum days to show.");
 						return;
 					}
-					scope.viewStart  = addDaysToDate(angular.copy(scope.viewStart), -step);
-					scope.viewEnd	 = addDaysToDate(angular.copy(scope.viewEnd), +step);
+					scope.viewStart  = addDaysToDate(scope.viewStart, -step);
+					scope.viewEnd	 = addDaysToDate(scope.viewEnd, +step);
 					scope.renderView();
 				};
 				/*
@@ -324,8 +325,8 @@ angular.module('plantt.module', [])
 				 * Offset view to next day
 				 */
 				scope.nextDay = function(){
-					scope.viewStart = addDaysToDate(angular.copy(scope.viewStart), 1);
-					scope.viewEnd	= addDaysToDate(angular.copy(scope.viewEnd), 1);
+					scope.viewStart = addDaysToDate(scope.viewStart, 1);
+					scope.viewEnd	= addDaysToDate(scope.viewEnd, 1);
 					scope.renderView();
 				};
 				/*
@@ -333,8 +334,8 @@ angular.module('plantt.module', [])
 				 */
 				scope.nextCustom = function(days){
 					if (!days) days = 15;
-					scope.viewStart = addDaysToDate(angular.copy(scope.viewStart), days);
-					scope.viewEnd	= addDaysToDate(angular.copy(scope.viewEnd), days);
+					scope.viewStart = addDaysToDate(scope.viewStart, days);
+					scope.viewEnd	= addDaysToDate(scope.viewEnd, days);
 					scope.renderView();
 				};
 				/*
@@ -369,7 +370,7 @@ angular.module('plantt.module', [])
 				function grabGridStart (e){
 					e.preventDefault(); e.stopPropagation();
 					var dayInView = Math.floor(e.layerX / scope.cellWidth);
-					selStart = addDaysToDate(angular.copy(scope.viewStart), dayInView);
+					selStart = addDaysToDate(scope.viewStart, dayInView);
 					eventHelper.css({display: 'block'});
 					eventHelper.css({top: (e.layerY-145)+'px', left: (e.layerX)+'px'});
 					$document.on('mousemove', grabGridMove);
@@ -394,7 +395,7 @@ angular.module('plantt.module', [])
 					if (!selStart) return;
 					e.preventDefault(); e.stopPropagation();
 					var dayInView = Math.floor(e.layerX / scope.cellWidth);
-					selEnd  = addDaysToDate(angular.copy(scope.viewStart), dayInView);
+					selEnd  = addDaysToDate(scope.viewStart, dayInView);
 					if (selStart.getTime() < selEnd.getTime()) {
 						$rootScope.$broadcast('periodSelect', {start: selStart, end: selEnd});
 						scope.throwError(3, "The DOM event 'periodSelect' was emitted in rootScope.");
@@ -415,7 +416,7 @@ angular.module('plantt.module', [])
 				element.on('dblclick', function(e){
 					e.preventDefault();
 					var dayInView = Math.floor(e.layerX / scope.cellWidth);
-					var selectedDate = addDaysToDate(angular.copy(scope.viewStart), dayInView);
+					var selectedDate = addDaysToDate(scope.viewStart, dayInView);
 					$rootScope.$broadcast('daySelect', selectedDate);
 					scope.throwError(3, "The DOM event 'daySelect' was emitted in rootScope.");
 				});
@@ -448,8 +449,8 @@ angular.module('plantt.module', [])
 					grabDeltaX += e.movementX;
 					if (Math.abs(grabDeltaX) >= scope.cellWidth) {
 						var deltaDay = Math.round(grabDeltaX / scope.cellWidth);
-						scope.viewStart = addDaysToDate(angular.copy(scope.viewStart), -deltaDay);
-						scope.viewEnd	= addDaysToDate(angular.copy(scope.viewEnd), -deltaDay);
+						scope.viewStart = addDaysToDate(scope.viewStart, -deltaDay);
+						scope.viewEnd	= addDaysToDate(scope.viewEnd, -deltaDay);
 						grabDeltaX = 0;
 						$timeout(function(){
 							scope.renderView();
