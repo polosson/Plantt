@@ -9,49 +9,60 @@
 
 	<link href="css/vendor/bootstrap.min.css" rel="stylesheet" type="text/css" />
 	<link href="plantt.css" rel="stylesheet" type="text/css" />
+
 	<style type="text/css">
-		scheduler event.normal {
-			background-color: #3AAFAF;
-		}
-		scheduler event.urgent {
-			background-color: #D88447;
-		}
+		scheduler event.normal { background-color: #3AAFAF; }
+		scheduler event.urgent { background-color: #D88447; }
+		code { font-weight: bold; }
+		i { color: #666; }
 	</style>
-	<!--<script src="js/vendor/jquery-2.2.0.min.js"></script>-->
+
 	<script src="js/vendor/angular-1.5.8.min.js"></script>
 
 </head>
 <body class="container-fluid">
+
 	<section class="row">
 		<div class="col-md-12">
-			<h2>Plantt - AngularJS Scheduler - Demo</h2>
+			<h1>Plantt - AngularJS Scheduler - Demo</h1>
 		</div>
 	</section>
+
 	<section class="row">
 		<div class="col-md-12">
 			<scheduler ng-controller="planttExample"></scheduler>
 		</div>
 	</section>
+
 	<section class="row">
 		<div class="col-sm-4">
-			<h4>Hidden commands</h4>
+			<h3>Actions</h3>
 			<ul>
-				<li>Double-click on the grid to add an event on a single day</li>
-				<li>Click & drag-right on the grid to add an event on the corresponding period</li>
-				<li>Click & drag an event to move it on the timeline<br /><small>(be quiet, there is an issue if you're too fast)</small></li>
-				<li>Click & drag event's handles to extend or shrink an event<br /><small>(be quiet, there is an issue if you're too fast)</small></li>
+				<li>Interface<ul>
+					<li>Click & drag the grid header to move the view left or right</li>
+				</ul></li>
+				<li>Add events<ul>
+					<li>Double-click on the grid to add an event on a single day</li>
+					<li>Click & drag on the grid to add an event on the corresponding period</li>
+				</ul></li>
+				<li>Change events<ul>
+					<li>Click & drag an event to move it on the timeline and set its dates</li>
+					<li>Click & drag event's handles to extend or shrink an event and set its dates</li>
+				</ul></li>
+				<li>Other event-related actions<ul>
+					<li>Double-click an event to (make something you want)</li>
+				</ul></li>
 			</ul>
 		</div>
+
 		<div class="col-sm-4 text-center">
 			<h4><a href="https://github.com/polosson/Plantt" target="_blank">FORK IT ON <b>GITHUB</b> !</a></h4>
 		</div>
-		<div class="col-sm-4">
-
-		</div>
 	</section>
+
 	<section class="row">
 		<div class="col-md-12">
-			<h3>Plantt module, how to use: example</h3>
+			<h2>Plantt module, how to use: example</h2>
 			<p>Here is the code for the example displayed above:</p>
 			<h4>HTML (default style depends on Bootstrap)</h4>
 			<pre>
@@ -70,7 +81,7 @@
   &lt;body class="container-fluid">
     &lt;section class="row">
       &lt;div class="col-md-12">
-        &lt;scheduler ng-controller="planttExample">&lt;/scheduler>
+        &lt;scheduler ng-controller="planttCtrl">&lt;/scheduler>
       &lt;/div>
     &lt;/section>
     &lt;script src="js/example.js"></script>
@@ -81,7 +92,7 @@
 			<pre>
 var planttExample = angular.module("planttExample", ["plantt.module"]);
 
-planttExample.controller("planttExample", function($scope, $timeout){
+planttExample.controller("planttCtrl", function($scope, $timeout){
 
   // Basic settings (optional)
   $scope.eventHeight = 50;  // Height of events elements in pixels
@@ -90,51 +101,341 @@ planttExample.controller("planttExample", function($scope, $timeout){
 
   // Create the events list
   $scope.events = [
-    { id: 0,  title: "Event One",    type: 'normal', startDate: new Date(2016, 6-1, 21, 8), endDate: new Date(2016, 7-1, 4, 19) },
-    { id: 1,  title: "Testing",	     type: 'normal', startDate: new Date(2016, 7-1, 14, 8), endDate: new Date(2016, 7-1, 15, 19) },
-    { id: 2,  title: "Hoydih",       type: 'urgent', startDate: new Date(2016, 7-1, 21, 8), endDate: new Date(2016, 7-1, 25, 19) },
-    { id: 3,  title: "Another one",  type: 'urgent', startDate: new Date(2016, 7-1, 21, 8), endDate: new Date(2016, 7-1, 24, 19) },
-    { id: 10, title: "It's now Bud", type: 'normal', startDate: new Date(2016, 7-1, 29, 8), endDate: new Date(2016, 8-1, 2, 19) },
-    { id: 11, title: "Milestone 1",  type: 'normal', startDate: new Date(2016, 8-1, 6, 8),  endDate: new Date(2016, 8-1, 12, 19) }
+    { id: 1, title: 'Something to do soon', type: 'normal',
+      startDate: new Date(2016, 8-1, 6),
+      endDate: new Date(2016, 8-1, 10) },
+    { id: 2, title: 'In progress, hi-priority', type: 'urgent',
+      startDate: new Date(2016, 8-1, 4),
+      endDate: new Date(2016, 8-1, 8) },
+    { id: 3, title: 'Mid-August Fiesta', type: 'urgent',
+      startDate: new Date(2016, 8-1, 15),
+      endDate: new Date(2016, 8-1, 21) },
+    { id: 4, title: '1 day', type: 'normal',
+      startDate: new Date(2016, 8-1, 16),
+      endDate: new Date(2016, 8-1, 16) },
+    { id: 5, title: 'Testing', type: 'urgent',
+      startDate: new Date(2016, 8-1, 12),
+      endDate: new Date(2016, 8-1, 13) }
   ];
+
+  // Listen to the "planttError" DOM event, to do something when an error occurs
+  $scope.$on('planttError', function(e, err){
+	console.log('Plantt '+err.levelName+' ('+err.level+'):', err.message);
+  });
 
   // Listen to the "daySelect" DOM event, to add a new event
   $scope.$on('daySelect', function(e, date){
-    // Do something
-    $timeout(function(){
-      $scope.renderView();
-    }, 0);
+	var name = prompt('New event title:');
+	if (!name) return;
+	if (name === "") return;
+	var end  = new Date(date.getTime() + 1000*60*60);
+	var id   = $scope.events.length + 1;
+	var newEvent = {
+		id: id,
+		title: name,
+		type: 'normal',
+		startDate: date,
+		endDate: end
+	};
+	$scope.events.push(newEvent);
+	$timeout(function(){
+		$scope.renderView();
+	}, 0);
   });
 
   // Listen to the "periodSelect" DOM event, to add a new event
   $scope.$on('periodSelect', function(e, dates){
-    // Do something
-    $timeout(function(){
-      $scope.renderView();
-    }, 0);
+	var name = prompt('New event title:');
+	if (!name) return;
+	if (name === "") return;
+	var id   = $scope.events.length + 1;
+	var newEvent = {
+		id: id,
+		title: name,
+		type: 'normal',
+		startDate: dates.start,
+		endDate: dates.end
+	};
+	$scope.events.push(newEvent);
+	$timeout(function(){
+		$scope.renderView();
+	}, 0);
   });
 
   // Listen to the "eventMove" DOM event, to store the new position of the event in time
   $scope.$on('eventMove', function(e, event, deltaDays){
-    // Do something
-    $timeout(function(){
-      $scope.renderView();
-    }, 0);
+	event.startDate = addDaysToDate(angular.copy(event.startDate), deltaDays);
+	event.endDate	= addDaysToDate(angular.copy(event.endDate), deltaDays);
+	$timeout(function(){
+		$scope.renderView();
+	}, 0);
+  });
+
+  // Listen to the "eventScale" DOM event, to store the new positions of the event limits in time
+  $scope.$on('eventScale', function(e, event, side, deltaDays){
+	if (side === 'left')
+		event.startDate = addDaysToDate(angular.copy(event.startDate), deltaDays);
+	else if (side === 'right')
+		event.endDate	= addDaysToDate(angular.copy(event.endDate), deltaDays);
+	$timeout(function(){
+		$scope.renderView();
+	}, 0);
+  });
+
+  // Listen to the "eventOpen" DOM event
+  $scope.$on('eventOpen', function(e, event){
+	console.log(event);
+	alert('Opening event "' + event.title +'"');
   });
 
 
 });</pre>
 		</div>
-
 	</section>
+
 	<section class="row">
 		<div class="col-md-12">
-			<h3>Documentation</h3>
+			<h2>Documentation</h2>
+			<h3>Scope</h3>
 			<p>
-
+				The module's scope is shared with the controller's scope.<br />
+				You can access everything you need from all of thoses:
 			</p>
+			<h4>Variables</h4>
+			<table class="table table-bordered table-striped">
+				<tr>
+					<th width="220">Variable name</th>
+					<th>Variable type</th>
+					<th>Importance</th>
+					<th>Default Value</th>
+					<th>Description</th>
+				</tr>
+				<tr>
+					<td ><code>$scope.events</code></td>
+					<td>Array object</td>
+					<td><b>Mandatory</b></td>
+					<td><code>[]</code></td>
+					<td>
+						The list of all events objects. Each object must contain:
+						<ul>
+							<li><b>id</b>: <i>(integer)</i> ID of the event, must be unique</li>
+							<li><b>title</b>: <i>(string)</i> Title of the event</li>
+							<li><b>type</b>: <i>(string)</i> Optional, one or more CSS classes to be added to the event's element</li>
+							<li><b>startDate</b>: <i>(Date object)</i> The start date of the event</li>
+							<li><b>endDate</b>: <i>(Date object)</i> The end date of the event</li>
+						</ul>
+					</td>
+				</tr>
+				<tr>
+					<td><code>$scope.eventHeight</code></td>
+					<td>Integer</td>
+					<td><i>Optional</i></td>
+					<td><code>50</code></td>
+					<td>Height of events elements in pixels</td>
+				</tr>
+				<tr>
+					<td><code>$scope.eventMargin</code></td>
+					<td>Integer</td>
+					<td><i>Optional</i></td>
+					<td><code>10</code></td>
+					<td>Margin above events elements for spacing</td>
+				</tr>
+				<tr>
+					<td><code>$scope.nbLines</code></td>
+					<td>Integer</td>
+					<td><i>Optional</i></td>
+					<td><code>5</code></td>
+					<td>Maximum number of lines we can draw in timeline</td>
+				</tr>
+			</table>
+			<h4>Methods</h4>
+			<table class="table table-bordered table-striped">
+				<tr>
+					<th width="220">Method name</th>
+					<th>Method parameters</th>
+					<th>Method returns</th>
+					<th>Description</th>
+				</tr>
+				<tr>
+					<td><code>$scope.renderView()</code></td>
+					<td><i>none</i></td>
+					<td><i>nothing</i></td>
+					<td><b>Redraw the view.</b><br />Note that it must be called inside
+						a <code>$timeout()</code> function (with time to <code>0</code>)
+						in order to render the events elements after they change.</td>
+				</tr>
+				<tr>
+					<td><code>$scope.prevDay()</code></td>
+					<td><i>none</i></td>
+					<td><i>nothing</i></td>
+					<td>Redraw the view with an offset of <b>one day</b> to the left.</td>
+				</tr>
+				<tr>
+					<td><code>$scope.nextDay()</code></td>
+					<td><i>none</i></td>
+					<td><i>nothing</i></td>
+					<td>Redraw the view with an offset of <b>one day</b> to the right.</td>
+				</tr>
+				<tr>
+					<td><code>$scope.centerView()</code></td>
+					<td>
+						<code>daysBefore</code>: <i>(integer)</i> The number of days to show before today (<i>default</i> <code>7</code>)<br />
+						<code>daysAfter</code>: <i>(integer)</i> The number of days to show after today (<i>default</i> <code>14</code>)
+					</td>
+					<td><i>nothing</i></td>
+					<td>
+						Redraw the view around today's column, with a specified zoom.
+					<td>
+				</tr>
+				<tr>
+					<td><code>$scope.prevCustom()</code></td>
+					<td>
+						<code>days</code>: <i>(integer)</i> The number of day to offset the view
+					</td>
+					<td><i>nothing</i></td>
+					<td>Redraw the view with an offset of <code>days</code> to the left.</td>
+				</tr>
+				<tr>
+					<td><code>$scope.nextCustom()</code></td>
+					<td>
+						<code>days</code>: <i>(integer)</i> The number of day to offset the view
+					</td>
+					<td><i>nothing</i></td>
+					<td>Redraw the view with an offset of <code>days</code> to the right.</td>
+				</tr>
+				<tr>
+					<td><code>$scope.setStartView()</code></td>
+					<td>
+						<code>year</code>: <i>(integer)</i> The year of the date to set<br />
+						<code>month</code>: <i>(integer)</i> The month of the date to set <b>(1 based)</b><br />
+						<code>day</code>: <i>(integer)</i> The day of the date to set<br />
+					</td>
+					<td><i>nothing</i></td>
+					<td>Redraw the view with a <b>specified date</b> for the start.</td>
+				</tr>
+				<tr>
+					<td><code>$scope.setEndView()</code></td>
+					<td>
+						<code>year</code>: <i>(integer)</i> The year of the date to set<br />
+						<code>month</code>: <i>(integer)</i> The month of the date to set <b>(1 based)</b><br />
+						<code>day</code>: <i>(integer)</i> The day of the date to set<br />
+					</td>
+					<td><i>nothing</i></td>
+					<td>Redraw the view with a <b>specified date</b> for the end.</td>
+				</tr>
+				<tr>
+					<td><code>$scope.zoomIn()</code></td>
+					<td>
+						<code>step</code>: <i>(integer)</i> The number of days to remove from view
+					</td>
+					<td><i>nothing</i></td>
+					<td>
+						Redraw the view with an offset of <code>-step</code> to the left and to the right.<br />
+						Max zoom is 2 days.
+					</td>
+				</tr>
+				<tr>
+					<td><code>$scope.zoomOut()</code></td>
+					<td>
+						<code>step</code>: <i>(integer)</i> The number of days to add to view
+					</td>
+					<td><i>nothing</i></td>
+					<td>
+						Redraw the view with an offset of <code>+step</code> to the left and to the right.<br />
+						Min zoom is 365 days.
+					<td>
+				</tr>
+			</table>
+			<h4>Events</h4>
+			<p>
+				The Plantt module emits some custom DOM events in rootScope.<br />
+				You can use it with <code>$scope.$on('eventName', yourCallBack)</code>. Here they are:
+			</p>
+			<table class="table table-bordered table-striped">
+				<tr>
+					<th width="220">Event name</th>
+					<th>Fired when</th>
+					<th>Available variables</th>
+					<th>Note</th>
+				</tr>
+				<tr>
+					<td><code>daySelect</code></td>
+					<td>Double-click on the grid body</td>
+					<td>
+						<code>date</code> <i>(Date object)</i> The selected day's date
+					</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><code>periodSelect</code></td>
+					<td>Click & drag on the grid body</td>
+					<td>
+						<code>dates</code> <i>(Date objects)</i> The selected period's dates
+						<ul>
+							<li><code>dates.start</code></li>
+							<li><code>dates.end</code></li>
+						</ul>
+					</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><code>eventMove</code></td>
+					<td>Click, drag & release an event's element</td>
+					<td>
+						<code>event</code> <i>($scope.event item object)</i> The grabbed event from the $scope.events list<br />
+						<code>deltaDays</code> <i>(integer, signed)</i> The number of days to offset the event
+					</td>
+					<td>
+						The variable <code>deltaDays</code> is Signed.<br />
+						Minus (-) will offset in the past, and plus (+) will offset in the future.
+					</td>
+				</tr>
+				<tr>
+					<td><code>eventScale</code></td>
+					<td>Click, drag & release an event's handle element</td>
+					<td>
+						<code>event</code> <i>($scope.event item object)</i> The grabbed event from the $scope.events list<br />
+						<code>side</code> <i>(string)</i> The side of the handle that was used (<code>'left'</code> or <code>'right'</code>)<br />
+						<code>deltaDays</code> <i>(integer, signed)</i> The number of days to scale the event
+					</td>
+					<td>
+						The variable <code>deltaDays</code> is Signed.<br />
+						Minus (-) will offset in the past, and plus (+) will offset in the future.
+					</td>
+				</tr>
+				<tr>
+					<td><code>eventOpen</code></td>
+					<td>Double-click on an event's element</td>
+					<td>
+						<code>event</code> <i>($scope.event item object)</i> The double-clicked event item from the $scope.events list
+					</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><code>planttError</code></td>
+					<td>When an error, warning or notice occurs</td>
+					<td>
+						<code>error</code> <i>(object)</i> The error details, which contains:
+						<ul>
+							<li><code>error.level</code> <i>(integer)</i> The error level code</li>
+							<li><code>error.levelName</code> <i>(string)</i> The error level name</li>
+							<li><code>error.message</code> <i>(string)</i> The error message</li>
+						</ul>
+					</td>
+					<td></td>
+				</tr>
+			</table>
 		</div>
+	</section>
 
+	<section class="row">
+		<div class="col-md-12">
+			<div class="well">
+				© Polosson 2016 - MIT Licence. You can use, copy, modify, merge, publish, distribute, sublicense,
+				and/or sell copies of the Software, at the condition you include this copyright notice and a copy
+				of the permission notice (see LICENCE file).
+			</div>
+		</div>
 	</section>
 
 	<script src="plantt.js"></script>
