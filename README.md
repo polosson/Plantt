@@ -109,6 +109,6 @@ Finally, define your own controller:
 
 ### That's it!
 
-Be sure to read (the documentation)[http://www.code.polosson.com/Plantt/#doc] for full details on scope variables, methods and custom DOM events.
+Be sure to read ![the documentation](http://www.code.polosson.com/Plantt/#doc) for full details on scope variables, methods and custom DOM events.
 
 Have fun ! :)
