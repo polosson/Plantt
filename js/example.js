@@ -9,11 +9,14 @@ var planttEx = angular.module("planttEx", ["plantt.module"]);
 
 planttEx.controller("planttExample", function($scope, $timeout){
 	// Basic settings (optional)
-	$scope.eventHeight	= 50;	// Height of events elements in pixels
-	$scope.eventMargin	= 10;	// Margin above events elements for spacing
-	$scope.nbLines		= 6;	// Maximum number of lines we can draw in timeline
-	$scope.autoLock		= true; // To enable the automatic lock of past events
-	$scope.lockMarginDays = 15;	// Number of days before today for the automatic lock to take effect
+	$scope.eventHeight	= 50;					// Height of events elements in pixels
+	$scope.eventMargin	= 10;					// Margin above events elements for spacing
+	$scope.nbLines		= 6;					// Maximum number of lines we can draw in timeline
+	$scope.autoLock		= true;					// To enable the automatic lock of past events
+	$scope.lockMarginDays	= 15;				// Number of days before today for the automatic lock to take effect
+	$scope.formatDayLong	= 'EEEE dd MMMM';	// The JS date format for the long display of dates
+	$scope.formatDayShort	= 'dd/MM/yyyy';		// The JS date format for the short display of dates
+	$scope.formatMonth		= 'MMMM yyyy';		// The JS date format for the month display in header
 
 	// FOR DEMO : using today as a reference to create events, for them to be allways visible
 	var now = new Date();

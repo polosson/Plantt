@@ -74,6 +74,13 @@ angular.module('plantt.module', [])
 					scope.autoLock			= true;			// To enable or disable the automatic lock ofcurrent & past events
 				if (typeof scope.lockMarginDays === 'undefined')
 					scope.lockMarginDays	= 0;			// Number of days before today for the automatic lock to take effect
+				if (!scope.formatDayLong)
+					scope.formatDayLong = 'EEEE MMMM dd';	// The JS date format for the long display of dates
+				if (!scope.formatDayShort)
+					scope.formatDayShort = 'yyyy-MM-dd';	// The JS date format for the short display of dates
+				if (!scope.formatMonth)
+					scope.formatMonth = 'MMMM yyyy';		// The JS date format for the month display in header
+
 				// View essentials
 				scope.currDate   = addDaysToDate(new Date(), 0);		// Today's date
 				scope.viewStart  = addDaysToDate(scope.currDate, -7);	// Firt day to display in view. Default: today minus 7 days
@@ -132,7 +139,7 @@ angular.module('plantt.module', [])
 							offset: d,
 							date: dayDate,
 							time: dayDate.getTime(),
-							title: dateFilter(dayDate, 'EEEE dd MMMM'),
+							title: dateFilter(dayDate, scope.formatDayLong),
 							nbEvents: 0,
 							today: today,
 							isLastOfMonth: isLastOfMonth
@@ -142,7 +149,7 @@ angular.module('plantt.module', [])
 						if (lastMonth != dayDate.getMonth()) {
 							scope.enumMonths.push({
 								num: dayDate.getMonth(),
-								name: dateFilter(dayDate, 'MMMM yyyy')
+								name: dateFilter(dayDate, scope.formatMonth)
 							});
 							lastMonth = dayDate.getMonth();
 							monthNumDays = 1;
