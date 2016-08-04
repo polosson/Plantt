@@ -46,9 +46,10 @@
 		<event ng-repeat="ev in renderedEvents" event-id="{{ev.id}}" title="#{{ev.id}} - {{ev.title}}"
 			   ng-style="ev.locScale"
 			   ng-class="[ev.extraClasses]">
-			<handle class="leftHandle"  event-id="{{ev.id}}" handle-side="left"></handle>
-			<handle class="rightHandle" event-id="{{ev.id}}" handle-side="right"></handle>
+			<handle ng-show="!ev.lock" class="leftHandle"  event-id="{{ev.id}}" handle-side="left"></handle>
+			<handle ng-show="!ev.lock" class="rightHandle" event-id="{{ev.id}}" handle-side="right"></handle>
 			<label>{{ev.title}}</label>
+
 		</event>
 		<eventhelper>New event</eventhelper>
 	</div>

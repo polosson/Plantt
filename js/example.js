@@ -12,6 +12,8 @@ planttEx.controller("planttExample", function($scope, $timeout){
 	$scope.eventHeight	= 50;	// Height of events elements in pixels
 	$scope.eventMargin	= 10;	// Margin above events elements for spacing
 	$scope.nbLines		= 6;	// Maximum number of lines we can draw in timeline
+	$scope.autoLock		= true; // To enable the automatic lock of past events
+	$scope.lockMarginDays = 15;	// Number of days before today for the automatic lock to take effect
 
 	// Create the events list
 	$scope.events = [

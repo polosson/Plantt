@@ -155,6 +155,12 @@ scheduler event.overRight handle.rightHandle {
 scheduler event.past {
 	background-color: #888 !important;
 }
+scheduler event.locked {
+	background-color: #AAA !important;
+}
+scheduler event.locked label {
+	cursor: not-allowed;
+}
 scheduler event.current {
 	background: linear-gradient(45deg, transparent, transparent 40px, rgba(255,0,0,0.15) 40px, rgba(255,0,0,0.15) 80px, transparent 80px, transparent);
 	background-size: 120px;

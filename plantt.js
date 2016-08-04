@@ -68,7 +68,11 @@ angular.module('plantt.module', [])
 					scope.eventMargin	= 10;				// Margin above events elements for spacing
 				if (!scope.nbLines)
 					scope.nbLines		= 5;				// Maximum number of lines we can draw in timeline
-				scope.nbLines += 1;							// With one line more to be safe
+				scope.nbLines += 1;							// Plus one line more to be sure
+				if (typeof scope.autoLock === 'undefined')
+					scope.autoLock			= true;			// To enable or disable the automatic lock ofcurrent & past events
+				if (typeof scope.lockMarginDays === 'undefined')
+					scope.lockMarginDays	= 0;			// Number of days before today for the automatic lock to take effect
 				// View essentials
 				scope.currDate   = addDaysToDate(new Date(), 0);					// Today's date
 				scope.viewStart  = addDaysToDate(angular.copy(scope.currDate), -7);	// Firt day to display in view. Default: today minus 7 days
@@ -149,7 +153,8 @@ angular.module('plantt.module', [])
 					}
 
 					// Second loop: Filter and calculate the placement of all events to be rendered
-					angular.forEach(scope.events, function(evt){
+					angular.forEach(scope.events, function(event){
+						var evt		= angular.copy(event);
 						var eStart	= evt.startDate.getTime(),
 							eEnd	= evt.endDate.getTime(),
 							vStart	= scope.viewStart.getTime(),
@@ -180,6 +185,12 @@ angular.module('plantt.module', [])
 						// If the event's END date is BEFORE TODAY
 						if (evt.endDate.getTime() < scope.currDate.getTime()) {
 							extraClass += 'past ';	// to illustrate the fact it's in the past
+						}
+						if (evt.startDate.getTime() < (scope.currDate.getTime() - ((scope.lockMarginDays - 1) * 24*60*60*1000))) {
+							if (scope.autoLock === true) {
+								evt.lock = true;			// to lock the element on the view (not modifiable anymore)
+								extraClass += 'locked ';
+							}
 						}
 						// If the event is CURRENTLY active (over today)
 						if (evt.startDate.getTime() <= scope.currDate.getTime() && evt.endDate.getTime() >= scope.currDate.getTime()) {
@@ -217,7 +228,7 @@ angular.module('plantt.module', [])
 						};
 
 						// Actually RENDER the event on the timeline
-						scope.renderedEvents.push(angular.copy(evt));
+						scope.renderedEvents.push(evt);
 					});
 
 
@@ -474,6 +485,21 @@ angular.module('plantt.module', [])
 					element.css({'margin-top': scope.headHeight});
 				}, 0);
 
+				// Double-click an event element to emit the custom event "eventOpen" to all other scopes
+				element.on('dblclick', function(e){
+					e.preventDefault(); e.stopPropagation();
+					var thisEvent = $filter('filter')(scope.events, {id: +attrs.eventId}, true)[0];
+					if (!thisEvent)
+						return;
+					$rootScope.$broadcast('eventOpen', thisEvent);
+					scope.throwError(3, "The DOM event 'eventOpen' was emitted in rootScope.");
+				});
+
+				// Everything following these lines will be accessible only if the "event.lock" is not === true
+				var thisRenderedEvent = $filter('filter')(scope.renderedEvents, {id: +attrs.eventId}, true)[0];
+				if (thisRenderedEvent.lock && thisRenderedEvent.lock === true)
+					return;
+
 				// Click-Drag an event to change its dates (emits the event "eventMove" to all other scopes)
 				var dragInit	= false;
 				var startDeltaX = 0, grabDeltaX = 0, offsetDay = 0, offsetLeft = 0, offsetTop = 0;
@@ -515,16 +541,6 @@ angular.module('plantt.module', [])
 					$document.off('mousemove', grabEventMove);
 					$document.off('mouseup', grabEventEnd);
 				}
-
-				// Double-click an event element to emit the custom event "eventOpen" to all other scopes
-				element.on('dblclick', function(e){
-					e.preventDefault(); e.stopPropagation();
-					var thisEvent = $filter('filter')(scope.events, {id: +attrs.eventId}, true)[0];
-					if (!thisEvent)
-						return;
-					$rootScope.$broadcast('eventOpen', thisEvent);
-					scope.throwError(3, "The DOM event 'eventOpen' was emitted in rootScope.");
-				});
 			}
 		};
 	})
@@ -535,6 +551,12 @@ angular.module('plantt.module', [])
 		return {
 			restrict: 'E',
 			link: function(scope, element, attrs) {
+
+
+				// Everything following these lines will be accessible only if the "event.lock" is not === true
+				var thisRenderedEvent = $filter('filter')(scope.renderedEvents, {id: +attrs.eventId}, true)[0];
+				if (thisRenderedEvent.lock && thisRenderedEvent.lock === true)
+					return;
 
 				// Click-Drag an event handles to change its start or end dates
 				var dragInit	= false;
