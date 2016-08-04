@@ -73,6 +73,10 @@ angular.module('plantt.module', [])
 				scope.currDate   = addDaysToDate(new Date(), 0);					// Today's date
 				scope.viewStart  = addDaysToDate(angular.copy(scope.currDate), -7);	// Firt day to display in view. Default: today minus 7 days
 				scope.viewEnd	 = addDaysToDate(angular.copy(scope.currDate), 14);	// Last day to display in view. Default: today plus 14 days
+				// To be calculated by the browser
+				scope.headerHeight = 40;
+				scope.theadHeight  = 63;
+				scope.headHeight   = 113;
 
 				/**
 				 * Common function to relay errors elsewhere (@todo)
@@ -208,6 +212,7 @@ angular.module('plantt.module', [])
 							'left': offsetLeft+'px',
 							'width': (eventWidth - (daysExceed * scope.cellWidth))+'px',
 							'top': (evt.line * (scope.eventHeight + scope.eventMargin))+'px',
+							'margin-top': scope.headHeight+'px',
 							'height': scope.eventHeight+'px'
 						};
 
@@ -456,10 +461,18 @@ angular.module('plantt.module', [])
 	/*
 	 * EVENTS Directive
 	 */
-	.directive('event', function($document, $rootScope, $filter){
+	.directive('event', function($document, $rootScope, $timeout, $filter){
 		return {
 			restrict: 'E',
 			link: function(scope, element, attrs) {
+
+				// Calculate the margin-top offset to avoid overlapping the grid's headers
+				$timeout(function(){
+					scope.theadHeight	= parseInt($document.find('thead').prop('offsetHeight'));
+					scope.headerHeight	= parseInt($document.find('header').prop('offsetHeight'));
+					scope.headHeight	= (scope.theadHeight + scope.headerHeight + scope.eventMargin)+'px';
+					element.css({'margin-top': scope.headHeight});
+				}, 0);
 
 				// Click-Drag an event to change its dates (emits the event "eventMove" to all other scopes)
 				var dragInit	= false;

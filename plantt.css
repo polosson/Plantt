@@ -20,19 +20,19 @@ scheduler {
 	font-size: 0.9em;
 	margin: 25px 0 25px 0;
 }
-scheduler .header {
+scheduler header {
 	display: block;
 	width: 100%;
 	padding: 5px 15px;
 	background-color: #EEE;
 }
-scheduler .header .prevActions {
+scheduler header .prevActions {
 	float: left;
 }
-scheduler .header .nextActions {
+scheduler header .nextActions {
 	float: right;
 }
-scheduler .header .centerActions {
+scheduler header .centerActions {
 	text-align: center;
 }
 
@@ -100,7 +100,6 @@ scheduler event, scheduler eventhelper {
 	position: absolute;
 	box-sizing: border-box;
 	height: 50px;
-	margin-top: 125px;
 	background-color: #46b8da;
 	padding: 0;
 	border-radius: 5px;

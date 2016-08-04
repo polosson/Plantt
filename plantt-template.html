@@ -1,5 +1,5 @@
 
-<div class="header">
+<header>
 	<div class="prevActions">
 		<div class="btn btn-default btn-sm" ng-click="setStartView(2016, 6, 20)">Custom startDate</div>
 		<div class="btn btn-default btn-sm" ng-click="prevCustom(15)"><<</div>
@@ -10,13 +10,14 @@
 		<div class="btn btn-default btn-sm" ng-click="nextCustom(15)">>></div>
 		<div class="btn btn-default btn-sm" ng-click="setEndView(2016, 8, 20)">Custom EndDate</div>
 	</div>
+	<div class="clearfix hidden-sm hidden-md hidden-lg"></div>
 	<div class="centerActions">
 		<div class="btn btn-default btn-sm" ng-click="zoomIn(1)">Zoom In</div>
 		<div class="btn btn-default btn-sm" ng-click="centerView()">Center on today</div>
 		<div class="btn btn-default btn-sm" ng-click="zoomOut(3)">Zoom Out</div>
 	</div>
 	<div class="clearfix"></div>
-</div>
+</header>
 <table>
 	<thead>
 		<tr class="monthLine">
@@ -41,12 +42,14 @@
 			</tr>
 		</tbody>
 	</table>
-	<event ng-repeat="ev in renderedEvents" event-id="{{ev.id}}" title="#{{ev.id}} - {{ev.title}}"
-		   ng-style="ev.locScale"
-		   ng-class="[ev.extraClasses]">
-		<handle class="leftHandle"  event-id="{{ev.id}}" handle-side="left"></handle>
-		<handle class="rightHandle" event-id="{{ev.id}}" handle-side="right"></handle>
-		<label>{{ev.title}}</label>
-	</event>
-	<eventhelper>New event</eventhelper>
+	<div class="eventsContainer">
+		<event ng-repeat="ev in renderedEvents" event-id="{{ev.id}}" title="#{{ev.id}} - {{ev.title}}"
+			   ng-style="ev.locScale"
+			   ng-class="[ev.extraClasses]">
+			<handle class="leftHandle"  event-id="{{ev.id}}" handle-side="left"></handle>
+			<handle class="rightHandle" event-id="{{ev.id}}" handle-side="right"></handle>
+			<label>{{ev.title}}</label>
+		</event>
+		<eventhelper>New event</eventhelper>
+	</div>
 </div>
