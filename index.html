@@ -253,6 +253,20 @@ planttExample.controller("planttCtrl", function($scope, $timeout){
 					<td><code>5</code></td>
 					<td>Maximum number of lines we can draw in timeline</td>
 				</tr>
+				<tr>
+					<td><code>$scope.autoLock</code></td>
+					<td>Boolean</td>
+					<td><i>Optional</i></td>
+					<td><code>true</code></td>
+					<td>To enable or disable the automatic lock of current & past events</td>
+				</tr>
+				<tr>
+					<td><code>$scope.lockMarginDays</code></td>
+					<td>Integer</td>
+					<td><i>Optional</i></td>
+					<td><code>0</code></td>
+					<td>Number of days before today for the automatic lock to take effect</td>
+				</tr>
 			</table>
 
 			<a id="methods"></a>
