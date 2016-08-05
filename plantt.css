@@ -78,7 +78,7 @@ scheduler table td.today {
 	background-color: #FFDBCE !important;
 }
 scheduler table td.sunday {
-	border-right: 1px solid #FFB8B8 ;
+	border-right: 1px solid #FFB8B8;
 }
 scheduler table td.month {
 	border-right: 1px solid #F55;
@@ -156,11 +156,12 @@ scheduler event.past {
 	background-color: #888 !important;
 }
 scheduler event.locked {
-	border: 3px dashed red;
+	border: 2px dashed red;
 	box-shadow: none;
 }
 scheduler event.locked label {
 	cursor: not-allowed;
+	padding: 15px 10%;
 }
 scheduler event.current {
 	background: linear-gradient(45deg, transparent, transparent 40px, rgba(255,0,0,0.15) 40px, rgba(255,0,0,0.15) 80px, transparent 80px, transparent);
