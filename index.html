@@ -206,9 +206,223 @@ planttExample.controller("planttCtrl", function($scope, $timeout){
 	<section class="row">
 		<div class="col-md-12">
 			<h2>Documentation</h2>
-			<h3>Scope</h3>
+
+			<a id="css"></a>
+			<h3>CSS classes</h3>
 			<p>
-				The Plantt module's directives scope is shared with the controller's $scope.<br />
+				Since all parts of this module are DOM elements, you can use CSS on all aspects of the interface.<br />
+				Here is a list of the the most useful classes and selectors for the elements you may want to customize.
+			</p>
+			<p>If you need full list of selectors used to build the interface, please refer to <code>plantt.css</code> file.</p>
+
+			<a id="cssstatic"></a>
+			<h4>Not customizable CSS</h4>
+			<p>There are some CSS parts that are critical; you should <b>not</b> modify them, otherwise it can break the interface:</p>
+			<table class="table table-bordered table-striped">
+				<tr>
+					<th width="300">Selector</th>
+					<th>Critical styles for UI</th>
+				</tr>
+				<tr>
+					<td><code>scheduler</code></td>
+					<td>
+						<code>position: relative; display: block; width: 100%;</code>
+					</td>
+				</tr>
+				<tr>
+					<td><code>scheduler header</code></td>
+					<td>
+						<code>display: block; width: 100%; padding: 5px 15px;</code>
+					</td>
+				</tr>
+				<tr>
+					<td><code>scheduler header .prevActions</code></td>
+					<td>
+						<code>float: left;</code>
+					</td>
+				</tr>
+				<tr>
+					<td><code>scheduler header .nextActions</code></td>
+					<td>
+						<code>float: right;</code>
+					</td>
+				</tr>
+				<tr>
+					<td><code>scheduler header .centerActions</code></td>
+					<td>
+						<code>text-align: center;</code>
+					</td>
+				</tr>
+				<tr>
+					<td><code>scheduler table</code></td>
+					<td>
+						<code>width: 100%; table-layout: fixed;</code>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<code>scheduler table tr th,</code><br /><code>scheduler table tr td</code></td>
+					<td>
+						<code>height: 45px; border-right: 1px solid #DDD; vertical-align: middle; cursor: pointer; text-align: center;</code>
+					</td>
+				</tr>
+				<tr>
+					<td><code>scheduler table tbody tr td</code></td>
+					<td>
+						<code>vertical-align: bottom;</code>
+					</td>
+				</tr>
+				<tr>
+					<td><code>scheduler table td.today</code></td>
+					<td>
+						<code>background-color: #FFDBCE;</code>
+					</td>
+				</tr>
+				<tr>
+					<td><code>scheduler .eventsContainer</code></td>
+					<td>
+						<code>width: 100%; z-index: 100;</code>
+					</td>
+				</tr>
+				<tr>
+					<td><code>scheduler event,</code><br /><code>scheduler eventhelper</code></td>
+					<td>
+						<code>position: absolute; box-sizing: border-box; z-index: 200;</code>
+					</td>
+				</tr>
+				<tr>
+					<td><code>scheduler event handle</code></td>
+					<td>
+						<code>display: block; position: absolute; height: 100%; width: 10%; min-width: 5px; z-index: 300;</code>
+					</td>
+				</tr>
+				<tr>
+					<td><code>scheduler event handle.leftHandle</code></td>
+					<td>
+						<code>left: 0; cursor: w-resize;</code>
+					</td>
+				</tr>
+				<tr>
+					<td><code>scheduler event handle.rightHandle</code></td>
+					<td>
+						<code>right: 0; cursor: e-resize;</code>
+					</td>
+				</tr>
+				<tr>
+					<td><code>scheduler event label</code></td>
+					<td>
+						<code>display: block; padding: 17px 10%; text-align: center; cursor: move; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;</code>
+					</td>
+				</tr>
+			</table>
+
+			<a id="csscustom"></a>
+			<h4>Customizable CSS</h4>
+			<p>
+				The Plantt module adds several CSS classes dynamically to the grid and drawed events. You can overwrite
+				them in your own stylesheet.<br />
+				Here are these classes and how & when they're added:
+			</p>
+			<table class="table table-bordered table-striped">
+				<tr>
+					<th width="150">Class name</th>
+					<th>Apply to</th>
+					<th>Added</th>
+					<th>Default style</th>
+					<th>Default style description</th>
+				</tr>
+				<tr>
+					<td><code>today</code></td>
+					<td>Grid - <code>table td.today</code></td>
+					<td>When the column represents today's date</td>
+					<td>
+						<code>background-color: #FFDBCE;</code>
+					</td>
+					<td>Highlights the today's date on the grid timeline</td>
+				</tr>
+				<tr>
+					<td><code>sunday</code></td>
+					<td>Grid - <code>table td.sunday</code></td>
+					<td>When the column represents a sunday (last day of week)</td>
+					<td>
+						<code>border-right: 1px solid #FFB8B8;</code>
+					</td>
+					<td>Puts a line to separate weeks</td>
+				</tr>
+				<tr>
+					<td><code>month</code></td>
+					<td>Grid - <code>table td.month</code></td>
+					<td>When the column represents the last day of month</td>
+					<td>
+						<code>border-right: 1px solid #F55;</code>
+					</td>
+					<td>Puts a line to separate weeks</td>
+				</tr>
+				<tr>
+					<td><code>overLeft</code></td>
+					<td>Event - <code>event.overLeft</code></td>
+					<td>When the event's start date is before the view's start day (left boundary)</td>
+					<td>
+						<code>border-radius: 50px 0 0 50px;</code>
+					</td>
+					<td>Rounds the left side of the event's box</td>
+				</tr>
+				<tr>
+					<td><code>overRight</code></td>
+					<td>Event - <code>event.overRight</code></td>
+					<td>When the event's end date is after the view's end day (right boundary)</td>
+					<td>
+						<code>border-radius: 0 50px 50px 0;</code>
+					</td>
+					<td>Rounds the right side of the event's box</td>
+				</tr>
+				<tr>
+					<td><code>past</code></td>
+					<td>Event - <code>event.past</code></td>
+					<td>When the event's end date is before the today's date</td>
+					<td>
+						<code>background-color: #888;</code>
+					</td>
+					<td>Makes the color of the box neutral (mid-grey)</td>
+				</tr>
+				<tr>
+					<td><code>current</code></td>
+					<td>Event - <code>event.current</code></td>
+					<td>
+						When the event's start date is before the today's date<br />
+						AND the event's end date is after the today's date
+					</td>
+					<td>
+						<code>background: linear-gradient(</code><br />
+						<code>&nbsp;&nbsp;&nbsp;&nbsp;45deg, transparent, transparent 40px,</code><br />
+						<code>&nbsp;&nbsp;&nbsp;&nbsp;rgba(255,0,0,0.15) 40px, rgba(255,0,0,0.15) 80px,</code><br />
+						<code>&nbsp;&nbsp;&nbsp;&nbsp;transparent 80px, transparent</code><br />
+						<code>);</code><br />
+						<code>background-size: 120px;</code><br />
+						<code>background-position: 0 0;</code><br />
+						<code>animation: animStripes 5s linear infinite;</code>
+					</td>
+					<td>
+						Makes a reddish stripped background in the event's box, animated from left to right<br />
+						(cf. <code>plantt.css</code> to see animation code)
+					</td>
+				</tr>
+				<tr>
+					<td><code>locked</code></td>
+					<td>Event - <code>event.locked</code><br />& <code>event.locked label</code></td>
+					<td>When the event is set to be locked</td>
+					<td>
+						element <code>border: 2px dashed red; box-shadow: none;</code><br />
+						> label <code>cursor: not-allowed; padding: 15px 10%;</code>
+					</td>
+					<td>Creates a red dashed border and change cursor</td>
+				</tr>
+			</table>
+
+			<a id="scope"></a>
+			<h3>Module Scope</h3>
+			<p>
+				The Plantt module's directives <code>scope</code> is shared with the controller's <code>$scope</code>.<br />
 				You can access (read/write) everything you need from all of thoses:
 			</p>
 
@@ -272,7 +486,7 @@ planttExample.controller("planttCtrl", function($scope, $timeout){
 					<td>Integer</td>
 					<td><i>Optional</i></td>
 					<td><code>0</code></td>
-					<td>Number of days before today for the automatic lock to take effect</td>
+					<td>Number of days between today and the start date of events for the automatic lock to take effect</td>
 				</tr>
 				<tr>
 					<td><code>$scope.formatDayLong</code></td>
