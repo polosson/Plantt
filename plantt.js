@@ -73,7 +73,7 @@ angular.module('plantt.module', [])
 				if (typeof scope.autoLock === 'undefined')
 					scope.autoLock			= true;			// To enable or disable the automatic lock ofcurrent & past events
 				if (typeof scope.lockMarginDays === 'undefined')
-					scope.lockMarginDays	= 0;			// Number of days before today for the automatic lock to take effect
+					scope.lockMarginDays	= 0;			// Number of days between today and the start date of events for the automatic lock to take effect
 				if (!scope.formatDayLong)
 					scope.formatDayLong = 'EEEE MMMM dd';	// The JS date format for the long display of dates
 				if (!scope.formatDayShort)

@@ -13,7 +13,7 @@ planttEx.controller("planttExample", function($scope, $timeout){
 	$scope.eventMargin		= 10;				// Margin above events elements for spacing
 	$scope.nbLines			= 6;				// Maximum number of lines we can draw in timeline
 	$scope.autoLock			= true;				// To enable the automatic lock of past events
-	$scope.lockMarginDays	= 15;				// Number of days before today for the automatic lock to take effect
+	$scope.lockMarginDays	= 15;				// Number of days between today and the start date of events for the automatic lock to take effect
 	$scope.formatDayLong	= 'EEEE dd MMMM';	// The JS date format for the long display of dates
 	$scope.formatDayShort	= 'dd/MM/yyyy';		// The JS date format for the short display of dates
 	$scope.formatMonth		= 'MMMM yyyy';		// The JS date format for the month display in header
