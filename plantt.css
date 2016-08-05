@@ -183,7 +183,7 @@ scheduler eventhelper {
 	border: 2px dashed red;
 	color: #555;
 	text-align: center;
-	padding: 17px 0;
+	padding: 15px 0;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;

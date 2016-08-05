@@ -380,8 +380,8 @@ angular.module('plantt.module', [])
 					e.preventDefault(); e.stopPropagation();
 					var dayInView = Math.floor(e.layerX / scope.cellWidth);
 					selStart = addDaysToDate(scope.viewStart, dayInView);
+					eventHelper.css({top: (e.layerY - 25)+'px', left: (e.layerX)+'px'});
 					eventHelper.css({display: 'block'});
-					eventHelper.css({top: (e.layerY-145)+'px', left: (e.layerX)+'px'});
 					$document.on('mousemove', grabGridMove);
 					$document.on('mouseup',   grabGridEnd);
 				}
