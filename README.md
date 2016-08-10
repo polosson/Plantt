@@ -22,7 +22,9 @@ This angular widget takes a **list** of "events" (i.e. items defined in time by 
  - **Drag & drop** support (for desktop only at the moment) to visually move and resize events
  - Fully **independant of the controller**, allowing you to make anything you want with this widget !
  - **View manipulation**: zoom in & out, move left or right, set custom start and end dates with a bunch of scope-accessible functions
- - Emits **custom DOM events** to handle callbacks for every UI actions (`daySelect`, `periodSelect`, `eventMove`, `eventScale`, `eventOpen`, `planttError`)
+ - Emits **custom DOM events** to handle callbacks for every UI actions (`daySelect`, `periodSelect`, `eventMove`, `eventScale`, `eventOpen`, `planttError`), allowing you to make your own checks before storing new dates of the event, and save it on your server using ajax for example
+ - **Automatic lock** of current and past events (with possible secure days margin)
+ - Dates **Internationalization** really simple with ng-locale (i18n)
 
 
 ### Available interactions
@@ -68,9 +70,14 @@ Finally, define your own controller:
 	yourApp.controller("planttExample", function($scope){
 
 		// Basic settings (optional)
-		$scope.eventHeight	= 50;	// Height of events elements in pixels
-		$scope.eventMargin	= 10;	// Margin above events elements for spacing
-		$scope.nbLines		= 6;	// Maximum number of lines we can draw in timeline
+		$scope.eventHeight		= 50;				// Height of events elements in pixels
+		$scope.eventMargin		= 10;				// Margin above events elements for spacing in pixels
+		$scope.nbLines			= 5;				// Maximum number of lines we can draw in timeline
+		$scope.autoLock			= true;				// To enable the automatic lock of past events
+		$scope.lockMarginDays	= 0;				// Number of days between today and the start date of events for the automatic lock to take effect
+		$scope.formatDayLong	= 'EEEE MMMM dd';	// The JS date format for the long display of dates
+		$scope.formatDayShort	= 'yyyy-MM-dd';		// The JS date format for the short display of dates
+		$scope.formatMonth		= 'MMMM yyyy';		// The JS date format for the month display in header
 
 		// Create the events list
 		$scope.events = [
