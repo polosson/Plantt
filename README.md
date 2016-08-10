@@ -24,7 +24,7 @@ This angular widget takes a **list** of "events" (i.e. items defined in time by 
  - **View manipulation**: zoom in & out, move left or right, set custom start and end dates with a bunch of scope-accessible functions
  - Emits **custom DOM events** to handle callbacks for every UI actions (`daySelect`, `periodSelect`, `eventMove`, `eventScale`, `eventOpen`, `planttError`), allowing you to make your own checks before storing new dates of the event, and save it on your server using ajax for example
  - **Automatic lock** of current and past events (with possible secure days margin)
- - Dates **Internationalization** really simple with ng-locale (i18n)
+ - Dates **Internationalization** really simple with [https://github.com/angular/angular.js/tree/master/src/ngLocale](ng-locale) (i18n)
 
 
 ### Available interactions
@@ -40,7 +40,8 @@ This angular widget takes a **list** of "events" (i.e. items defined in time by 
  - **Other event-related actions**
    - Double-click an event to (make something you want)
 
-Note: for these interactions to be effective, they must be processed in callbacks defined in controller. See `js/example.js` for examples use-cases, but you can make anything you want in your own controller.
+Note: for the events interactions to be effective, they must be processed in callbacks defined in controller, using Plantt's custom DOM events.
+See `js/example.js` for examples use-cases, but you can make anything you want in your own controller!
 
 
 ## Installation
@@ -114,7 +115,7 @@ Finally, define your own controller:
     - **endDate** (date object)
   - You must use the **`$timeout`** function to call the **`$scope.renderView()`** function in order to refresh the view after a change of any event in the list.
 
-### That's it!
+## Documentation
 
 Be sure to read [the documentation](http://www.code.polosson.com/Plantt/#doc) for full details on scope variables, methods and custom DOM events.
 
