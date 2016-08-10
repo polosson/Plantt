@@ -8,7 +8,7 @@
 	<title>Plantt Angular Scheduler</title>
 
 	<link href="css/vendor/bootstrap.min.css" rel="stylesheet" type="text/css" />
-	<link href="css/vendor/highlight.css" rel="stylesheet" type="text/css" />
+	<link href="css/vendor/highlight-github.css" rel="stylesheet" type="text/css" />
 	<link href="plantt.css" rel="stylesheet" type="text/css" />
 
 	<style type="text/css">
@@ -104,25 +104,30 @@
 				<p>Here is the code for the example displayed above:</p>
 				<a id="exhtml"></a>
 				<h4>HTML (default style depends on Bootstrap)</h4>
-				<pre><code class="html">&lt;!DOCTYPE html>
+				<pre><code>&lt;!DOCTYPE html>
 &lt;html ng-app="planttExample">
 &lt;head>
   &lt;link href="css/vendor/bootstrap.min.css" rel="stylesheet" type="text/css" />
   &lt;link href="plantt.css" rel="stylesheet" type="text/css" />
   &lt;style type="text/css">
+     /* Defining some custom CSS for event's classes (event.type) */
      scheduler event.normal { background-color: #3AAFAF; }
      scheduler event.urgent { background-color: #D88447; }
   &lt;/style>
+
   &lt;script src="js/vendor/angular-1.5.8.min.js">&lt;/script>
   &lt;script src="js/vendor/angular-locale_fr-fr.js">&lt;/script>
   &lt;script src="plantt.js">&lt;/script>
   &lt;script src="js/example.js">&lt;/script>
 &lt;/head>
+
 &lt;body class="container-fluid">
 
   &lt;section class="row">
      &lt;div class="col-md-12">
+
         &lt;scheduler ng-controller="planttCtrl">&lt;/scheduler>
+
      &lt;/div>
   &lt;/section>
 
@@ -131,8 +136,7 @@
 				</code></pre>
 				<a id="exjs"></a>
 				<h4>Javascript (depends on AngularJS only)</h4>
-				<pre><code class="javascript">
-var planttExample = angular.module("planttExample", ["plantt.module"]);
+				<pre><code>var planttExample = angular.module("planttExample", ["plantt.module"]);
 
 planttExample.controller("planttCtrl", function($scope, $timeout){
 
