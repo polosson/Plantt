@@ -11,7 +11,8 @@ Preview:
 
 ## Features
 
-This angular widget takes a **list** of "events" (i.e. items defined in time by a start date and an end date) to display them on a daily timeline. You can drag & drop them to redefine their dates.
+This angular widget takes a **list** of "events" (i.e. items defined in time by a start date and an end date) to display them on a daily timeline.
+Among many other features, you can drag & drop them to redefine their dates.
 
 
 ### Interface
@@ -24,7 +25,7 @@ This angular widget takes a **list** of "events" (i.e. items defined in time by 
  - **View manipulation**: zoom in & out, move left or right, set custom start and end dates with a bunch of scope-accessible functions
  - Emits **custom DOM events** to handle callbacks for every UI actions (`daySelect`, `periodSelect`, `eventMove`, `eventScale`, `eventOpen`, `planttError`), allowing you to make your own checks before storing new dates of the event, and save it on your server using ajax for example
  - **Automatic lock** of current and past events (with possible secure days margin)
- - Dates **Internationalization** really simple with [https://github.com/angular/angular.js/tree/master/src/ngLocale](ng-locale) (i18n)
+ - Dates **Internationalization** really simple with [ng-locale](https://github.com/angular/angular.js/tree/master/src/ngLocale) (i18n)
 
 
 ### Available interactions
@@ -54,6 +55,9 @@ Just import AngularJS, and the Plantt's javacript and CSS files:
 
 Then, make sure the file **`plantt-template.html`** is readable into your project's root folder. You can use this file
 to see how functions are called, then modify it to suits your needs.
+
+To internationalize (translate) the dates, you can add any of the ng-locale providers from AngularJs source code,
+available [here](https://github.com/angular/angular.js/tree/master/src/ngLocale).
 
 
 ## Usage
