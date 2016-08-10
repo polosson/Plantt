@@ -8,6 +8,7 @@
 	<title>Plantt Angular Scheduler</title>
 
 	<link href="css/vendor/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<link href="css/vendor/highlight.css" rel="stylesheet" type="text/css" />
 	<link href="plantt.css" rel="stylesheet" type="text/css" />
 
 	<style type="text/css">
@@ -23,6 +24,8 @@
 
 	<script src="js/vendor/angular-1.5.8.min.js"></script>
 	<script src="js/vendor/angular-locale_fr-fr.js"></script>
+	<script src="js/vendor/highlight.pack.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
 
 </head>
 <body class="container-fluid">
@@ -101,138 +104,140 @@
 				<p>Here is the code for the example displayed above:</p>
 				<a id="exhtml"></a>
 				<h4>HTML (default style depends on Bootstrap)</h4>
-				<pre>
-	&lt;!DOCTYPE html>
-	&lt;html ng-app="planttExample">
-	  &lt;head>
-		&lt;link href="css/vendor/bootstrap.min.css" rel="stylesheet" type="text/css" />
-		&lt;link href="plantt.css" rel="stylesheet" type="text/css" />
-		&lt;style type="text/css">
-		  scheduler event.normal { background-color: #3AAFAF; }
-		  scheduler event.urgent { background-color: #D88447; }
-		&lt;/style>
-		&lt;script src="js/vendor/angular-1.5.8.min.js">&lt;/script>
-		&lt;script src="plantt.js">&lt;/script>
-	  &lt;/head>
-	  &lt;body class="container-fluid">
-		&lt;section class="row">
-		  &lt;div class="col-md-12">
-			&lt;scheduler ng-controller="planttCtrl">&lt;/scheduler>
-		  &lt;/div>
-		&lt;/section>
-		&lt;script src="js/example.js"></script>
-	  &lt;/body>
-	&lt;/html>
-				</pre>
+				<pre><code class="html">&lt;!DOCTYPE html>
+&lt;html ng-app="planttExample">
+&lt;head>
+  &lt;link href="css/vendor/bootstrap.min.css" rel="stylesheet" type="text/css" />
+  &lt;link href="plantt.css" rel="stylesheet" type="text/css" />
+  &lt;style type="text/css">
+     scheduler event.normal { background-color: #3AAFAF; }
+     scheduler event.urgent { background-color: #D88447; }
+  &lt;/style>
+  &lt;script src="js/vendor/angular-1.5.8.min.js">&lt;/script>
+  &lt;script src="js/vendor/angular-locale_fr-fr.js">&lt;/script>
+  &lt;script src="plantt.js">&lt;/script>
+  &lt;script src="js/example.js">&lt;/script>
+&lt;/head>
+&lt;body class="container-fluid">
+
+  &lt;section class="row">
+     &lt;div class="col-md-12">
+        &lt;scheduler ng-controller="planttCtrl">&lt;/scheduler>
+     &lt;/div>
+  &lt;/section>
+
+&lt;/body>
+&lt;/html>
+				</code></pre>
 				<a id="exjs"></a>
 				<h4>Javascript (depends on AngularJS only)</h4>
-				<pre>
-	var planttExample = angular.module("planttExample", ["plantt.module"]);
+				<pre><code class="javascript">
+var planttExample = angular.module("planttExample", ["plantt.module"]);
 
-	planttExample.controller("planttCtrl", function($scope, $timeout){
+planttExample.controller("planttCtrl", function($scope, $timeout){
 
-	  // Basic settings (optional)
-	  $scope.eventHeight    = 50;               // Height of events elements in pixels
-	  $scope.eventMargin    = 10;               // Margin above events elements for spacing
-	  $scope.nbLines        = 6;                // Maximum number of lines we can draw in timeline
-	  $scope.autoLock       = true;             // To enable the automatic lock of past events
-	  $scope.lockMarginDays = 15;               // Number of days before today for the automatic lock to take effect
-	  $scope.formatDayLong  = 'EEEE dd MMMM';   // The JS date format for the long display of dates
-	  $scope.formatDayShort = 'dd/MM/yyyy';     // The JS date format for the short display of dates
-	  $scope.formatMonth    = 'MMMM yyyy';      // The JS date format for the month display in header
+   // Basic settings (optional)
+   $scope.eventHeight    = 50;               // Height of events elements in pixels
+   $scope.eventMargin    = 10;               // Margin above events elements for spacing
+   $scope.nbLines        = 6;                // Maximum number of lines we can draw in timeline
+   $scope.autoLock       = true;             // To enable the automatic lock of past events
+   $scope.lockMarginDays = 15;               // Number of days before today for the automatic lock to take effect
+   $scope.formatDayLong  = 'EEEE dd MMMM';   // The JS date format for the long display of dates
+   $scope.formatDayShort = 'dd/MM/yyyy';     // The JS date format for the short display of dates
+   $scope.formatMonth    = 'MMMM yyyy';      // The JS date format for the month display in header
 
-	  // Create the events list
-	  $scope.events = [
-		{ id: 1, title: 'Outdated event', type: 'urgent',
-		  startDate: new Date(2016, 8-1, 1), endDate: new Date(2016, 8-1, 3) },
-		{ id: 2, title: 'In progress, low priority', type: 'normal',
-		  startDate: new Date(2016, 8-1, 3), endDate: new Date(2016, 8-1, 7) },
-		{ id: 3, title: 'Full Week Holidays', type: 'normal',
-		  startDate: new Date(2016, 8-1, 8), endDate: new Date(2016, 8-1, 14) },
-		{ id: 4, title: 'Something to do soon', type: 'normal',
-		  startDate: new Date(2016, 8-1, 6), endDate: new Date(2016, 8-1, 10) },
-		{ id: 5, title: 'In progress, hi-priority', type: 'urgent',
-		  startDate: new Date(2016, 8-1, 4), endDate: new Date(2016, 8-1, 8) },
-		{ id: 6, title: 'Fiesta on the beach', type: 'urgent',
-		  startDate: new Date(2016, 8-1, 17), endDate: new Date(2016, 8-1, 25) },
-		{ id: 7, title: '1 day', type: 'normal', lock: true,
-		  startDate: new Date(2016, 8-1, 18), endDate: new Date(2016, 8-1, 18) },
-		{ id: 8, title: 'Testing', type: 'urgent',
-		  startDate: new Date(2016, 8-1, 13), endDate: new Date(2016, 8-1, 14) }
-	  ];
+   // Create the events list
+   $scope.events = [
+	{ id: 1, title: 'Outdated event', type: 'urgent',
+	  startDate: new Date(2016, 8-1, 1), endDate: new Date(2016, 8-1, 3) },
+	{ id: 2, title: 'In progress, low priority', type: 'normal',
+	  startDate: new Date(2016, 8-1, 3), endDate: new Date(2016, 8-1, 7) },
+	{ id: 3, title: 'Full Week Holidays', type: 'normal',
+	  startDate: new Date(2016, 8-1, 8), endDate: new Date(2016, 8-1, 14) },
+	{ id: 4, title: 'Something to do soon', type: 'normal',
+	  startDate: new Date(2016, 8-1, 6), endDate: new Date(2016, 8-1, 10) },
+	{ id: 5, title: 'In progress, hi-priority', type: 'urgent',
+	  startDate: new Date(2016, 8-1, 4), endDate: new Date(2016, 8-1, 8) },
+	{ id: 6, title: 'Fiesta on the beach', type: 'urgent',
+	  startDate: new Date(2016, 8-1, 17), endDate: new Date(2016, 8-1, 25) },
+	{ id: 7, title: '1 day', type: 'normal', lock: true,
+	  startDate: new Date(2016, 8-1, 18), endDate: new Date(2016, 8-1, 18) },
+	{ id: 8, title: 'Testing', type: 'urgent',
+	  startDate: new Date(2016, 8-1, 13), endDate: new Date(2016, 8-1, 14) }
+   ];
 
-	  // Listen to the "planttError" DOM event, to do something when an error occurs
-	  $scope.$on('planttError', function(e, err){
-		console.log('Plantt '+err.levelName+' ('+err.level+'):', err.message);
-	  });
+   // Listen to the "planttError" DOM event, to do something when an error occurs
+   $scope.$on('planttError', function(e, err){
+	console.log('Plantt '+err.levelName+' ('+err.level+'):', err.message);
+   });
 
-	  // Listen to the "daySelect" DOM event, to add a new event
-	  $scope.$on('daySelect', function(e, date){
-		var name = prompt('New event title:');
-		if (!name) return;
-		if (name === "") return;
-		var end  = new Date(date.getTime() + 1000*60*60);
-		var id   = $scope.events.length + 1;
-		var newEvent = {
-			id: id,
-			title: name,
-			type: 'normal',
-			startDate: date,
-			endDate: end
-		};
-		$scope.events.push(newEvent);
-		$timeout(function(){
-			$scope.renderView();
-		}, 0);
-	  });
+   // Listen to the "daySelect" DOM event, to add a new event
+   $scope.$on('daySelect', function(e, date){
+	var name = prompt('New event title:');
+	if (!name) return;
+	if (name === "") return;
+	var end  = new Date(date.getTime() + 1000*60*60);
+	var id   = $scope.events.length + 1;
+	var newEvent = {
+	   id: id,
+	   title: name,
+	   type: 'normal',
+	   startDate: date,
+	   endDate: end
+	};
+	$scope.events.push(newEvent);
+	$timeout(function(){
+		$scope.renderView();
+	}, 0);
+   });
 
-	  // Listen to the "periodSelect" DOM event, to add a new event
-	  $scope.$on('periodSelect', function(e, dates){
-		var name = prompt('New event title:');
-		if (!name) return;
-		if (name === "") return;
-		var id   = $scope.events.length + 1;
-		var newEvent = {
-			id: id,
-			title: name,
-			type: 'normal',
-			startDate: dates.start,
-			endDate: dates.end
-		};
-		$scope.events.push(newEvent);
-		$timeout(function(){
-			$scope.renderView();
-		}, 0);
-	  });
+   // Listen to the "periodSelect" DOM event, to add a new event
+   $scope.$on('periodSelect', function(e, dates){
+	var name = prompt('New event title:');
+	if (!name) return;
+	if (name === "") return;
+	var id   = $scope.events.length + 1;
+	var newEvent = {
+	   id: id,
+	   title: name,
+	   type: 'normal',
+	   startDate: dates.start,
+	   endDate: dates.end
+	};
+	$scope.events.push(newEvent);
+	$timeout(function(){
+		$scope.renderView();
+	}, 0);
+   });
 
-	  // Listen to the "eventMove" DOM event, to store the new position of the event in time
-	  $scope.$on('eventMove', function(e, event, deltaDays){
-		event.startDate = addDaysToDate(angular.copy(event.startDate), deltaDays);
-		event.endDate	= addDaysToDate(angular.copy(event.endDate), deltaDays);
-		$timeout(function(){
-			$scope.renderView();
-		}, 0);
-	  });
+   // Listen to the "eventMove" DOM event, to store the new position of the event in time
+   $scope.$on('eventMove', function(e, event, deltaDays){
+	event.startDate = addDaysToDate(angular.copy(event.startDate), deltaDays);
+	event.endDate	= addDaysToDate(angular.copy(event.endDate), deltaDays);
+	$timeout(function(){
+	   $scope.renderView();
+	}, 0);
+   });
 
-	  // Listen to the "eventScale" DOM event, to store the new positions of the event limits in time
-	  $scope.$on('eventScale', function(e, event, side, deltaDays){
-		if (side === 'left')
-			event.startDate = addDaysToDate(angular.copy(event.startDate), deltaDays);
-		else if (side === 'right')
-			event.endDate	= addDaysToDate(angular.copy(event.endDate), deltaDays);
-		$timeout(function(){
-			$scope.renderView();
-		}, 0);
-	  });
+   // Listen to the "eventScale" DOM event, to store the new positions of the event limits in time
+   $scope.$on('eventScale', function(e, event, side, deltaDays){
+	if (side === 'left')
+	   event.startDate = addDaysToDate(angular.copy(event.startDate), deltaDays);
+	else if (side === 'right')
+	   event.endDate	= addDaysToDate(angular.copy(event.endDate), deltaDays);
+	$timeout(function(){
+	   $scope.renderView();
+	}, 0);
+   });
 
-	  // Listen to the "eventOpen" DOM event
-	  $scope.$on('eventOpen', function(e, event){
-		console.log(event);
-		alert('Opening event "' + event.title +'"');
-	  });
+   // Listen to the "eventOpen" DOM event
+   $scope.$on('eventOpen', function(e, event){
+	console.log(event);
+	alert('Opening event "' + event.title +'"');
+   });
 
 
-	});</pre>
+});</code></pre>
 			</div>
 		</section>
 		<a id="doc"></a>
