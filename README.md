@@ -57,7 +57,10 @@ Then, make sure the file **`plantt-template.html`** is readable into your projec
 to see how functions are called, then modify it to suits your needs.
 
 To internationalize (translate) the dates, you can add any of the ng-locale providers from AngularJs source code,
-available [here](https://github.com/angular/angular.js/tree/master/src/ngLocale).
+available [here](https://github.com/angular/angular.js/tree/master/src/ngLocale). For example, like in demo, add the
+following line after the angular-1.5.8.min.js script src:
+
+    <script src="js/vendor/angular-locale_fr-fr.js"></script>
 
 
 ## Usage
