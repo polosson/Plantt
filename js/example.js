@@ -130,7 +130,7 @@ planttEx.controller("planttHourlyExample", function($scope, $timeout){
 	// Create the events list (don't use it like this, it's relative for DEMO)
 	$scope.events = [
 		{ id: 1, title: 'One day long',				type: 'normal', startDate: new Date(2016, 8-1, 17, 9, 0), endDate: new Date(2016, 8-1, 17, 15, 0) },
-		{ id: 1, title: 'Two Days long',			type: 'urgent', startDate: new Date(2016, 8-1, 17, 14, 0), endDate: new Date(2016, 8-1, 18, 14, 0) }
+		{ id: 2, title: 'Two Days long',			type: 'urgent', startDate: new Date(2016, 8-1, 17, 14, 0), endDate: new Date(2016, 8-1, 18, 14, 0) }
 	];
 
 	// Listen to the "planttError" DOM event, to do something when an error occurs
