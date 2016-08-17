@@ -80,13 +80,23 @@ angular.module('plantt.module', [])
 					scope.formatDayShort = 'yyyy-MM-dd';	// The JS date format for the short display of dates
 				if (!scope.formatMonth)
 					scope.formatMonth = 'MMMM yyyy';		// The JS date format for the month display in header
-				if (!scope.dayStartHour)
+				if (typeof scope.useHours === 'undefined')
+					scope.useHours = false;					// To specify the use of hours ('true' to display hourly grid and don't force events hours to 00:00)
+				if (typeof scope.dayStartHour === 'undefined')
 					scope.dayStartHour = 6;					// The hour number at which the day begins (default 06:00)
-				if (!scope.dayEndHour)
+				if (typeof scope.dayStartHour === 'undefined')
 					scope.dayEndHour   = 20;				// The hour number at which the day ends (default 20:00)
 
+				if (scope.dayStartHour < 0) scope.dayStartHour = 0;		// Limit to midnight
+				if (scope.dayEndHour > 23)  scope.dayEndHour = 23;		// Limit to midnight - 1
+				if (scope.dayStartHour >= scope.dayEndHour) {			// Prevent errors for hours grid
+					scope.dayStartHour = 6;
+					scope.dayEndHour   = 20;
+				}
+
+
 				// View essentials
-				scope.currDate   = addDaysToDate(new Date(), 0);		// Today's date
+				scope.currDate   = addDaysToDate(new Date(), 0);			// Today's date
 				if (!scope.viewStart)
 					scope.viewStart  = addDaysToDate(scope.currDate, -7);	// Firt day to display in view. Default: today minus 7 days
 				if (!scope.viewEnd)
