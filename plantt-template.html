@@ -14,7 +14,7 @@
 	<div class="centerActions">
 		<div class="btn btn-default btn-sm" ng-click="zoomIn(1)">Zoom In</div>
 		<div class="btn btn-default btn-sm" ng-click="centerView()">Center on today</div>
-		<div class="btn btn-default btn-sm" ng-click="zoomOut(3)">Zoom Out</div>
+		<div class="btn btn-default btn-sm" ng-click="zoomOut(1)">Zoom Out</div>
 	</div>
 	<div class="clearfix"></div>
 </header>
@@ -27,6 +27,15 @@
 			<th ng-repeat="day in enumDays" title="{{day.title}}"
 				ng-class="{'today': day.today, 'sunday': day.date.getDay() === 0, 'month': day.isLastOfMonth}">
 				<span ng-show="cellWidth > 18">{{day.num}}</span>
+				<table>
+					<thead>
+						<tr class="hourLine">
+							<th ng-repeat="hour in day.enumHours" title="{{day.title}}, {{hour.title}}:00">
+								<span ng-show="cellWidth >= minCellWidthForHours">{{hour.title}}</span>
+							</th>
+						</tr>
+					</thead>
+				</table>
 			</th>
 		</tr>
 	</thead>
@@ -37,7 +46,18 @@
 			<tr>
 				<td ng-repeat="day in enumDays" title="{{day.title}}" height="{{gridHeight}}"
 					ng-class="{'today': day.today, 'sunday': day.date.getDay() === 0, 'month': day.isLastOfMonth}">
-					<span ng-show="day.nbEvents > 0">{{day.nbEvents}}</span>
+					<table class="hourGrid" ng-show="cellWidth >= minCellWidthForHours">
+						<thead>
+							<tr class="hourLine">
+								<th ng-repeat="hour in day.enumHours" title="{{day.title}}, {{hour.title}}:00">
+									<span ng-show="cellWidth >= minCellWidthForHours">{{hour.title}}</span>
+								</th>
+							</tr>
+						</thead>
+					</table>
+					<span ng-hide="cellWidth < minCellWidthForHours">{{day.date | date:'shortDate'}}</span>
+					<span ng-show="day.nbEvents > 0 && cellWidth < 100">{{day.nbEvents}}</span>
+					<span ng-show="day.nbEvents > 0 && cellWidth >= 100">({{day.nbEvents}} items)</span>
 				</td>
 			</tr>
 		</tbody>

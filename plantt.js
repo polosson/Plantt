@@ -80,11 +80,19 @@ angular.module('plantt.module', [])
 					scope.formatDayShort = 'yyyy-MM-dd';	// The JS date format for the short display of dates
 				if (!scope.formatMonth)
 					scope.formatMonth = 'MMMM yyyy';		// The JS date format for the month display in header
+				if (!scope.dayStartHour)
+					scope.dayStartHour = 6;					// The hour number at which the day begins (default 06:00)
+				if (!scope.dayEndHour)
+					scope.dayEndHour   = 20;				// The hour number at which the day ends (default 20:00)
 
 				// View essentials
 				scope.currDate   = addDaysToDate(new Date(), 0);		// Today's date
-				scope.viewStart  = addDaysToDate(scope.currDate, -7);	// Firt day to display in view. Default: today minus 7 days
-				scope.viewEnd	 = addDaysToDate(scope.currDate, 14);	// Last day to display in view. Default: today plus 14 days
+				if (!scope.viewStart)
+					scope.viewStart  = addDaysToDate(scope.currDate, -7);	// Firt day to display in view. Default: today minus 7 days
+				if (!scope.viewEnd)
+					scope.viewEnd	 = addDaysToDate(scope.currDate, 14);	// Last day to display in view. Default: today plus 14 days
+				// The minimum width in pixels for the hours grid to be displayed
+				scope.minCellWidthForHours = (scope.dayEndHour+1 - scope.dayStartHour) * 13;
 				// To be calculated by the browser
 				scope.headerHeight = 40;
 				scope.theadHeight  = 63;
@@ -107,6 +115,17 @@ angular.module('plantt.module', [])
 					$rootScope.$broadcast('planttError', { level: lvl, levelName: level, message: msg });
 				};
 
+				/**
+				 * Function to get the list of all hours within a working day (between dayStartHour & dayEndHour)
+				 *
+				 * @returns {ARRAY} The list of all hours within a working day
+				 */
+				function listHoursInDay() {
+					var enumHours = [];
+					for (var h = scope.dayStartHour; h < (scope.dayEndHour +1); h++)
+						enumHours.push({ num: h, title: ('00' + h).substr(-2) });
+					return enumHours;
+				}
 
 				/*
 				 * Recalculate the Grid and the rendered events for the view
@@ -117,7 +136,7 @@ angular.module('plantt.module', [])
 					scope.gridWidth	 = $document.find('tbody').prop('offsetWidth');			// Width of the rendered grid
 					scope.viewPeriod = daysInPeriod(scope.viewStart, scope.viewEnd, false);	// Number of days in period of the view
 					scope.cellWidth	 = scope.gridWidth / (scope.viewPeriod + 1);			// Width of the cells of the grid
-					scope.linesFill	 = {};
+					scope.linesFill	 = {};			// Empty the lines filling map
 					scope.renderedEvents  = [];		// Empty the rendered events list
 
 					// First Loop: on all view's days, to define the grid
@@ -127,12 +146,13 @@ angular.module('plantt.module', [])
 						var today = (scope.currDate.getTime() === dayDate.getTime());
 						var isLastOfMonth = (daysInMonth(dayDate) === dayDate.getDate());
 
-						// Populate the lines filling
+						// Populate the lines filling map
 						for (var l = 1; l <= scope.nbLines; l++) {
 							scope.linesFill[l] = [];
 							for (var ld = 0; ld <= scope.viewPeriod; ld++)
 								scope.linesFill[l].push(false);
 						}
+
 						// Populate the list of all days
 						scope.enumDays.push({
 							num: dateFilter(dayDate, 'dd'),
@@ -142,7 +162,8 @@ angular.module('plantt.module', [])
 							title: dateFilter(dayDate, scope.formatDayLong),
 							nbEvents: 0,
 							today: today,
-							isLastOfMonth: isLastOfMonth
+							isLastOfMonth: isLastOfMonth,
+							enumHours: listHoursInDay()
 						});
 						// Populate the list of all months
 						monthNumDays += 1;
