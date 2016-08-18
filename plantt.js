@@ -87,12 +87,13 @@ angular.module('plantt.module', [])
 				if (typeof scope.dayStartHour === 'undefined')
 					scope.dayEndHour   = 20;				// The hour number at which the day ends (default 20:00)
 
-				if (scope.dayStartHour < 0) scope.dayStartHour = 0;		// Limit to midnight
-				if (scope.dayEndHour > 23)  scope.dayEndHour = 23;		// Limit to midnight - 1
+				if (scope.dayStartHour < 0) scope.dayStartHour = 0;		// Limit start hour of day to midnight
+				if (scope.dayEndHour > 23)  scope.dayEndHour = 23;		// Limit end hour of day to 23:00
 				if (scope.dayStartHour >= scope.dayEndHour) {			// Prevent errors for hours grid
 					scope.dayStartHour = 6;
 					scope.dayEndHour   = 20;
 				}
+				scope.nbHours = scope.dayEndHour +1 - scope.dayStartHour;
 
 
 				// View essentials
@@ -145,7 +146,8 @@ angular.module('plantt.module', [])
 					scope.enumMonths = [];													// List of objects describing all months within the view.
 					scope.gridWidth	 = $document.find('tbody').prop('offsetWidth');			// Width of the rendered grid
 					scope.viewPeriod = daysInPeriod(scope.viewStart, scope.viewEnd, false);	// Number of days in period of the view
-					scope.cellWidth	 = scope.gridWidth / (scope.viewPeriod + 1);			// Width of the cells of the grid
+					scope.cellWidth	 = scope.gridWidth / (scope.viewPeriod + 1);			// Width of the days cells of the grid
+					scope.HcellWidth = scope.cellWidth / scope.nbHours;						// Width of the hours cells of the grid
 					scope.linesFill	 = {};			// Empty the lines filling map
 					scope.renderedEvents  = [];		// Empty the rendered events list
 
@@ -196,18 +198,38 @@ angular.module('plantt.module', [])
 						var evt		= angular.copy(event);
 						var eStart	= evt.startDate.getTime(),
 							eEnd	= evt.endDate.getTime(),
-							vStart	= scope.viewStart.getTime(),
-							vEnd	= scope.viewEnd.getTime();
+							viewRealStart	= new Date(scope.viewStart.getTime()),
+							viewRealEnd		= new Date(scope.viewEnd.getTime());
+						viewRealStart.setHours(0); viewRealStart.setMinutes(0); viewRealStart.setSeconds(0);
+						viewRealEnd.setHours(23); viewRealEnd.setMinutes(59); viewRealEnd.setSeconds(59);
+						var vStart	= viewRealStart.getTime(),
+							vEnd	= viewRealEnd.getTime();
 						if (eStart < vStart && eEnd < vStart)			// Do not render event if it's totally BEFORE the view's period
 							return true;
 						if (eStart > vEnd)								// Do not render event if it's AFTER the view's period
 							return true;
 
 						// Calculate the left and width offsets for the event's element
-						var offsetDays	= -daysInPeriod(evt.startDate, scope.viewStart, true);
-						var eventLength = daysInPeriod(evt.endDate, evt.startDate, false) + 1;
+						var offsetDays	= -daysInPeriod(angular.copy(evt.startDate), scope.viewStart, true);
+						var eventLength = daysInPeriod(angular.copy(evt.endDate), angular.copy(evt.startDate), false) + 1;
 						var eventWidth	= eventLength * scope.cellWidth;
 						var offsetLeft	= offsetDays * scope.cellWidth;
+						if (scope.useHours) {
+							var eventStartHour	= evt.startDate.getHours();
+							var eventEndHour	= evt.endDate.getHours();
+							var offsetHours		= scope.HcellWidth * (eventStartHour - scope.dayStartHour);
+							offsetLeft += offsetHours;
+							if (evt.startDate.getDate() === evt.endDate.getDate())	// If event is during one single day
+								eventWidth = scope.HcellWidth * (eventEndHour - eventStartHour);
+							else {
+								if (eStart < vStart)								// If event start date or hour is BEFORE the view start
+									eventWidth += offsetHours;
+								if (eEnd > vEnd)									// If event end date or hour is AFTER the view end
+									eventWidth -= offsetHours;
+								else												// If event end hour is before the view end
+									eventWidth -= offsetHours + (scope.HcellWidth * (scope.dayEndHour+1 - eventEndHour));
+							}
+						}
 
 						var daysExceed	= 0, extraClass	= evt.type+' ';
 						// If the event's START date is BEFORE the current displayed view
@@ -216,13 +238,13 @@ angular.module('plantt.module', [])
 							daysExceed = -offsetDays;	// to trim the total element's width
 							extraClass += 'overLeft ';	// to decorate the element's left boundary
 						}
-						// If the event's END date is AFTER the current displayed month
-						if (evt.endDate.getTime() > scope.viewEnd.getTime()) {
-							daysExceed = daysInPeriod(scope.viewEnd, evt.endDate, false);
+						// If the event's END date is AFTER the current displayed view
+						if (eEnd > vEnd) {
+							daysExceed = daysInPeriod(scope.viewEnd, angular.copy(evt.endDate), false);
 							extraClass += 'overRight ';	// to decorate the element's right boundary
 						}
 						// If the event's END date is BEFORE TODAY
-						if (evt.endDate.getTime() < scope.currDate.getTime()) {
+						if (eEnd < scope.currDate.getTime()) {
 							extraClass += 'past ';	// to illustrate the fact it's in the past
 						}
 						if (evt.startDate.getTime() < (scope.currDate.getTime() - ((scope.lockMarginDays - 1) * 24*60*60*1000))) {
