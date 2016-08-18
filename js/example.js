@@ -117,8 +117,8 @@ planttEx.controller("planttHourlyExample", function($scope, $timeout){
 	// Basic settings (optional)
 	$scope.nbLines			= 6;				// Maximum number of lines we can draw in timeline
 	$scope.lockMarginDays	= 2;				// Number of days between today and the start date of events for the automatic lock to take effect
-	$scope.viewStart		= addDaysToDate(new Date(), -1);	// Firt day to display in view.
-	$scope.viewEnd			= addDaysToDate(new Date(), 1);		// Last day to display in view.
+	$scope.viewStart		= addDaysToDate(new Date(), 0);	// Firt day to display in view.
+	$scope.viewEnd			= addDaysToDate(new Date(), 2);		// Last day to display in view.
 
 	$scope.useHours			= true;				// To specify the use of hours (to display hourly grid and don't force events hours to 00:00)
 	$scope.dayStartHour		= 8;				// The hour number at which the day begins (default 06:00)
@@ -129,8 +129,9 @@ planttEx.controller("planttHourlyExample", function($scope, $timeout){
 
 	// Create the events list (don't use it like this, it's relative for DEMO)
 	$scope.events = [
-		{ id: 1, title: 'One day long',				type: 'normal', startDate: new Date(2016, 8-1, 17, 9, 0), endDate: new Date(2016, 8-1, 17, 15, 0) },
-		{ id: 2, title: 'Two Days long',			type: 'urgent', startDate: new Date(2016, 8-1, 17, 14, 0), endDate: new Date(2016, 8-1, 18, 14, 0) }
+		{ id: 1, title: 'One day short',			type: 'normal', startDate: new Date(2016, 8-1, 18, 9, 0), endDate: new Date(2016, 8-1, 18, 15, 0) },
+		{ id: 2, title: 'Two Days long',			type: 'urgent', startDate: new Date(2016, 8-1, 17, 14, 0), endDate: new Date(2016, 8-1, 19, 15, 0) },
+		{ id: 3, title: 'Two nights more',			type: 'normal', startDate: new Date(2016, 8-1, 18, 18, 0), endDate: new Date(2016, 8-1, 20, 9, 0) }
 	];
 
 	// Listen to the "planttError" DOM event, to do something when an error occurs
