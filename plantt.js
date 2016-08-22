@@ -142,6 +142,7 @@ angular.module('plantt.module', [])
 				 * Recalculate the Grid and the rendered events for the view
 				 */
 				scope.renderView = function() {
+					var currTime	 = (new Date()).getTime();
 					scope.enumDays	 = [];													// List of objects describing all days within the view.
 					scope.enumMonths = [];													// List of objects describing all months within the view.
 					scope.gridWidth	 = $document.find('tbody').prop('offsetWidth');			// Width of the rendered grid
@@ -243,20 +244,18 @@ angular.module('plantt.module', [])
 							daysExceed = daysInPeriod(scope.viewEnd, angular.copy(evt.endDate), false);
 							extraClass += 'overRight ';	// to decorate the element's right boundary
 						}
-						// If the event's END date is BEFORE TODAY
-						if (eEnd < scope.currDate.getTime()) {
-							extraClass += 'past ';	// to illustrate the fact it's in the past
-						}
-						if (evt.startDate.getTime() < (scope.currDate.getTime() - ((scope.lockMarginDays - 1) * 24*60*60*1000))) {
-							if (scope.autoLock === true)
-								evt.lock = true;			// to lock the element on the view (not modifiable anymore)
-						}
+						// If the event's END date is BEFORE TODAY (to illustrate the fact it's in the past)
+						if (eEnd < currTime)
+							extraClass += 'past ';
+
+						// To automatically lock the event on the view
+						evt.lock = (eStart < (currTime - ((scope.lockMarginDays - 1) * 24*60*60*1000)) && scope.autoLock === true);
 						// If the event has the lock value set to true
 						if (evt.lock === true)
 							extraClass += 'locked ';
 
 						// If the event is CURRENTLY active (over today)
-						if (evt.startDate.getTime() <= scope.currDate.getTime() && evt.endDate.getTime() >= scope.currDate.getTime()) {
+						if (eStart <= currTime && eEnd >= currTime) {
 							extraClass += 'current ';	// to illustrate the fact it's currently active
 						}
 						// Add some classes to the element
