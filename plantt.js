@@ -45,6 +45,19 @@ function addDaysToDate(date, days) {
 	mdate.setHours(12); mdate.setMinutes(0); mdate.setSeconds(0); mdate.setMilliseconds(0);
 	return mdate;
 }
+/**
+ * Add some hours to a date object
+ *
+ * @param {DATE} date Original date
+ * @param {INT} hours Number of hours to add to the date
+ * @returns {DATE} The resulting date object, normalized (xx:00:00.000)
+ */
+function addHoursToDate(date, hours) {
+	var mdate = new Date(date.getTime());
+	mdate.setTime( mdate.getTime()+ hours * 1000*60*60 );
+	mdate.setMinutes(0); mdate.setSeconds(0); mdate.setMilliseconds(0);
+	return mdate;
+}
 
 
 /**
@@ -214,11 +227,11 @@ angular.module('plantt.module', [])
 						var offsetDays	= -daysInPeriod(angular.copy(evt.startDate), scope.viewStart, true);
 						var eventLength = daysInPeriod(angular.copy(evt.endDate), angular.copy(evt.startDate), false) + 1;
 						var eventWidth	= eventLength * scope.cellWidth;
-						var offsetLeft	= offsetDays * scope.cellWidth;
+						var offsetLeft	= Math.floor(offsetDays * scope.cellWidth);
 						if (scope.useHours) {
 							var eventStartHour	= evt.startDate.getHours();
 							var eventEndHour	= evt.endDate.getHours();
-							var offsetHours		= scope.HcellWidth * (eventStartHour - scope.dayStartHour);
+							var offsetHours		= Math.floor(scope.HcellWidth * (eventStartHour - scope.dayStartHour));
 							offsetLeft += offsetHours;
 							if (evt.startDate.getDate() === evt.endDate.getDate())	// If event is during one single day
 								eventWidth = scope.HcellWidth * (eventEndHour - eventStartHour);
@@ -282,7 +295,7 @@ angular.module('plantt.module', [])
 
 						// Place and scale the event's element in DOM
 						evt.locScale = {
-							'left': offsetLeft+'px',
+							'left': Math.floor(offsetLeft)+'px',
 							'width': (eventWidth - (daysExceed * scope.cellWidth))+'px',
 							'top': (evt.line * (scope.eventHeight + scope.eventMargin))+'px',
 							'margin-top': scope.headHeight+'px',
@@ -418,9 +431,9 @@ angular.module('plantt.module', [])
 	/*
 	 * GRID Directive
 	 */
-	.directive('tbody', function($document, $rootScope){
+	.directive('planttDaysGrid', function($document, $rootScope){
 		return {
-			restrict: 'E',
+			restrict: 'A',
 			link: function(scope, element) {
 
 				// Click-drag on grid emits the event "periodSelect" to all other scopes
@@ -430,8 +443,12 @@ angular.module('plantt.module', [])
 
 				function grabGridStart (e){
 					e.preventDefault(); e.stopPropagation();
-					var dayInView = Math.floor(e.layerX / scope.cellWidth);
-					selStart = addDaysToDate(scope.viewStart, dayInView);
+					var startDay = Math.floor(e.layerX / scope.cellWidth);
+					selStart = addDaysToDate(scope.viewStart, startDay);
+					if (scope.useHours) {
+						var startHour = Math.floor((e.layerX % scope.cellWidth) / scope.nbHours) - 12 + scope.dayStartHour;
+						selStart = addHoursToDate(selStart, startHour);
+					}
 					eventHelper.css({top: (e.layerY - 25)+'px', left: (e.layerX)+'px'});
 					eventHelper.css({display: 'block'});
 					$document.on('mousemove', grabGridMove);
@@ -457,6 +474,10 @@ angular.module('plantt.module', [])
 					e.preventDefault(); e.stopPropagation();
 					var dayInView = Math.floor(e.layerX / scope.cellWidth);
 					selEnd  = addDaysToDate(scope.viewStart, dayInView);
+					if (scope.useHours) {
+						var endHour = Math.floor((e.layerX % scope.cellWidth) / scope.nbHours) - 12 + scope.dayStartHour;
+						selEnd = addHoursToDate(selEnd, endHour);
+					}
 					if (selStart.getTime() < selEnd.getTime()) {
 						$rootScope.$broadcast('periodSelect', {start: selStart, end: selEnd});
 						scope.throwError(3, "The DOM event 'periodSelect' was emitted in rootScope.");
@@ -478,6 +499,8 @@ angular.module('plantt.module', [])
 					e.preventDefault();
 					var dayInView = Math.floor(e.layerX / scope.cellWidth);
 					var selectedDate = addDaysToDate(scope.viewStart, dayInView);
+					if (scope.useHours)
+						selectedDate.setHours(scope.dayStartHour);
 					$rootScope.$broadcast('daySelect', selectedDate);
 					scope.throwError(3, "The DOM event 'daySelect' was emitted in rootScope.");
 				});

@@ -117,12 +117,12 @@ planttEx.controller("planttHourlyExample", function($scope, $timeout){
 	// Basic settings (optional)
 	$scope.nbLines			= 6;				// Maximum number of lines we can draw in timeline
 	$scope.lockMarginDays	= 2;				// Number of days between today and the start date of events for the automatic lock to take effect
-	$scope.viewStart		= addDaysToDate(new Date(), 0);	// Firt day to display in view.
-	$scope.viewEnd			= addDaysToDate(new Date(), 2);		// Last day to display in view.
+	$scope.viewStart		= addDaysToDate(new Date(), -3);	// Firt day to display in view.
+	$scope.viewEnd			= addDaysToDate(new Date(), 6);		// Last day to display in view.
 
 	$scope.useHours			= true;				// To specify the use of hours (to display hourly grid and don't force events hours to 00:00)
 	$scope.dayStartHour		= 8;				// The hour number at which the day begins (default 06:00)
-	$scope.dayEndHour		= 19;				// The hour number at which the day begins (default 06:00)
+	$scope.dayEndHour		= 19;				// The hour number at which the day begins (default 19:00)
 
 	// FOR DEMO : using today as a reference to create events, for them to be allways visible
 	var now = new Date();
@@ -144,7 +144,8 @@ planttEx.controller("planttHourlyExample", function($scope, $timeout){
 		var name = prompt('New event title:');
 		if (!name) return;
 		if (name === "") return;
-		var end  = new Date(date.getTime() + 1000*60*60);
+		var end  = new Date(date.getTime());
+		end.setHours($scope.dayEndHour+1);
 		var id   = $scope.events.length + 1;
 		var newEvent = {
 			id: id,
