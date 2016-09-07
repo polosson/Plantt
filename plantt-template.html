@@ -25,12 +25,13 @@
 		</tr>
 		<tr class="dayLine">
 			<th ng-repeat="day in enumDays" title="{{day.title}}"
-				ng-class="{'today': day.today, 'sunday': day.date.getDay() === 0, 'month': day.isLastOfMonth}">
+				ng-class="{'today': day.today, 'sunday': day.date.getDay() === 0, 'lastDmonth': day.isLastOfMonth}">
 				<span ng-show="cellWidth > 18">{{day.num}}</span>
 				<table ng-show="useHours && cellWidth >= minCellWidthForHours">
 					<thead>
 						<tr class="hourLine">
-							<th ng-repeat="hour in day.enumHours" title="{{day.title}}, {{hour.title}}:00">
+							<th ng-repeat="hour in day.enumHours" title="{{day.title}}, {{hour.title}}:00"
+								ng-class="{'today': day.today}">
 								<span>{{hour.title}}</span>
 							</th>
 						</tr>
@@ -45,7 +46,7 @@
 		<tbody plantt-days-grid>
 			<tr>
 				<td ng-repeat="day in enumDays" title="{{day.title}}" height="{{gridHeight}}"
-					ng-class="{'today': day.today, 'sunday': day.date.getDay() === 0, 'month': day.isLastOfMonth}">
+					ng-class="{'today': day.today, 'sunday': day.date.getDay() === 0, 'lastDmonth': day.isLastOfMonth}">
 					<table class="hourGrid" ng-show="useHours && cellWidth >= minCellWidthForHours">
 						<thead>
 							<tr class="hourLine">

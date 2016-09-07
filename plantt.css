@@ -43,7 +43,7 @@ scheduler table {
 	table-layout: fixed;
 }
 scheduler table tr th, scheduler table tr td {
-	border-right: 1px solid #DDD;
+	border-right: 1px solid #BBB;
 	padding: 0; margin: 0;
 	cursor: pointer;
 	vertical-align: middle;
@@ -61,6 +61,7 @@ scheduler table tr.dayLine th {
 	background-color: #F5F5F5;
 }
 scheduler table tr.hourLine th {
+	border-right: 1px solid #E5E5E5;
 	font-weight: normal;
 	font-size: 0.8em;
 }
@@ -82,18 +83,14 @@ scheduler table.hourGrid th { vertical-align: bottom; }
 scheduler table.hourGrid th:last-of-type { border:none; }
 
 /***** Scheduler grid special cells *****/
-scheduler table td.today {
+scheduler table td.today, scheduler table th.today {
 	background-color: #FFDBCE !important;
 }
-scheduler table td.sunday {
-	border-right: 1px solid #FFB8B8;
+scheduler table td.sunday, scheduler table th.sunday {
+	border-right: 1px solid #F88;
 }
-scheduler table td.month {
-	border-right: 1px solid #F55;
-	height: 30px;
-}
-scheduler table td.month:last-child {
-	border: none;
+scheduler table td.lastDmonth, scheduler table th.lastDmonth {
+	border-right: 1px solid #F33;
 }
 
 
