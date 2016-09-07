@@ -2,18 +2,18 @@
 <header>
 	<div class="prevActions">
 		<div class="btn btn-default btn-sm" ng-click="setStartView(2016, 6, 20)">Custom startDate</div>
-		<div class="btn btn-default btn-sm" ng-click="prevCustom(15)"><<</div>
+		<div class="btn btn-default btn-sm" ng-click="prevCustom(3)"><<</div>
 		<div class="btn btn-default btn-sm" ng-click="prevDay()"><</div>
 	</div>
 	<div class="nextActions">
 		<div class="btn btn-default btn-sm" ng-click="nextDay()">></div>
-		<div class="btn btn-default btn-sm" ng-click="nextCustom(15)">>></div>
+		<div class="btn btn-default btn-sm" ng-click="nextCustom(3)">>></div>
 		<div class="btn btn-default btn-sm" ng-click="setEndView(2016, 8, 20)">Custom EndDate</div>
 	</div>
 	<div class="clearfix hidden-sm hidden-md hidden-lg"></div>
 	<div class="centerActions">
 		<div class="btn btn-default btn-sm" ng-click="zoomIn(1)">Zoom In</div>
-		<div class="btn btn-default btn-sm" ng-click="centerView()">Center on today</div>
+		<div class="btn btn-default btn-sm" ng-click="centerView(0,2)">Center on today</div>
 		<div class="btn btn-default btn-sm" ng-click="zoomOut(1)">Zoom Out</div>
 	</div>
 	<div class="clearfix"></div>
@@ -63,7 +63,9 @@
 		</tbody>
 	</table>
 	<div class="eventsContainer">
-		<event ng-repeat="ev in renderedEvents" event-id="{{ev.id}}" title="#{{ev.id}} - {{ev.title}}"
+		<event ng-repeat="ev in renderedEvents" event-id="{{ev.id}}" title="#{{ev.id}} - {{ev.title}}
+[  {{ev.startDate | date:'short'}} >
+> {{ev.endDate | date:'short'}}  ]"
 			   ng-style="ev.locScale"
 			   ng-class="[ev.extraClasses]">
 			<handle ng-show="!ev.lock" class="leftHandle"  event-id="{{ev.id}}" handle-side="left"></handle>

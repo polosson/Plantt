@@ -331,7 +331,7 @@ angular.module('plantt.module', [])
 				 * Offset view to previous 10 days
 				 */
 				scope.prevCustom = function(days){
-					if (!days) days = 15;
+					if (typeof days === 'undefined') days = 15;
 					scope.viewStart = addDaysToDate(scope.viewStart, -days);
 					scope.viewEnd	= addDaysToDate(scope.viewEnd, -days);
 					scope.renderView();
@@ -376,8 +376,8 @@ angular.module('plantt.module', [])
 				 * Center view to current day (defaults -7, +14 days)
 				 */
 				scope.centerView = function(daysBefore, daysAfter){
-					if (!daysBefore) daysBefore = 7;
-					if (!daysAfter) daysAfter = 14;
+					if (typeof daysBefore === 'undefined') daysBefore = 7;
+					if (typeof daysAfter === 'undefined') daysAfter = 14;
 					scope.viewStart  = addDaysToDate(new Date(), -daysBefore);
 					scope.viewEnd	 = addDaysToDate(new Date(), daysAfter);
 					scope.renderView();
@@ -394,7 +394,7 @@ angular.module('plantt.module', [])
 				 * Offset view to next 10 days
 				 */
 				scope.nextCustom = function(days){
-					if (!days) days = 15;
+					if (typeof days === 'undefined') days = 15;
 					scope.viewStart = addDaysToDate(scope.viewStart, days);
 					scope.viewEnd	= addDaysToDate(scope.viewEnd, days);
 					scope.renderView();
