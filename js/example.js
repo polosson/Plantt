@@ -85,9 +85,11 @@ planttEx.controller("planttExample", function($scope, $timeout){
 	});
 
 	// Listen to the "eventMove" DOM event, to store the new position of the event in time
-	$scope.$on('eventMove', function(e, event, deltaDays){
-		event.startDate = addDaysToDate(angular.copy(event.startDate), deltaDays);
-		event.endDate	= addDaysToDate(angular.copy(event.endDate), deltaDays);
+	$scope.$on('eventMove', function(e, event, newStartDate, newEndDate){
+		event.startDate = newStartDate;
+		event.endDate	= newEndDate;
+		console.log('Start', event.startDate.getDate(), event.startDate.getHours()+':00');
+		console.log('End  ', event.endDate.getDate(), event.endDate.getHours()+':00');
 		$timeout(function(){
 			$scope.renderView();
 		}, 0);
@@ -117,8 +119,8 @@ planttEx.controller("planttHourlyExample", function($scope, $timeout){
 	// Basic settings (optional)
 	$scope.nbLines			= 6;				// Maximum number of lines we can draw in timeline
 	$scope.lockMarginDays	= 2;				// Number of days between today and the start date of events for the automatic lock to take effect
-	$scope.viewStart		= addDaysToDate(new Date(), -3);	// Firt day to display in view.
-	$scope.viewEnd			= addDaysToDate(new Date(), 6);		// Last day to display in view.
+	$scope.viewStart		= addDaysToDate(new Date(), -1);	// Firt day to display in view.
+	$scope.viewEnd			= addDaysToDate(new Date(), 3);		// Last day to display in view.
 
 	$scope.useHours			= true;				// To specify the use of hours (to display hourly grid and don't force events hours to 00:00)
 	$scope.dayStartHour		= 8;				// The hour number at which the day begins (default 06:00)
@@ -129,9 +131,10 @@ planttEx.controller("planttHourlyExample", function($scope, $timeout){
 
 	// Create the events list (don't use it like this, it's relative for DEMO)
 	$scope.events = [
-		{ id: 1, title: 'One day short',			type: 'normal', startDate: new Date(2016, 9-1, 7, 9, 0), endDate: new Date(2016, 9-1, 7, 15, 0) },
-		{ id: 2, title: 'Two Days long',			type: 'urgent', startDate: new Date(2016, 9-1, 6, 14, 0), endDate: new Date(2016, 9-1, 8, 15, 0) },
-		{ id: 3, title: 'Two nights more',			type: 'normal', startDate: new Date(2016, 9-1, 7, 18, 0), endDate: new Date(2016, 9-1, 9, 9, 0) }
+		{ id: 1, title: 'One day short',			type: 'normal', startDate: new Date(2016, 9-1, 8, 9, 0), endDate: new Date(2016, 9-1, 8, 15, 0) },
+		{ id: 2, title: 'Two Days long',			type: 'urgent', startDate: new Date(2016, 9-1, 7, 14, 0), endDate: new Date(2016, 9-1, 9, 15, 0) },
+		{ id: 3, title: 'Two nights more',			type: 'normal', startDate: new Date(2016, 9-1, 8, 18, 0), endDate: new Date(2016, 9-1, 10, 9, 0) },
+		{ id: 4, title: 'Menu contextuel !',		type: 'urgent', startDate: new Date(2016, 9-1, 10, 10, 0), endDate: new Date(2016, 9-1, 11, 16, 0) }
 	];
 
 	// Listen to the "planttError" DOM event, to do something when an error occurs
@@ -180,9 +183,13 @@ planttEx.controller("planttHourlyExample", function($scope, $timeout){
 	});
 
 	// Listen to the "eventMove" DOM event, to store the new position of the event in time
-	$scope.$on('eventMove', function(e, event, deltaDays){
-		event.startDate = addDaysToDate(angular.copy(event.startDate), deltaDays);
-		event.endDate	= addDaysToDate(angular.copy(event.endDate), deltaDays);
+	$scope.$on('eventMove', function(e, event, newStartDate, newEndDate, newStartHour, newEndHour){
+		newStartDate.setHours(newStartHour);
+		newEndDate.setHours(newEndHour);
+		event.startDate = newStartDate;
+		event.endDate	= newEndDate;
+		console.log('Start', event.startDate.getDate(), event.startDate.getHours()+':00');
+		console.log('End  ', event.endDate.getDate(), event.endDate.getHours()+':00');
 		$timeout(function(){
 			$scope.renderView();
 		}, 0);

@@ -589,8 +589,9 @@ angular.module('plantt.module', [])
 
 				// Click-Drag an event to change its dates (emits the event "eventMove" to all other scopes)
 				var dragInit	= false;
-				var startDeltaX = 0, grabDeltaX	 = 0, offsetDay	   = 0, offsetLeft = 0, offsetTop = 0,
-					grabHours	= 0, offsetHours = 0;
+				var startDeltaX = 0, grabDeltaX	= 0, offsetDay = 0, offsetLeft = 0, offsetTop = 0, elemWidth = 0;
+				var newStartDate = thisRenderedEvent.startDate;
+				var newEndDate   = thisRenderedEvent.endDate;
 				var newStartHour = thisRenderedEvent.startDate.getHours();
 				var newEndHour	 = thisRenderedEvent.endDate.getHours();
 				element.on('mousedown', grabEventStart);
@@ -600,9 +601,8 @@ angular.module('plantt.module', [])
 					grabDeltaX	= 0;
 					offsetLeft	= parseInt(element.css('left'));
 					offsetTop	= parseInt(element.css('top'));
+					elemWidth	= parseInt(element.css('width'));
 //					startDeltaX	= (e.layerX % scope.cellWidth) - (offsetLeft % scope.HcellWidth);
-					if (scope.useHours)
-						grabHours = Math.round((scope.nbHours / scope.cellWidth) * (offsetLeft % scope.cellWidth)) -1;
 					element.css({'opacity': 0.5, 'z-index': 1000});
 					$document.on('mousemove', grabEventMove);
 					$document.on('mouseup',   grabEventEnd);
@@ -613,13 +613,7 @@ angular.module('plantt.module', [])
 					e.preventDefault(); e.stopPropagation();
 					dragInit = true;
 					grabDeltaX += e.movementX;
-					if (scope.useHours) {
-						offsetHours = Math.round((grabDeltaX - startDeltaX) / scope.HcellWidth);
-//						offsetDay	= Math.floor((offsetHours +1) / (scope.nbHours - grabHours));
-					}
-//					else
 					offsetDay	= Math.round((grabDeltaX - startDeltaX) / scope.cellWidth);
-					console.log(offsetHours, 'h', offsetDay, 'd');
 					offsetLeft += e.movementX;
 					offsetTop  += e.movementY;
 					element.css({left: offsetLeft+'px', top: offsetTop+'px'});
@@ -629,25 +623,23 @@ angular.module('plantt.module', [])
 					if (!dragInit)
 						return;
 					e.preventDefault(); e.stopPropagation();
-					var thisEvent = $filter('filter')(scope.events, {id: +attrs.eventId}, true)[0];
 					if (scope.useHours) {
-//						if (newStartHour < scope.dayStartHour)
-//							newStartHour = (offsetDay * 24) + newStartHour - scope.dayEndHour + scope.dayStartHour - 1;
-//						if (newEndHour < scope.dayStartHour)
-//							newEndHour = (offsetDay * 24) + newEndHour - scope.dayEndHour + scope.dayStartHour - 1;
-//						if (newStartHour > scope.dayEndHour)
-//							newStartHour = ((offsetDay) * 24) + newStartHour - scope.dayEndHour + scope.dayStartHour - 1;
-//						if (newEndHour > scope.dayEndHour)
-//							newEndHour = ((offsetDay+1) * 24) + newEndHour - scope.dayEndHour + scope.dayStartHour - 1;
-						if (offsetDay > 0) {
-							offsetHours += scope.dayStartHour + 24-scope.dayEndHour -1;
-						}
-						newStartHour += offsetHours;
-						newEndHour	 += offsetHours;
-						offsetDay = 0;
+						var newStartPos		= Math.round(offsetLeft / scope.HcellWidth);
+						var newEndPos		= Math.round((offsetLeft + elemWidth) / scope.HcellWidth);
+						var dayStartInGrid	= Math.floor(newStartPos / scope.nbHours);
+						var dayEndInGrid	= Math.floor(newEndPos / scope.nbHours);
+						newStartDate		= addDaysToDate(angular.copy(scope.viewStart), dayStartInGrid) ;
+						newEndDate			= addDaysToDate(angular.copy(scope.viewStart), dayEndInGrid);
+						newStartHour		= scope.dayStartHour + newStartPos - (scope.nbHours * dayStartInGrid);
+						newEndHour			= scope.dayStartHour + newEndPos - (scope.nbHours * dayEndInGrid);
 					}
+					else {
+						newStartDate = addDaysToDate(newStartDate, offsetDay);
+						newEndDate	 = addDaysToDate(newEndDate, offsetDay);
+					}
+					var thisEvent = $filter('filter')(scope.events, {id: +attrs.eventId}, true)[0];
 					if (thisEvent) {
-						$rootScope.$broadcast('eventMove', thisEvent, offsetDay, newStartHour, newEndHour);
+						$rootScope.$broadcast('eventMove', thisEvent, newStartDate, newEndDate, newStartHour, newEndHour);
 						scope.throwError(3, "The DOM event 'eventMove' was emitted in rootScope.");
 					}
 					dragInit = false;
