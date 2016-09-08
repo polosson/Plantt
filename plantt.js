@@ -75,48 +75,52 @@ angular.module('plantt.module', [])
 				// Create the list of events variable, if not present in the app controller
 				if (!scope.events)
 					scope.events = [];
-				// Options that can be overwritten in app controller
+				/*
+				 * OPTIONS VALUES
+				 * Can be overwritten in app controller
+				 */
+				if (!scope.viewStart)						// Firt day to display in view. Default: today minus 7 days
+					scope.viewStart		= addDaysToDate(scope.currDate, -7);
+				if (!scope.viewEnd)							// Last day to display in view. Default: today plus 14 days
+					scope.viewEnd		= addDaysToDate(scope.currDate, 14);
 				if (!scope.eventHeight)
 					scope.eventHeight	= 50;				// Height of events elements in pixels
 				if (!scope.eventMargin)
 					scope.eventMargin	= 10;				// Margin above events elements for spacing
 				if (!scope.nbLines)
 					scope.nbLines		= 5;				// Maximum number of lines we can draw in timeline
-				scope.nbLines += 1;							// Plus one line more to be sure
 				if (typeof scope.autoLock === 'undefined')
-					scope.autoLock			= true;			// To enable or disable the automatic lock ofcurrent & past events
+					scope.autoLock		= true;				// To enable or disable the automatic lock of current & past events
 				if (typeof scope.lockMarginDays === 'undefined')
-					scope.lockMarginDays	= 0;			// Number of days between today and the start date of events for the automatic lock to take effect
+					scope.lockMarginDays = 0;				// Number of days between today and the start date of events for the automatic lock to be effective
 				if (!scope.formatDayLong)
-					scope.formatDayLong = 'EEEE MMMM dd';	// The JS date format for the long display of dates
+					scope.formatDayLong  = 'EEEE MMMM dd';	// The JS date format for the long display of dates (see https://docs.angularjs.org/api/ng/filter/date)
 				if (!scope.formatDayShort)
 					scope.formatDayShort = 'yyyy-MM-dd';	// The JS date format for the short display of dates
 				if (!scope.formatMonth)
-					scope.formatMonth = 'MMMM yyyy';		// The JS date format for the month display in header
+					scope.formatMonth    = 'MMMM yyyy';		// The JS date format for the month display in header
 				if (typeof scope.useHours === 'undefined')
-					scope.useHours = false;					// To specify the use of hours ('true' to display hourly grid and don't force events hours to 00:00)
+					scope.useHours		 = false;			// To specify the use of hours ('true' to display hourly grid and don't force events hours to 12:00)
 				if (typeof scope.dayStartHour === 'undefined')
-					scope.dayStartHour = 6;					// The hour number at which the day begins (default 06:00)
+					scope.dayStartHour	 = 8;				// The hour number at which the day begins (default 08:00)
 				if (typeof scope.dayEndHour === 'undefined')
-					scope.dayEndHour   = 20;				// The hour number at which the day ends (default 20:00)
+					scope.dayEndHour	 = 20;				// The hour number at which the day ends (default 20:00)
+				/* END OPTIONS VALUES */
 
+				// Options security
+				scope.nbLines += 1;										// Add one line on the grid to be sure
 				if (scope.dayStartHour < 0) scope.dayStartHour = 0;		// Limit start hour of day to midnight
 				if (scope.dayEndHour > 23)  scope.dayEndHour = 23;		// Limit end hour of day to 23:00
 				if (scope.dayStartHour >= scope.dayEndHour) {			// Prevent errors for hours grid
 					scope.dayStartHour = 6;
 					scope.dayEndHour   = 20;
 				}
-				scope.nbHours = scope.dayEndHour +1 - scope.dayStartHour;
-
 
 				// View essentials
-				scope.currDate   = addDaysToDate(new Date(), 0);			// Today's date
-				if (!scope.viewStart)
-					scope.viewStart  = addDaysToDate(scope.currDate, -7);	// Firt day to display in view. Default: today minus 7 days
-				if (!scope.viewEnd)
-					scope.viewEnd	 = addDaysToDate(scope.currDate, 14);	// Last day to display in view. Default: today plus 14 days
-				// The minimum width in pixels for the hours grid to be displayed
-				scope.minCellWidthForHours = (scope.dayEndHour+1 - scope.dayStartHour) * 13;
+				scope.currDate   = addDaysToDate(new Date(), 0);								// Today's date
+				scope.nbHours = scope.dayEndHour +1 - scope.dayStartHour;						// Number of hours displayed in one day
+				scope.minCellWidthForHours = (scope.dayEndHour+1 - scope.dayStartHour) * 13;	// Minimum width in pixels for the hours grid to be displayed
+
 				// To be calculated by the browser
 				scope.headerHeight = 40;
 				scope.theadHeight  = 63;
@@ -152,7 +156,7 @@ angular.module('plantt.module', [])
 				}
 
 				/*
-				 * Recalculate the Grid and the rendered events for the view
+				 * (Re)Compute the view: grid and rendered events
 				 */
 				scope.renderView = function() {
 					var currTime	 = (new Date()).getTime();
@@ -307,7 +311,7 @@ angular.module('plantt.module', [])
 					});
 
 
-					// Calculate the view height to fit the elements (with margins)
+					// Compute the view's height to fit all elements (with margins)
 					var gridMarginBottom = 40;			// Margin to apply at the bottom of grid, below last line
 					var filledLines = 0;
 					for (var l = 1; l <= scope.nbLines; l++) {
@@ -341,7 +345,7 @@ angular.module('plantt.module', [])
 					scope.renderView();
 				};
 				/*
-				 * Offset view to previous 10 days
+				 * Offset view to previous X days
 				 */
 				scope.prevCustom = function(days){
 					if (typeof days === 'undefined') days = 15;
@@ -404,7 +408,7 @@ angular.module('plantt.module', [])
 					scope.renderView();
 				};
 				/*
-				 * Offset view to next 10 days
+				 * Offset view to next X days
 				 */
 				scope.nextCustom = function(days){
 					if (typeof days === 'undefined') days = 15;
@@ -437,6 +441,7 @@ angular.module('plantt.module', [])
 			link: function(scope, element) {
 
 				// Click-drag on grid emits the event "periodSelect" to all other scopes
+				// Useful to add events on the timeline
 				var eventHelper = $document.find('eventhelper');
 				var dragInit = false, startWidth = 0, selStart = null, selEnd   = null;
 				element.on('mousedown', grabGridStart);
@@ -495,6 +500,7 @@ angular.module('plantt.module', [])
 			restrict: 'E',
 			link: function(scope, element) {
 				// Double-click on a cell of the grid emits the event "dayselect" to all other scopes
+				// Useful to add an event on a specific day of the timeline
 				element.on('dblclick', function(e){
 					e.preventDefault();
 					var dayInView = Math.floor(e.layerX / scope.cellWidth);
@@ -515,7 +521,7 @@ angular.module('plantt.module', [])
 			restrict: 'E',
 			link: function(scope, element) {
 
-				// Click-drag on grid header to move the view to the left or right
+				// Click-drag on grid header to move the view left or right
 				element.on('mousedown', grabHeadStart);
 
 				var dragInit	= false, grabDeltaX  = 0;
@@ -571,6 +577,7 @@ angular.module('plantt.module', [])
 				}, 0);
 
 				// Double-click an event element to emit the custom event "eventOpen" to all other scopes
+				// Useful to open a modal window containing detailed informations of the vent, for example
 				element.on('dblclick', function(e){
 					e.preventDefault(); e.stopPropagation();
 					var thisEvent = $filter('filter')(scope.events, {id: +attrs.eventId}, true)[0];
@@ -582,12 +589,16 @@ angular.module('plantt.module', [])
 					scope.throwError(3, "The DOM event 'eventOpen' was emitted in rootScope.");
 				});
 
-				// Everything following these lines will be accessible only if the "event.lock" is not === true
+				/*
+				 * EVERYTHING following will only be accessible if the event is NOT LOCKED
+				 * (if "event.lock" is not = true)
+				 */
 				var thisRenderedEvent = $filter('filter')(scope.renderedEvents, {id: +attrs.eventId}, true)[0];
 				if (thisRenderedEvent.lock && thisRenderedEvent.lock === true)
 					return;
 
-				// Click-Drag an event to change its dates (emits the event "eventMove" to all other scopes)
+				// Click-Drag an event to change its dates
+				// (emits the DOM event "eventMove" to all other scopes)
 				var dragInit	= false;
 				var grabDeltaX	= 0, offsetDay = 0, offsetLeft = 0, offsetTop = 0, elemWidth = 0;
 				var newStartDate = thisRenderedEvent.startDate;
@@ -647,6 +658,8 @@ angular.module('plantt.module', [])
 						$rootScope.$broadcast('eventMove', thisEvent, newStartDate, newEndDate, newStartHour, newEndHour);
 						scope.throwError(3, "The DOM event 'eventMove' was emitted in rootScope.");
 					}
+					else
+						scope.throwError(0, "The event with id #"+attrs.eventId+" was not found!");
 					dragInit = false;
 					grabDeltaX  = 0;
 					$document.off('mousemove', grabEventMove);
@@ -663,13 +676,16 @@ angular.module('plantt.module', [])
 			restrict: 'E',
 			link: function(scope, element, attrs) {
 
-
-				// Everything following these lines will be accessible only if the "event.lock" is not === true
+				/*
+				 * EVERYTHING following will only be accessible if the event is NOT LOCKED
+				 * (if "event.lock" is not = true)
+				 */
 				var thisRenderedEvent = $filter('filter')(scope.renderedEvents, {id: +attrs.eventId}, true)[0];
 				if (thisRenderedEvent.lock && thisRenderedEvent.lock === true)
 					return;
 
 				// Click-Drag an event's handles to change its start or end dates
+				// (emits the DOM event "eventScale" to all other scopes)
 				var dragInit	= false;
 				var startDeltaX = 0, grabDeltaX = 0, offsetDay = 0, side = attrs.handleSide, offsetLeft = 0, offsetWidth = 0;
 				var newDate		= new Date(), newHour = 12;
@@ -737,6 +753,8 @@ angular.module('plantt.module', [])
 						$rootScope.$broadcast('eventScale', thisEvent, side, newDate, newHour);
 						scope.throwError(3, "The DOM event 'eventScale' was emitted in rootScope.");
 					}
+					else
+						scope.throwError(0, "The event with id #"+attrs.eventId+" was not found!");
 					dragInit = false;
 					startDeltaX = 0; grabDeltaX  = 0;
 					parentEvent.css({opacity: 1});
