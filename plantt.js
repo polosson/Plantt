@@ -709,8 +709,9 @@ angular.module('plantt.module', [])
 					dragInit = true;
 					grabDeltaX  += e.movementX;
 					if (side === 'left') {
-						offsetLeft  += e.movementX;
 						offsetWidth -= e.movementX;
+						if (offsetWidth >= scope.HcellWidth)
+							offsetLeft  += e.movementX;
 						offsetDay	 = Math.round((grabDeltaX - startDeltaX) / scope.cellWidth);
 					}
 					else if (side === 'right') {
@@ -718,6 +719,8 @@ angular.module('plantt.module', [])
 						offsetDay	 = Math.round((startDeltaX + grabDeltaX) / scope.cellWidth);
 					}
 					else return;
+					if (offsetWidth < scope.HcellWidth)
+						offsetWidth = scope.HcellWidth;
 					parentEvent.css({left: offsetLeft+'px', width: offsetWidth+'px'});
 				}
 				function grabHandleEnd (e){
