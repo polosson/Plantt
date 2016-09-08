@@ -97,7 +97,7 @@ angular.module('plantt.module', [])
 					scope.useHours = false;					// To specify the use of hours ('true' to display hourly grid and don't force events hours to 00:00)
 				if (typeof scope.dayStartHour === 'undefined')
 					scope.dayStartHour = 6;					// The hour number at which the day begins (default 06:00)
-				if (typeof scope.dayStartHour === 'undefined')
+				if (typeof scope.dayEndHour === 'undefined')
 					scope.dayEndHour   = 20;				// The hour number at which the day ends (default 20:00)
 
 				if (scope.dayStartHour < 0) scope.dayStartHour = 0;		// Limit start hour of day to midnight
@@ -589,7 +589,7 @@ angular.module('plantt.module', [])
 
 				// Click-Drag an event to change its dates (emits the event "eventMove" to all other scopes)
 				var dragInit	= false;
-				var startDeltaX = 0, grabDeltaX	= 0, offsetDay = 0, offsetLeft = 0, offsetTop = 0, elemWidth = 0;
+				var grabDeltaX	= 0, offsetDay = 0, offsetLeft = 0, offsetTop = 0, elemWidth = 0;
 				var newStartDate = thisRenderedEvent.startDate;
 				var newEndDate   = thisRenderedEvent.endDate;
 				var newStartHour = thisRenderedEvent.startDate.getHours();
@@ -602,7 +602,6 @@ angular.module('plantt.module', [])
 					offsetLeft	= parseInt(element.css('left'));
 					offsetTop	= parseInt(element.css('top'));
 					elemWidth	= parseInt(element.css('width'));
-//					startDeltaX	= (e.layerX % scope.cellWidth) - (offsetLeft % scope.HcellWidth);
 					element.css({'opacity': 0.5, 'z-index': 1000});
 					$document.on('mousemove', grabEventMove);
 					$document.on('mouseup',   grabEventEnd);
@@ -613,7 +612,7 @@ angular.module('plantt.module', [])
 					e.preventDefault(); e.stopPropagation();
 					dragInit = true;
 					grabDeltaX += e.movementX;
-					offsetDay	= Math.round((grabDeltaX - startDeltaX) / scope.cellWidth);
+					offsetDay	= Math.round(grabDeltaX / scope.cellWidth);
 					offsetLeft += e.movementX;
 					offsetTop  += e.movementY;
 					element.css({left: offsetLeft+'px', top: offsetTop+'px'});
@@ -632,6 +631,12 @@ angular.module('plantt.module', [])
 						newEndDate			= addDaysToDate(angular.copy(scope.viewStart), dayEndInGrid);
 						newStartHour		= scope.dayStartHour + newStartPos - (scope.nbHours * dayStartInGrid);
 						newEndHour			= scope.dayStartHour + newEndPos - (scope.nbHours * dayEndInGrid);
+						// When placing the event's end on the last hour of day, make sure that
+						// its date corresponds (and not set before the first hour of next day)
+						if (newEndHour === scope.dayStartHour) {
+							newEndHour = scope.dayEndHour + 1;
+							newEndDate = addDaysToDate(newEndDate, -1);
+						}
 					}
 					else {
 						newStartDate = addDaysToDate(newStartDate, offsetDay);
@@ -643,7 +648,7 @@ angular.module('plantt.module', [])
 						scope.throwError(3, "The DOM event 'eventMove' was emitted in rootScope.");
 					}
 					dragInit = false;
-					startDeltaX = 0; grabDeltaX  = 0;
+					grabDeltaX  = 0;
 					$document.off('mousemove', grabEventMove);
 					$document.off('mouseup', grabEventEnd);
 				}
@@ -664,9 +669,10 @@ angular.module('plantt.module', [])
 				if (thisRenderedEvent.lock && thisRenderedEvent.lock === true)
 					return;
 
-				// Click-Drag an event handles to change its start or end dates
+				// Click-Drag an event's handles to change its start or end dates
 				var dragInit	= false;
 				var startDeltaX = 0, grabDeltaX = 0, offsetDay = 0, side = attrs.handleSide, offsetLeft = 0, offsetWidth = 0;
+				var newDate		= new Date(), newHour = 12;
 				var parentEvent = element.parent();
 				element.on('mousedown', grabHandleStart);
 
@@ -702,9 +708,33 @@ angular.module('plantt.module', [])
 					if (!dragInit)
 						return;
 					e.preventDefault(); e.stopPropagation();
+					if (scope.useHours) {
+						if (side === 'left')
+							var newPos = Math.round(offsetLeft / scope.HcellWidth);
+						else if (side === 'right')
+							var newPos = Math.round((offsetLeft+offsetWidth) / scope.HcellWidth);
+						else return;
+						var dayInGrid = Math.floor(newPos / scope.nbHours);
+						newDate	= addDaysToDate(angular.copy(scope.viewStart), dayInGrid);
+						newHour	= scope.dayStartHour + newPos - (scope.nbHours * dayInGrid);
+						// When placing the right handle on the last hour of day, make sure that
+						// its date corresponds (and not set before the first hour of next day)
+						if (side === 'right' && newHour === scope.dayStartHour) {
+							newHour = scope.dayEndHour + 1;
+							newDate = addDaysToDate(newDate, -1);
+						}
+					}
+					else {
+						if (side === 'left')
+							var oldDate = thisRenderedEvent.startDate;
+						else if (side === 'right')
+							var oldDate =  thisRenderedEvent.endDate;
+						else return;
+						newDate = addDaysToDate(oldDate, offsetDay);
+					}
 					var thisEvent = $filter('filter')(scope.events, {id: +attrs.eventId}, true)[0];
 					if (thisEvent) {
-						$rootScope.$broadcast('eventScale', thisEvent, side, offsetDay);
+						$rootScope.$broadcast('eventScale', thisEvent, side, newDate, newHour);
 						scope.throwError(3, "The DOM event 'eventScale' was emitted in rootScope.");
 					}
 					dragInit = false;
