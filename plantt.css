@@ -94,10 +94,17 @@ scheduler table td.lastDmonth, scheduler table th.lastDmonth {
 }
 
 
-/***** Scheduler events container *****/
-scheduler .eventsContainer {
+/***** Scheduler containers *****/
+scheduler .timelineContainer {
 	width: 100%;
 	z-index: 100;
+}
+scheduler .eventsContainer {
+	position: absolute;
+	width: 100%;
+	top: 127px;
+	height: auto;
+	z-index: 900;
 }
 
 /***** Scheduler events *****/

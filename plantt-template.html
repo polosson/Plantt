@@ -41,9 +41,9 @@
 		</tr>
 	</thead>
 </table>
-<div class="eventsContainer">
+<div class="timelineContainer">
 	<table>
-		<tbody plantt-days-grid>
+		<tbody>
 			<tr>
 				<td ng-repeat="day in enumDays" title="{{day.title}}" height="{{gridHeight}}"
 					ng-class="{'today': day.today, 'sunday': day.date.getDay() === 0, 'lastDmonth': day.isLastOfMonth}">
@@ -63,8 +63,9 @@
 			</tr>
 		</tbody>
 	</table>
-	<div class="eventsContainer">
+	<div class="eventsContainer" events-canvas>
 		<event ng-repeat="ev in renderedEvents" event-id="{{ev.id}}" title="#{{ev.id}} - {{ev.title}}
+Type: {{ev.type}}
 [  {{ev.startDate | date:'short'}} >
 > {{ev.endDate | date:'short'}}  ]"
 			   ng-style="ev.locScale"

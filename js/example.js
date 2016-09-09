@@ -100,8 +100,6 @@ planttEx.controller("planttExample", function($scope, $timeout){
 			event.startDate = newDate;
 		else if (side === 'right')
 			event.endDate	= newDate;
-		console.log('Start', event.startDate.getDate(), event.startDate.getHours()+':00');
-		console.log('End  ', event.endDate.getDate(), event.endDate.getHours()+':00');
 		$timeout(function(){
 			$scope.renderView();
 		}, 0);
@@ -122,7 +120,7 @@ planttEx.controller("planttHourlyExample", function($scope, $timeout){
 	$scope.lockMarginDays	= 2;				// Number of days between today and the start date of events for the automatic lock to take effect
 	$scope.viewStart		= addDaysToDate(new Date(), -1);	// First day to display in view.
 	$scope.viewEnd			= addDaysToDate(new Date(), 2);		// Last day to display in view.
-
+	// Crucial settings for the use of hours in timeline
 	$scope.useHours			= true;				// To specify the use of hours (to display hourly grid and don't force events hours to 00:00)
 	$scope.dayStartHour		= 8;				// The hour number at which the day begins (default 08:00)
 	$scope.dayEndHour		= 20;				// The hour number at which the day ends   (default 20:00)

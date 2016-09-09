@@ -73,8 +73,10 @@ angular.module('plantt.module', [])
 			templateUrl: 'plantt-template.html',	// Load HTML template for the view
 			link: function(scope){
 				// Create the list of events variable, if not present in the app controller
-				if (!scope.events)
-					scope.events = [];
+				if (!scope.events) scope.events = [];
+				// Today's date
+				scope.currDate = addDaysToDate(new Date(), 0);
+
 				/*
 				 * OPTIONS VALUES
 				 * Can be overwritten in app controller
@@ -117,14 +119,8 @@ angular.module('plantt.module', [])
 				}
 
 				// View essentials
-				scope.currDate   = addDaysToDate(new Date(), 0);								// Today's date
 				scope.nbHours = scope.dayEndHour +1 - scope.dayStartHour;						// Number of hours displayed in one day
 				scope.minCellWidthForHours = (scope.dayEndHour+1 - scope.dayStartHour) * 13;	// Minimum width in pixels for the hours grid to be displayed
-
-				// To be calculated by the browser
-				scope.headerHeight = 40;
-				scope.theadHeight  = 63;
-				scope.headHeight   = 113;
 
 				/**
 				 * Common function to relay errors elsewhere (@todo)
@@ -302,7 +298,6 @@ angular.module('plantt.module', [])
 							'left': Math.floor(offsetLeft)+'px',
 							'width': (eventWidth - (daysExceed * scope.cellWidth))+'px',
 							'top': (evt.line * (scope.eventHeight + scope.eventMargin))+'px',
-							'margin-top': scope.headHeight+'px',
 							'height': scope.eventHeight+'px'
 						};
 
@@ -433,12 +428,22 @@ angular.module('plantt.module', [])
 		};
 	})
 	/*
-	 * GRID Directive
+	 * EVENTS CANVAS Directive
 	 */
-	.directive('planttDaysGrid', function($document, $rootScope){
+	.directive('eventsCanvas', function($document, $rootScope, $timeout){
 		return {
 			restrict: 'A',
 			link: function(scope, element) {
+
+				// Calculate the margin-top offset to avoid overlapping the grid's headers
+				$timeout(function(){
+					var theadHeight	 = parseInt($document.find('thead').prop('offsetHeight'));
+					var headerHeight = parseInt($document.find('header').prop('offsetHeight'));
+					var headHeight	 = (theadHeight + headerHeight + scope.eventMargin)+'px';
+					var gridHeight	 = parseInt($document.find('tbody').prop('offsetHeight'));
+					element.css({'top': headHeight});
+					element.css({'height': (gridHeight - scope.eventMargin)+'px'});
+				}, 0);
 
 				// Click-drag on grid emits the event "periodSelect" to all other scopes
 				// Useful to add events on the timeline
@@ -451,16 +456,20 @@ angular.module('plantt.module', [])
 					var startDay = Math.floor(e.layerX / scope.cellWidth);
 					selStart = addDaysToDate(scope.viewStart, startDay);
 					if (scope.useHours) {
-						var startHour = Math.floor((e.layerX % scope.cellWidth) / scope.nbHours) - 12 + scope.dayStartHour;
-						selStart = addHoursToDate(selStart, startHour);
+						var startPos = Math.round(e.layerX / scope.HcellWidth);
+						var dayInGrid = Math.floor(startPos / scope.nbHours);
+						selStart = addDaysToDate(angular.copy(scope.viewStart), dayInGrid);
+						var newHour	= scope.dayStartHour + startPos - (scope.nbHours * dayInGrid);
+						selStart.setHours(newHour);
 					}
 					eventHelper.css({top: (e.layerY - 25)+'px', left: (e.layerX)+'px'});
 					eventHelper.css({display: 'block'});
 					$document.on('mousemove', grabGridMove);
 					$document.on('mouseup',   grabGridEnd);
+					return false;
 				}
 				function grabGridMove (e){
-					if(e.buttons === 1) {
+					if (e.buttons === 1) {
 						e.preventDefault(); e.stopPropagation();
 						dragInit = true;
 						startWidth += e.movementX;
@@ -480,8 +489,11 @@ angular.module('plantt.module', [])
 					var dayInView = Math.floor(e.layerX / scope.cellWidth);
 					selEnd  = addDaysToDate(scope.viewStart, dayInView);
 					if (scope.useHours) {
-						var endHour = Math.floor((e.layerX % scope.cellWidth) / scope.nbHours) - 12 + scope.dayStartHour;
-						selEnd = addHoursToDate(selEnd, endHour);
+						var endPos = Math.round(e.layerX / scope.HcellWidth);
+						var dayInGrid = Math.floor(endPos / scope.nbHours);
+						selEnd = addDaysToDate(angular.copy(scope.viewStart), dayInGrid);
+						var newHour	= scope.dayStartHour + endPos - (scope.nbHours * dayInGrid);
+						selEnd.setHours(newHour);
 					}
 					if (selStart.getTime() < selEnd.getTime()) {
 						$rootScope.$broadcast('periodSelect', {start: selStart, end: selEnd});
@@ -567,14 +579,6 @@ angular.module('plantt.module', [])
 		return {
 			restrict: 'E',
 			link: function(scope, element, attrs) {
-
-				// Calculate the margin-top offset to avoid overlapping the grid's headers
-				$timeout(function(){
-					scope.theadHeight	= parseInt($document.find('thead').prop('offsetHeight'));
-					scope.headerHeight	= parseInt($document.find('header').prop('offsetHeight'));
-					scope.headHeight	= (scope.theadHeight + scope.headerHeight + scope.eventMargin)+'px';
-					element.css({'margin-top': scope.headHeight});
-				}, 0);
 
 				// Double-click an event element to emit the custom event "eventOpen" to all other scopes
 				// Useful to open a modal window containing detailed informations of the vent, for example
