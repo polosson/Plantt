@@ -4,9 +4,13 @@
 
 Check the **live demo** (kept updated) here : [code.polosson.com/Plantt/](http://www.code.polosson.com/Plantt/)
 
-Preview:
+Preview, daily mode:
 
-![Screenshot of scheduler](screenshot.png)
+![Screenshot of daily scheduler](screenshot.png)
+
+Preview, hourly mode:
+
+![Screenshot of hourly scheduler](screenshot2.png)
 
 
 ## Features
