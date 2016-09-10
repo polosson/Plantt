@@ -108,9 +108,11 @@ Finally, define your own controller:
 		]
 
 		// Listen to the "eventMove" DOM event, to store the new dates of the event
-		$scope.$on('eventMove', function(e, event, deltaDays){
-			event.startDate = addDaysToDate(angular.copy(event.startDate), deltaDays);
-			event.endDate	= addDaysToDate(angular.copy(event.endDate), deltaDays);
+		$scope.$on('eventMove', function(e, event, newStartDate, newEndDate, newStartHour, newEndHour){
+			newStartDate.setHours(newStartHour);
+			newEndDate.setHours(newEndHour);
+			event.startDate = newStartDate;
+			event.endDate   = newEndDate;
 			$timeout(function(){
 				$scope.renderView();
 			}, 0);

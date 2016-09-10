@@ -149,25 +149,33 @@ planttExample.controller("planttCtrl", function($scope, $timeout){
    $scope.formatDayLong  = 'EEEE dd MMMM';   // The JS date format for the long display of dates
    $scope.formatDayShort = 'dd/MM/yyyy';     // The JS date format for the short display of dates
    $scope.formatMonth    = 'MMMM yyyy';      // The JS date format for the month display in header
+   $scope.nbLines        = 6;                // Maximum number of lines we can draw in timeline
+   $scope.lockMarginDays = 2;                // Number of days between today and the start date of events for the automatic lock to take effect
+   $scope.viewStart      = addDaysToDate(new Date(), -1);  // First day to display in view.
+   $scope.viewEnd        = addDaysToDate(new Date(), 2);   // Last day to display in view.
+   // Crucial settings for the use of hours in timeline
+   $scope.useHours       = true;             // To specify the use of hours (to display hourly grid and don't force events hours to 12:00)
+   $scope.dayStartHour   = 8;                // The hour number at which the day begins (default 08:00)
+   $scope.dayEndHour     = 20;               // The hour number at which the day ends   (default 20:00)
 
    // Create the events list
    $scope.events = [
-	{ id: 1, title: 'Outdated event', type: 'urgent',
-	  startDate: new Date(2016, 8-1, 1), endDate: new Date(2016, 8-1, 3) },
-	{ id: 2, title: 'In progress, low priority', type: 'normal',
-	  startDate: new Date(2016, 8-1, 3), endDate: new Date(2016, 8-1, 7) },
-	{ id: 3, title: 'Full Week Holidays', type: 'normal',
-	  startDate: new Date(2016, 8-1, 8), endDate: new Date(2016, 8-1, 14) },
-	{ id: 4, title: 'Something to do soon', type: 'normal',
-	  startDate: new Date(2016, 8-1, 6), endDate: new Date(2016, 8-1, 10) },
-	{ id: 5, title: 'In progress, hi-priority', type: 'urgent',
-	  startDate: new Date(2016, 8-1, 4), endDate: new Date(2016, 8-1, 8) },
-	{ id: 6, title: 'Fiesta on the beach', type: 'urgent',
-	  startDate: new Date(2016, 8-1, 17), endDate: new Date(2016, 8-1, 25) },
-	{ id: 7, title: '1 day', type: 'normal', lock: true,
-	  startDate: new Date(2016, 8-1, 18), endDate: new Date(2016, 8-1, 18) },
-	{ id: 8, title: 'Testing', type: 'urgent',
-	  startDate: new Date(2016, 8-1, 13), endDate: new Date(2016, 8-1, 14) }
+      { id: 0, title: 'Yesterday afternoon', type: 'urgent',
+        startDate: new Date(2016, 9-1,  9, 13, 0), endDate: new Date(2016, 9-1,  9, 20, 0) },
+      { id: 1, title: 'Today morning', type: 'normal',
+        startDate: new Date(2016, 9-1, 10,  8, 0), endDate: new Date(2016, 9-1, 10, 12, 0) },
+      { id: 7, title: 'Today Afternoon', type: 'normal',
+        startDate: new Date(2016, 9-1, 10, 14, 0), endDate: new Date(2016, 9-1, 10, 19, 0) },
+      { id: 2, title: 'Yesterday - Tomorrow', type: 'urgent',
+        startDate: new Date(2016, 9-1,  9, 14, 0), endDate: new Date(2016, 9-1, 11, 15, 0) },
+      { id: 3, title: 'One night long', type: 'normal',
+        startDate: new Date(2016, 9-1, 10, 19, 0), endDate: new Date(2016, 9-1, 11,  9, 0) },
+      { id: 4, title: 'One complete day', type: 'normal',
+        startDate: new Date(2016, 9-1, 12,  8, 0), endDate: new Date(2016, 9-1, 12, 21, 0) },
+      { id: 5, title: 'Not so far in future', type: 'normal',
+        startDate: new Date(2016, 9-1, 12, 14, 0), endDate: new Date(2016, 9-1, 13, 19, 0) },
+      { id: 6, title: 'Tomorrow afternoon', type: 'urgent',
+        startDate: new Date(2016, 9-1, 11, 14, 0), endDate: new Date(2016, 9-1, 11, 20, 0) }
    ];
 
    // Listen to the "planttError" DOM event, to do something when an error occurs
@@ -215,20 +223,23 @@ planttExample.controller("planttCtrl", function($scope, $timeout){
    });
 
    // Listen to the "eventMove" DOM event, to store the new position of the event in time
-   $scope.$on('eventMove', function(e, event, deltaDays){
-	event.startDate = addDaysToDate(angular.copy(event.startDate), deltaDays);
-	event.endDate	= addDaysToDate(angular.copy(event.endDate), deltaDays);
+   $scope.$on('eventMove', function(e, event, newStartDate, newEndDate, newStartHour, newEndHour){
+	newStartDate.setHours(newStartHour);
+	newEndDate.setHours(newEndHour);
+	event.startDate = newStartDate;
+	event.endDate   = newEndDate;
 	$timeout(function(){
 	   $scope.renderView();
 	}, 0);
    });
 
    // Listen to the "eventScale" DOM event, to store the new positions of the event limits in time
-   $scope.$on('eventScale', function(e, event, side, deltaDays){
+   $scope.$on('eventScale', function(e, event, side, newDate, newHour){
+	newDate.setHours(newHour);
 	if (side === 'left')
-	   event.startDate = addDaysToDate(angular.copy(event.startDate), deltaDays);
+	   event.startDate = newDate;
 	else if (side === 'right')
-	   event.endDate	= addDaysToDate(angular.copy(event.endDate), deltaDays);
+	   event.endDate = newDate;
 	$timeout(function(){
 	   $scope.renderView();
 	}, 0);
@@ -321,9 +332,15 @@ planttExample.controller("planttCtrl", function($scope, $timeout){
 						</td>
 					</tr>
 					<tr>
-						<td><code>scheduler .eventsContainer</code></td>
+						<td><code>scheduler .timelineContainer</code></td>
 						<td>
 							<code>width: 100%; z-index: 100;</code>
+						</td>
+					</tr>
+					<tr>
+						<td><code>scheduler .eventsContainer</code></td>
+						<td>
+							<code>position: absolute; width: 100%; z-index: 900;</code>
 						</td>
 					</tr>
 					<tr>
@@ -335,7 +352,7 @@ planttExample.controller("planttCtrl", function($scope, $timeout){
 					<tr>
 						<td><code>scheduler event handle</code></td>
 						<td>
-							<code>display: block; position: absolute; height: 100%; width: 10%; min-width: 5px; z-index: 300;</code>
+							<code>display: block; position: absolute; height: 100%; width: 10%; background-color: rgba(0,0,0,0.1); min-width: 5px; z-index: 300;</code>
 						</td>
 					</tr>
 					<tr>
@@ -374,7 +391,7 @@ planttExample.controller("planttCtrl", function($scope, $timeout){
 						<th>Default style description</th>
 					</tr>
 					<tr>
-						<td><code>today</code></td>
+						<td><code>.today</code></td>
 						<td>Grid<br /><code>table td.today</code></td>
 						<td>When the column represents today's date</td>
 						<td>
@@ -383,7 +400,7 @@ planttExample.controller("planttCtrl", function($scope, $timeout){
 						<td>Highlights the today's date on the grid timeline</td>
 					</tr>
 					<tr>
-						<td><code>sunday</code></td>
+						<td><code>.sunday</code></td>
 						<td>Grid<br /><code>table td.sunday</code></td>
 						<td>When the column represents a sunday (last day of week)</td>
 						<td>
@@ -392,7 +409,7 @@ planttExample.controller("planttCtrl", function($scope, $timeout){
 						<td>Puts a line to separate weeks</td>
 					</tr>
 					<tr>
-						<td><code>month</code></td>
+						<td><code>.month</code></td>
 						<td>Grid<br /><code>table td.month</code></td>
 						<td>When the column represents the last day of month</td>
 						<td>
@@ -401,7 +418,7 @@ planttExample.controller("planttCtrl", function($scope, $timeout){
 						<td>Puts a line to separate weeks</td>
 					</tr>
 					<tr>
-						<td><code>overLeft</code></td>
+						<td><code>.overLeft</code></td>
 						<td>Event<br /><code>event.overLeft</code></td>
 						<td>When the event's start date is before the view's start day (left boundary)</td>
 						<td>
@@ -410,7 +427,7 @@ planttExample.controller("planttCtrl", function($scope, $timeout){
 						<td>Rounds the left side of the event's box</td>
 					</tr>
 					<tr>
-						<td><code>overRight</code></td>
+						<td><code>.overRight</code></td>
 						<td>Event<br /><code>event.overRight</code></td>
 						<td>When the event's end date is after the view's end day (right boundary)</td>
 						<td>
@@ -419,7 +436,7 @@ planttExample.controller("planttCtrl", function($scope, $timeout){
 						<td>Rounds the right side of the event's box</td>
 					</tr>
 					<tr>
-						<td><code>past</code></td>
+						<td><code>.past</code></td>
 						<td>Event<br /><code>event.past</code></td>
 						<td>When the event's end date is before the today's date</td>
 						<td>
@@ -428,7 +445,7 @@ planttExample.controller("planttCtrl", function($scope, $timeout){
 						<td>Makes the color of the box neutral (mid-grey)</td>
 					</tr>
 					<tr>
-						<td><code>current</code></td>
+						<td><code>.current</code></td>
 						<td>Event<br /><code>event.current</code></td>
 						<td>
 							When the event's start date is before the today's date<br />
@@ -451,7 +468,7 @@ planttExample.controller("planttCtrl", function($scope, $timeout){
 						</td>
 					</tr>
 					<tr>
-						<td><code>locked</code></td>
+						<td><code>.locked</code></td>
 						<td>Event<br /><code>event.locked</code><br /><code>event.locked label</code></td>
 						<td>When the event is set to be locked</td>
 						<td>
@@ -495,6 +512,27 @@ planttExample.controller("planttCtrl", function($scope, $timeout){
 								<li><b>lock</b>: <i>(boolean)</i> Optionnal, set to true to lock the event on timeline (make it ungrabbable)</li>
 							</ul>
 						</td>
+					</tr>
+					<tr>
+						<td><code>$scope.useHours</code></td>
+						<td>Boolean</td>
+						<td><i>Optional</i></td>
+						<td><code>False</code></td>
+						<td>Set to <code>True</code> in order to use <b>hours and hourly grid</b></td>
+					</tr>
+					<tr>
+						<td><code>$scope.dayStartHour</code></td>
+						<td>Integer</td>
+						<td><i>Optional</i></td>
+						<td><code>8</code></td>
+						<td>First hour to display into each days columns (useful only if useHours is True)</td>
+					</tr>
+					<tr>
+						<td><code>$scope.dayEndHour</code></td>
+						<td>Integer</td>
+						<td><i>Optional</i></td>
+						<td><code>20</code></td>
+						<td>Last hour to display into each days columns (useful only if useHours is True)</td>
 					</tr>
 					<tr>
 						<td><code>$scope.eventHeight</code></td>
@@ -705,6 +743,15 @@ planttExample.controller("planttCtrl", function($scope, $timeout){
 						</td>
 						<td><i>(Date object)</i> The resulting date, with hours normalized to <i>12:00:00.000</i> (noon).</td>
 					</tr>
+					<tr>
+						<td><code>addHoursToDate()</code></td>
+						<td>To add or remove some hours to a given date (used for offsets)</td>
+						<td>
+							<code>date</code> <i>(Date object)</i> The original date<br />
+							<code>hours</code> <i>(Integer, signed)</i> The number of hours to offset in future (+) or past (-) to the date.
+						</td>
+						<td><i>(Date object)</i> The resulting date, with hours shifted accordingly.</td>
+					</tr>
 				</table>
 
 				<a id="events"></a>
@@ -738,18 +785,24 @@ planttExample.controller("planttCtrl", function($scope, $timeout){
 								<li><code>dates.end</code></li>
 							</ul>
 						</td>
-						<td></td>
+						<td>
+							when in <b>Daily mode</b>, <code>dates</code> are normalized to 12:00:00.000 (noon).
+						</td>
 					</tr>
 					<tr>
 						<td><code>eventMove</code></td>
 						<td>Click, drag & release an event's element</td>
 						<td>
 							<code>event</code> <i>($scope.event item object)</i> The grabbed event from the $scope.events list<br />
-							<code>deltaDays</code> <i>(integer, signed)</i> The number of days to offset the event
+							<code>newStartDate</code> <i>(Date object)</i> The date for the event start date to be set<br />
+							<code>newEndDate</code> <i>(Date object)</i> The date for the event end date to be set<br />
+							<code>newStartHour</code> <i>(integer)</i> The hour in day for the start date to be set<br />
+							<code>newEndHour</code> <i>(integer)</i> The hour in day for the end date to be set
 						</td>
 						<td>
-							The variable <code>deltaDays</code> is Signed.<br />
-							Minus (-) will offset in the past, and plus (+) will offset in the future.
+							The variables <code>newStartDate</code> and <code>newEndDate</code> are Date objects<br />
+							with hours normalized to 12:00:00.000 (noon), for use in Daily mode.<br />
+							When using <b>Hourly mode</b>, you'll need to take care of <code>newStartHour</code> and <code>newEndHour</code>.
 						</td>
 					</tr>
 					<tr>
@@ -758,11 +811,13 @@ planttExample.controller("planttCtrl", function($scope, $timeout){
 						<td>
 							<code>event</code> <i>($scope.event item object)</i> The grabbed event from the $scope.events list<br />
 							<code>side</code> <i>(string)</i> The side of the handle that was used (<code>'left'</code> or <code>'right'</code>)<br />
-							<code>deltaDays</code> <i>(integer, signed)</i> The number of days to scale the event
+							<code>newDate</code> <i>(Date object)</i> The new date for the handle<br />
+							<code>newHour</code> <i>(integer)</i> The hour in day for the handle's date to be set
 						</td>
 						<td>
-							The variable <code>deltaDays</code> is Signed.<br />
-							Minus (-) will offset in the past, and plus (+) will offset in the future.
+							The variable <code>newDate</code> is a Date object<br />
+							with hours normalized to 12:00:00.000 (noon).<br />
+							When using <b>Hourly mode</b>, you'll need to take care of <code>newHour</code>.
 						</td>
 					</tr>
 					<tr>
@@ -775,7 +830,7 @@ planttExample.controller("planttCtrl", function($scope, $timeout){
 					</tr>
 					<tr>
 						<td><code>planttError</code></td>
-						<td>When an error, warning or notice occurs</td>
+						<td>When an error, warning, notice or info occurs</td>
 						<td>
 							<code>error</code> <i>(object)</i> The error details, which contains:
 							<ul>
@@ -784,7 +839,15 @@ planttExample.controller("planttCtrl", function($scope, $timeout){
 								<li><code>error.message</code> <i>(string)</i> The error message</li>
 							</ul>
 						</td>
-						<td></td>
+						<td>
+							Error levels names are:
+							<ul>
+								<li>0: Fatal error</li>
+								<li>1: Warning</li>
+								<li>2: Notice</li>
+								<li>3: Info</li>
+							</ul>
+						</td>
 					</tr>
 				</table>
 			</div>
