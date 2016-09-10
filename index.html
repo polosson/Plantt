@@ -67,6 +67,7 @@
 
 		<section class="row">
 			<div class="col-md-12">
+				<!--<scheduler ng-controller="planttExample"></scheduler>-->
 				<scheduler ng-controller="planttHourlyExample"></scheduler>
 			</div>
 		</section>
@@ -825,6 +826,14 @@ planttExample.controller("planttCtrl", function($scope, $timeout){
 						<td>Double-click on an event's element</td>
 						<td>
 							<code>event</code> <i>($scope.event item object)</i> The double-clicked event item from the $scope.events list
+						</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><code>eventCtxMenu</code></td>
+						<td>Right-click on an event's element</td>
+						<td>
+							<code>event</code> <i>($scope.event item object)</i> The right-clicked event item from the $scope.events list
 						</td>
 						<td></td>
 					</tr>

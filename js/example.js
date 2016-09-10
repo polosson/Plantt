@@ -215,4 +215,10 @@ planttEx.controller("planttHourlyExample", function($scope, $timeout){
 		alert('Opening event "' + event.title +'"');
 	});
 
+	// Listen to the "eventCtxMenu" DOM event
+	$scope.$on('eventCtxMenu', function(e, event){
+		console.log(event);
+		alert('Todo: context menu for event "' + event.title +'"');
+	});
+
 });

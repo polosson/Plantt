@@ -584,6 +584,19 @@ angular.module('plantt.module', [])
 					scope.throwError(3, "The DOM event 'eventOpen' was emitted in rootScope.");
 				});
 
+				// Right-click an event to emit the custom event "eventCtxMenu" to all ohter scopes
+				// Usefull to open a contextual menu with several event-based actions
+				element.on('contextmenu', function(e){
+					e.preventDefault(); e.stopPropagation();
+					var thisEvent = $filter('filter')(scope.events, {id: +attrs.eventId}, true)[0];
+					if (!thisEvent) {
+						scope.throwError(1, "Event with ID "+attrs.eventId+" not found!");
+						return;
+					}
+					$rootScope.$broadcast('eventCtxMenu', thisEvent);
+					scope.throwError(3, "The DOM event 'eventCtxMenu' was emitted in rootScope.");
+				});
+
 				/*
 				 * EVERYTHING following will only be accessible if the event is NOT LOCKED
 				 * (if "event.lock" is not = true)
