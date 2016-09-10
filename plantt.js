@@ -445,7 +445,19 @@ angular.module('plantt.module', [])
 					element.css({'height': (gridHeight - scope.eventMargin)+'px'});
 				}, 0);
 
-				// Click-drag on grid emits the event "periodSelect" to all other scopes
+				// Double-click on the canvas emits the event "dayselect" to all other scopes
+				// Useful to add an event on a specific day of the timeline
+				element.on('dblclick', function(e){
+					e.preventDefault(); e.stopPropagation();
+					var dayInView = Math.floor(e.layerX / scope.cellWidth);
+					var selectedDate = addDaysToDate(scope.viewStart, dayInView);
+					if (scope.useHours)
+						selectedDate.setHours(scope.dayStartHour);
+					$rootScope.$broadcast('daySelect', selectedDate);
+					scope.throwError(3, "The DOM event 'daySelect' was emitted in rootScope.");
+				});
+
+				// Click-drag on canvas emits the event "periodSelect" to all other scopes
 				// Useful to add events on the timeline
 				var eventHelper = $document.find('eventhelper');
 				var dragInit = false, startWidth = 0, selStart = null, selEnd   = null;
@@ -462,7 +474,7 @@ angular.module('plantt.module', [])
 						var newHour	= scope.dayStartHour + startPos - (scope.nbHours * dayInGrid);
 						selStart.setHours(newHour);
 					}
-					eventHelper.css({top: (e.layerY - 25)+'px', left: (e.layerX)+'px'});
+					eventHelper.css({top: (e.layerY - 25)+'px', left: (e.layerX+1)+'px'});
 					eventHelper.css({display: 'block'});
 					$document.on('mousemove', grabGridMove);
 					$document.on('mouseup',   grabGridEnd);
@@ -501,27 +513,6 @@ angular.module('plantt.module', [])
 					}
 					dragInit = false;
 				}
-			}
-		};
-	})
-	/*
-	 * GRID CELLS Directive
-	 */
-	.directive('td', function($rootScope){
-		return {
-			restrict: 'E',
-			link: function(scope, element) {
-				// Double-click on a cell of the grid emits the event "dayselect" to all other scopes
-				// Useful to add an event on a specific day of the timeline
-				element.on('dblclick', function(e){
-					e.preventDefault();
-					var dayInView = Math.floor(e.layerX / scope.cellWidth);
-					var selectedDate = addDaysToDate(scope.viewStart, dayInView);
-					if (scope.useHours)
-						selectedDate.setHours(scope.dayStartHour);
-					$rootScope.$broadcast('daySelect', selectedDate);
-					scope.throwError(3, "The DOM event 'daySelect' was emitted in rootScope.");
-				});
 			}
 		};
 	})
