@@ -5,7 +5,7 @@
  */
 'use strict';
 
-var planttEx = angular.module("planttEx", ["plantt.module"]);
+var planttEx = angular.module("planttDemo", ["plantt.module"]);
 
 planttEx.controller("planttExample", function($scope, $timeout){
 	// Basic settings (optional)
@@ -24,20 +24,20 @@ planttEx.controller("planttExample", function($scope, $timeout){
 	// Create the events list (don't use it like this, it's relative for DEMO)
 	$scope.events = [
 		{ id: 1, title: 'Hello World',				type: 'normal', startDate: addDaysToDate(now, -30), endDate: addDaysToDate(now, -22) },
-		{ id: 2, title: 'OK Junior, pent over',		type: 'normal', startDate: addDaysToDate(now, -24), endDate: addDaysToDate(now, -21) },
+		{ id: 2, title: 'OK Junior, bend over',		type: 'normal', startDate: addDaysToDate(now, -24), endDate: addDaysToDate(now, -21) },
 		{ id: 3, title: 'Running in the mountain',	type: 'urgent', startDate: addDaysToDate(now, -17), endDate: addDaysToDate(now, -15) },
 		{ id: 4, title: 'July Ruby',				type: 'urgent', startDate: addDaysToDate(now, -12), endDate: addDaysToDate(now, -10) },
 		{ id: 5, title: 'Old one',					type: 'urgent', startDate: addDaysToDate(now, -18), endDate: addDaysToDate(now, -6) },
-		{ id: 6, title: 'Outdated event',			type: 'urgent', startDate: addDaysToDate(now, -4), endDate: addDaysToDate(now, -2) },
-		{ id: 7, title: 'In progress, low priority',type: 'normal', startDate: addDaysToDate(now, -2), endDate: addDaysToDate(now, 2) },
-		{ id: 8, title: 'Full Week Holidays',		type: 'normal', startDate: addDaysToDate(now, 4), endDate: addDaysToDate(now, 10) },
-		{ id: 9, title: 'Something to do soon',		type: 'normal', startDate: addDaysToDate(now, 2), endDate: addDaysToDate(now, 6) },
-		{ id: 10, title: 'In progress, hi-priority',type: 'urgent', startDate: addDaysToDate(now, 0), endDate: addDaysToDate(now, 4) },
-		{ id: 11, title: 'Fiesta on the beach',		type: 'urgent', startDate: addDaysToDate(now, 12), endDate: addDaysToDate(now, 20) },
-		{ id: 12, title: '1 day', lock: true,		type: 'normal', startDate: addDaysToDate(now, 13), endDate: addDaysToDate(now, 13) },
-		{ id: 13, title: 'Testing',					type: 'urgent', startDate: addDaysToDate(now, 8), endDate: addDaysToDate(now, 9) },
-		{ id: 14, title: 'Near future event',		type: 'normal', startDate: addDaysToDate(now, 30), endDate: addDaysToDate(now, 35) },
-		{ id: 15, title: 'Far future event',		type: 'normal', startDate: addDaysToDate(now, 92), endDate: addDaysToDate(now, 98) }
+		{ id: 6, title: 'Outdated event',			type: 'urgent', startDate: addDaysToDate(now,  -4), endDate: addDaysToDate(now, -2) },
+		{ id: 7, title: 'In progress, low priority',type: 'normal', startDate: addDaysToDate(now,  -2), endDate: addDaysToDate(now,  2) },
+		{ id: 8, title: 'Full Week Holidays',		type: 'normal', startDate: addDaysToDate(now,   4), endDate: addDaysToDate(now, 10) },
+		{ id: 9, title: 'Something to do soon',		type: 'normal', startDate: addDaysToDate(now,   2), endDate: addDaysToDate(now,  6) },
+		{ id: 10, title: 'In progress, hi-priority',type: 'urgent', startDate: addDaysToDate(now,   0), endDate: addDaysToDate(now,  4) },
+		{ id: 11, title: 'Fiesta on the beach',		type: 'urgent', startDate: addDaysToDate(now,  12), endDate: addDaysToDate(now, 20) },
+		{ id: 12, title: '1 day', lock: true,		type: 'normal', startDate: addDaysToDate(now,  13), endDate: addDaysToDate(now, 13) },
+		{ id: 13, title: 'Testing',					type: 'urgent', startDate: addDaysToDate(now,   8), endDate: addDaysToDate(now,  9) },
+		{ id: 14, title: 'Near future event',		type: 'normal', startDate: addDaysToDate(now,  30), endDate: addDaysToDate(now, 35) },
+		{ id: 15, title: 'Far future event',		type: 'normal', startDate: addDaysToDate(now,  92), endDate: addDaysToDate(now, 98) }
 	];
 
 	// Listen to the "planttError" DOM event, to do something when an error occurs
@@ -121,7 +121,7 @@ planttEx.controller("planttHourlyExample", function($scope, $timeout){
 	$scope.viewStart		= addDaysToDate(new Date(), -1);	// First day to display in view.
 	$scope.viewEnd			= addDaysToDate(new Date(), 2);		// Last day to display in view.
 	// Crucial settings for the use of hours in timeline
-	$scope.useHours			= true;				// To specify the use of hours (to display hourly grid and don't force events hours to 00:00)
+	$scope.useHours			= true;				// To specify the use of hours (to display hourly grid and don't force events hours to 12:00)
 	$scope.dayStartHour		= 8;				// The hour number at which the day begins (default 08:00)
 	$scope.dayEndHour		= 20;				// The hour number at which the day ends   (default 20:00)
 
