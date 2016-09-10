@@ -132,9 +132,10 @@ planttEx.controller("planttHourlyExample", function($scope, $timeout){
 	// Create the events list (don't use it like this, it's relative for DEMO)
 	$scope.events = [
 		{ id: 0, title: 'Yesterday afternoon',		type: 'urgent', startDate: new Date(2016, 9-1, today-1,	13, 0), endDate: new Date(2016, 9-1, today-1, 20, 0) },
-		{ id: 1, title: 'Today morning',			type: 'normal', startDate: new Date(2016, 9-1, today,	 8, 0), endDate: new Date(2016, 9-1, today,	  13, 0) },
+		{ id: 1, title: 'Today morning',			type: 'normal', startDate: new Date(2016, 9-1, today,	 8, 0), endDate: new Date(2016, 9-1, today,	  12, 0) },
+		{ id: 7, title: 'Today Afternoon',			type: 'normal', startDate: new Date(2016, 9-1, today,	14, 0), endDate: new Date(2016, 9-1, today,	  19, 0) },
 		{ id: 2, title: 'Yesterday - Tomorrow',		type: 'urgent', startDate: new Date(2016, 9-1, today-1, 14, 0), endDate: new Date(2016, 9-1, today+1, 15, 0) },
-		{ id: 3, title: 'One night long',			type: 'normal', startDate: new Date(2016, 9-1, today,	18, 0), endDate: new Date(2016, 9-1, today+1,  9, 0) },
+		{ id: 3, title: 'One night long',			type: 'normal', startDate: new Date(2016, 9-1, today,	19, 0), endDate: new Date(2016, 9-1, today+1,  9, 0) },
 		{ id: 4, title: 'One complete day',			type: 'normal', startDate: new Date(2016, 9-1, today+2,	 8, 0), endDate: new Date(2016, 9-1, today+2, 21, 0) },
 		{ id: 5, title: 'Not so far in future',		type: 'normal', startDate: new Date(2016, 9-1, today+2, 14, 0), endDate: new Date(2016, 9-1, today+3, 19, 0) },
 		{ id: 6, title: 'Tomorrow afternoon',		type: 'urgent', startDate: new Date(2016, 9-1, today+1, 14, 0), endDate: new Date(2016, 9-1, today+1, 20, 0) }
