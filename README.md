@@ -11,16 +11,17 @@ Preview:
 
 ## Features
 
-This angular widget takes a **list** of "events" (i.e. items defined in time by a start date and an end date) to display them on a daily timeline.
+This angular widget takes a **list** of "events" (i.e. items defined in time by a start date and an end date) to display them on a daily (or hourly) timeline.
 Among many other features, you can drag & drop them to redefine their dates.
 
 
 ### Interface
  - **Daily grid** (one column = one day) with numbers (day in month) and month-year labels in header
+ - **Hourly grid** (same as daily but with sub-columns, one per hour) with numbers (hour in day)
  - **Automatic vertical positioning** to avoid collisions
  - Current day and current events **highlighted with CSS classes**
- - **Custom CSS allowed** for all aspects of the UI (see `plantt.css` for examples)
- - **Drag & drop** support (for desktop only at the moment) to visually move and resize events
+ - **Custom CSS allowed** for all aspects of the UI: grid, events... (see `plantt.css` for examples)
+ - **Drag & drop** support (for desktop only at the moment) to visually move and resize events in timeline
  - Fully **independant of the controller**, allowing you to make anything you want with this widget !
  - **View manipulation**: zoom in & out, move left or right, set custom start and end dates with a bunch of scope-accessible functions
  - Emits **custom DOM events** to handle callbacks for every UI actions (`daySelect`, `periodSelect`, `eventMove`, `eventScale`, `eventOpen`, `planttError`), allowing you to make your own checks before storing new dates of the event, and save it on your server using ajax for example
@@ -44,6 +45,12 @@ Among many other features, you can drag & drop them to redefine their dates.
 Note: for the events interactions to be effective, they must be processed in callbacks defined in controller, using Plantt's custom DOM events.
 See `js/example.js` for examples use-cases, but you can make anything you want in your own controller!
 
+### Known limitations
+
+ - Only one scheduler per web page. Else, strange behaviour will happen (duplicates when adding events for instance)
+ - Events stacking (Y axis) is limited to a defined number of lines (but it's a scope setting that can be modified in controller)
+ - In hourly mode, if event's start or end hour are outside the day's limits (before first hour of day or after end hour of day), they go beyond and are displayed on previous (or next) day.
+ - In houlry mode again, when you grab an event which ends after the last displayed day, its end date will be truncated (same for start date if over the first displayed day).
 
 ## Installation
 
@@ -87,6 +94,10 @@ Finally, define your own controller:
 		$scope.formatDayShort	= 'yyyy-MM-dd';		// The JS date format for the short display of dates
 		$scope.formatMonth		= 'MMMM yyyy';		// The JS date format for the month display in header
 
+		$scope.useHours			= true;				// To specify the use of hours (to display hourly grid and don't force events hours to 12:00)
+		$scope.dayStartHour		= 8;				// The hour number at which the day begins (default 08:00)
+		$scope.dayEndHour		= 20;				// The hour number at which the day ends   (default 20:00)
+
 		// Create the events list
 		$scope.events = [
 		    {
@@ -125,5 +136,11 @@ Finally, define your own controller:
 ## Documentation
 
 Be sure to read [the documentation](http://www.code.polosson.com/Plantt/#doc) for full details on scope variables, methods and custom DOM events.
+
+## Licence
+
+© Polosson 2016 - MIT Licence. You can use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, at the condition you include this copyright notice and a copy
+of the permission notice (see LICENCE file).
 
 Have fun ! :)
