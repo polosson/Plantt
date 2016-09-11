@@ -25,15 +25,23 @@ scheduler header {
 	width: 100%;
 	padding: 5px 15px;
 	background-color: #EEE;
+	line-height: 3em;
 }
-scheduler header .prevActions {
+scheduler header .leftActions {
 	float: left;
+	text-align: left;
 }
-scheduler header .nextActions {
+scheduler header .rightActions {
 	float: right;
+	text-align: right;
 }
 scheduler header .centerActions {
 	text-align: center;
+}
+.Hsep {
+	display: inline-block;
+	margin-left:10px;
+	margin-right: 10px;
 }
 
 

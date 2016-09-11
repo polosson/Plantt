@@ -13,7 +13,7 @@ planttEx.controller("planttExample", function($scope, $timeout){
 	$scope.eventMargin		= 10;				// Margin above events elements for spacing
 	$scope.nbLines			= 6;				// Maximum number of lines we can draw in timeline
 	$scope.autoLock			= true;				// To enable the automatic lock of past events
-	$scope.lockMarginDays	= 15;				// Number of days between today and the start date of events for the automatic lock to take effect
+	$scope.lockMarginDays	= 4;				// Number of days between today and the start date of events for the automatic lock to take effect
 	$scope.formatDayLong	= 'EEEE dd MMMM';	// The JS date format for the long display of dates
 	$scope.formatDayShort	= 'dd/MM/yyyy';		// The JS date format for the short display of dates
 	$scope.formatMonth		= 'MMMM yyyy';		// The JS date format for the month display in header
@@ -34,8 +34,8 @@ planttEx.controller("planttExample", function($scope, $timeout){
 		{ id: 9, title: 'Something to do soon',		type: 'normal', startDate: addDaysToDate(now,   2), endDate: addDaysToDate(now,  6) },
 		{ id: 10, title: 'In progress, hi-priority',type: 'urgent', startDate: addDaysToDate(now,   0), endDate: addDaysToDate(now,  4) },
 		{ id: 11, title: 'Fiesta on the beach',		type: 'urgent', startDate: addDaysToDate(now,  12), endDate: addDaysToDate(now, 20) },
-		{ id: 12, title: '1 day', lock: true,		type: 'normal', startDate: addDaysToDate(now,  13), endDate: addDaysToDate(now, 13) },
-		{ id: 13, title: 'Testing',					type: 'urgent', startDate: addDaysToDate(now,   8), endDate: addDaysToDate(now,  9) },
+		{ id: 12, title: '1 day',					type: 'normal', startDate: addDaysToDate(now,  13), endDate: addDaysToDate(now, 13) },
+		{ id: 13, title: 'Testing', lock: true,		type: 'urgent', startDate: addDaysToDate(now,   8), endDate: addDaysToDate(now,  9) },
 		{ id: 14, title: 'Near future event',		type: 'normal', startDate: addDaysToDate(now,  30), endDate: addDaysToDate(now, 35) },
 		{ id: 15, title: 'Far future event',		type: 'normal', startDate: addDaysToDate(now,  92), endDate: addDaysToDate(now, 98) }
 	];
@@ -131,14 +131,15 @@ planttEx.controller("planttHourlyExample", function($scope, $timeout){
 
 	// Create the events list (don't use it like this, it's relative for DEMO)
 	$scope.events = [
-		{ id: 0, title: 'Yesterday afternoon',		type: 'urgent', startDate: new Date(2016, 9-1, today-1,	13, 0), endDate: new Date(2016, 9-1, today-1, 20, 0) },
-		{ id: 1, title: 'Today morning',			type: 'normal', startDate: new Date(2016, 9-1, today,	 8, 0), endDate: new Date(2016, 9-1, today,	  12, 0) },
-		{ id: 7, title: 'Today Afternoon',			type: 'normal', startDate: new Date(2016, 9-1, today,	14, 0), endDate: new Date(2016, 9-1, today,	  19, 0) },
-		{ id: 2, title: 'Yesterday - Tomorrow',		type: 'urgent', startDate: new Date(2016, 9-1, today-1, 14, 0), endDate: new Date(2016, 9-1, today+1, 15, 0) },
-		{ id: 3, title: 'One night long',			type: 'normal', startDate: new Date(2016, 9-1, today,	19, 0), endDate: new Date(2016, 9-1, today+1,  9, 0) },
-		{ id: 4, title: 'One complete day',			type: 'normal', startDate: new Date(2016, 9-1, today+2,	 8, 0), endDate: new Date(2016, 9-1, today+2, 21, 0) },
-		{ id: 5, title: 'Not so far in future',		type: 'normal', startDate: new Date(2016, 9-1, today+2, 14, 0), endDate: new Date(2016, 9-1, today+3, 19, 0) },
-		{ id: 6, title: 'Tomorrow afternoon',		type: 'urgent', startDate: new Date(2016, 9-1, today+1, 14, 0), endDate: new Date(2016, 9-1, today+1, 20, 0) }
+		{ id: 0, title: 'Yesterday afternoon',			type: 'urgent', startDate: new Date(2016, 9-1, today-1,	13, 0), endDate: new Date(2016, 9-1, today-1, 20, 0) },
+		{ id: 1, title: 'Some time ago',				type: 'normal', startDate: new Date(2016, 9-1, today-3, 14, 0), endDate: new Date(2016, 9-1, today-1, 12, 0) },
+		{ id: 2, title: 'Today morning',				type: 'normal', startDate: new Date(2016, 9-1, today,	 8, 0), endDate: new Date(2016, 9-1, today,	  12, 0) },
+		{ id: 3, title: 'Today Afternoon',				type: 'normal', startDate: new Date(2016, 9-1, today,	14, 0), endDate: new Date(2016, 9-1, today,	  19, 0) },
+		{ id: 4, title: 'Yesterday - Tomorrow',			type: 'urgent', startDate: new Date(2016, 9-1, today-1, 14, 0), endDate: new Date(2016, 9-1, today+1, 15, 0) },
+		{ id: 5, title: 'One night long',				type: 'normal', startDate: new Date(2016, 9-1, today,	19, 0), endDate: new Date(2016, 9-1, today+1,  9, 0) },
+		{ id: 6, title: 'One complete day',				type: 'normal', startDate: new Date(2016, 9-1, today+2,	 8, 0), endDate: new Date(2016, 9-1, today+2, 21, 0) },
+		{ id: 7, title: 'Not so far in future',			type: 'normal', startDate: new Date(2016, 9-1, today+2, 14, 0), endDate: new Date(2016, 9-1, today+3, 19, 0) },
+		{ id: 8, title: 'Manually locked', lock: true,	type: 'urgent', startDate: new Date(2016, 9-1, today+1, 14, 0), endDate: new Date(2016, 9-1, today+1, 20, 0) }
 	];
 
 	// Listen to the "planttError" DOM event, to do something when an error occurs

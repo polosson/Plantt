@@ -91,6 +91,8 @@ angular.module('plantt.module', [])
 					scope.eventMargin	= 10;				// Margin above events elements for spacing
 				if (!scope.nbLines)
 					scope.nbLines		= 5;				// Maximum number of lines we can draw in timeline
+				if (typeof scope.useLock === 'undefined')
+					scope.useLock		= true;				// To enable or disable the use of locking events
 				if (typeof scope.autoLock === 'undefined')
 					scope.autoLock		= true;				// To enable or disable the automatic lock of current & past events
 				if (typeof scope.lockMarginDays === 'undefined')
@@ -155,7 +157,9 @@ angular.module('plantt.module', [])
 				 * (Re)Compute the view: grid and rendered events
 				 */
 				scope.renderView = function() {
-					var currTime	 = (new Date()).getTime();
+					var currTime	 = scope.currDate.getTime();
+					if (scope.useHours)
+						currTime	 = (new Date()).getTime();
 					scope.enumDays	 = [];													// List of objects describing all days within the view.
 					scope.enumMonths = [];													// List of objects describing all months within the view.
 					scope.gridWidth	 = $document.find('tbody').prop('offsetWidth');			// Width of the rendered grid
@@ -262,7 +266,12 @@ angular.module('plantt.module', [])
 							extraClass += 'past ';
 
 						// To automatically lock the event on the view
-						evt.lock = (eStart < (currTime - ((scope.lockMarginDays - 1) * 24*60*60*1000)) && scope.autoLock === true);
+						if (!evt.lock) {
+							var testLockTime = (eStart < (currTime - ((scope.lockMarginDays - 1) * 24*60*60*1000)));
+							evt.lock = (testLockTime && scope.autoLock === true);
+						}
+						if (scope.useLock === false)
+							evt.lock = false;
 						// If the event has the lock value set to true
 						if (evt.lock === true)
 							extraClass += 'locked ';
@@ -423,7 +432,20 @@ angular.module('plantt.module', [])
 					scope.viewEnd = date;
 					scope.renderView();
 				};
-
+				/*
+				 * Mode toggle (daily mode <-> hourly mode)
+				 */
+				scope.toggleMode = function(){
+					scope.useHours = !scope.useHours;
+					scope.renderView();
+				};
+				/*
+				 * Lock enabled / Unlock All toggle
+				 */
+				scope.toggleLock = function(){
+					scope.useLock = !scope.useLock;
+					scope.renderView();
+				};
 			}
 		};
 	})
