@@ -1,6 +1,6 @@
 {
     "name": "plantt",
-    "version": "1.5.0",
+    "version": "1.5.2",
     "description": "AngularJS module : Simple scheduler on a timeline",
     "authors": [
         "Polosson <polo@polosson.com"
@@ -18,9 +18,9 @@
     ],
     "license": "MIT",
     "main": [
-        "./dist/plantt.css",
-        "./dist/plantt.js",
-        "./dist/plantt-template.html"
+        "./src/plantt.css",
+        "./src/plantt.js",
+        "./src/plantt-template.html"
     ],
     "moduleType": [
         "globals",
