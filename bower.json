@@ -1,6 +1,6 @@
 {
     "name": "plantt",
-    "version": "1.5.2",
+    "version": "1.5.3",
     "description": "AngularJS module : Simple scheduler on a timeline",
     "authors": [
         "Polosson <polo@polosson.com"

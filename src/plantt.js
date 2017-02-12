@@ -69,8 +69,8 @@ angular.module('plantt.module', [])
 	 */
 	.directive('scheduler', function($window, $document, $timeout, $rootScope, $filter, dateFilter) {
 		return {
-			restrict: 'E',							// DOM Element only : <scheduler></scheduler>
-			templateUrl: './src/template/plantt-template.html',	// Load HTML template for the view
+			restrict: 'E',								// DOM Element only : <scheduler></scheduler>
+			templateUrl: './src/plantt-template.html',	// Load HTML template for the view
 			link: function(scope){
 				// Create the list of events variable, if not present in the app controller
 				if (!scope.events) scope.events = [];
