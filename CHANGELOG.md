@@ -1,3 +1,6 @@
+v 1.5.3
+  - HotFix: using new paths of src in example
+
 v 1.5.2
   - HotFix: updated bower.json release version
 
