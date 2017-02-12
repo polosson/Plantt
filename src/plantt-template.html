@@ -1,0 +1,94 @@
+
+<header>
+	<div class="leftActions form-inline">
+		<button class="btn btn-sm btn-primary" title="Click to toggle between hourly mode and daily mode" ng-click="toggleMode()">
+			<span ng-show="useHours">Daily mode</span><span ng-show="!useHours">Hourly mode</span>
+		</button>
+		<input type="text" class="form-control input-sm" size="7" />
+		<div class="btn btn-default btn-sm" ng-click="setStartView(2016, 6, 20)">Set Start Date</div>
+	</div>
+	<div class="rightActions form-inline">
+		<button class="btn btn-sm btn-warning" title="Click to unlock all items" ng-click="toggleLock()">
+			<span ng-show="useLock">Unlock all</span><span ng-show="!useLock">Use lock</span>
+		</button>
+		<input type="text" class="form-control input-sm" size="7" />
+		<div class="btn btn-default btn-sm" ng-click="setEndView(2016, 8, 20)">Set End Date</div>
+	</div>
+	<div class="clearfix hidden-sm hidden-md hidden-lg"></div>
+	<div class="centerActions">
+		<div class="Hsep">
+			<div class="btn btn-default btn-sm" ng-click="prevCustom(3)"><<</div>
+			<div class="btn btn-default btn-sm" ng-click="prevDay()"><</div>
+		</div>
+		<div class="Hsep">
+			<div class="btn btn-default btn-sm" ng-click="zoomIn(1)">Zoom In</div>
+			<div class="btn btn-default btn-sm" ng-click="centerView(0,2)">Center on today</div>
+			<div class="btn btn-default btn-sm" ng-click="zoomOut(1)">Zoom Out</div>
+		</div>
+		<div class="Hsep">
+			<div class="btn btn-default btn-sm" ng-click="nextDay()">></div>
+			<div class="btn btn-default btn-sm" ng-click="nextCustom(3)">>></div>
+		</div>
+	</div>
+	<div class="clearfix"></div>
+</header>
+<table>
+	<thead>
+		<tr class="monthLine">
+			<th ng-repeat="month in enumMonths" colspan="{{month.numDays}}" class="month">{{month.name}}</th>
+		</tr>
+		<tr class="dayLine">
+			<th ng-repeat="day in enumDays" title="{{day.title}}"
+				ng-class="{'today': day.today, 'sunday': day.date.getDay() === 0, 'lastDmonth': day.isLastOfMonth}">
+				<span ng-show="cellWidth > 18">{{day.num}}</span>
+				<table ng-show="useHours && cellWidth >= minCellWidthForHours">
+					<thead>
+						<tr class="hourLine">
+							<th ng-repeat="hour in day.enumHours" title="{{day.title}}, {{hour.title}}:00"
+								ng-class="{'today': day.today}">
+								<span>{{hour.title}}</span>
+							</th>
+						</tr>
+					</thead>
+				</table>
+			</th>
+		</tr>
+	</thead>
+</table>
+<div class="timelineContainer">
+	<table>
+		<tbody>
+			<tr>
+				<td ng-repeat="day in enumDays" title="{{day.title}}" height="{{gridHeight}}"
+					ng-class="{'today': day.today, 'sunday': day.date.getDay() === 0, 'lastDmonth': day.isLastOfMonth}">
+					<table class="hourGrid" ng-show="useHours && cellWidth >= minCellWidthForHours">
+						<thead>
+							<tr class="hourLine">
+								<th ng-repeat="hour in day.enumHours" title="{{day.title}}, {{hour.title}}:00">
+									<span>{{hour.title}}</span>
+								</th>
+							</tr>
+						</thead>
+					</table>
+					<span ng-hide="cellWidth < minCellWidthForHours">{{day.date | date:'shortDate'}}</span>
+					<span ng-show="day.nbEvents > 0 && cellWidth < 100">{{day.nbEvents}}</span>
+					<span ng-show="day.nbEvents > 0 && cellWidth >= 100">({{day.nbEvents}} items)</span>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="eventsContainer" events-canvas>
+		<event ng-repeat="ev in renderedEvents" event-id="{{ev.id}}" title="#{{ev.id}} - {{ev.title}}
+Type: {{ev.type}}
+[  {{ev.startDate | date:'short'}} >
+> {{ev.endDate | date:'short'}}  ]"
+			   ng-style="ev.locScale"
+			   ng-class="[ev.extraClasses]">
+			<handle ng-show="!ev.lock" class="leftHandle"  event-id="{{ev.id}}" handle-side="left"></handle>
+			<handle ng-show="!ev.lock" class="rightHandle" event-id="{{ev.id}}" handle-side="right"></handle>
+			<label>{{ev.title}}</label>
+
+		</event>
+		<eventhelper>New event</eventhelper>
+	</div>
+</div>

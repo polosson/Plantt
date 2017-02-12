@@ -1,0 +1,228 @@
+
+html, body {
+	font-family: Arial, sans;
+	background-color: #FFF;
+	color: #000;
+}
+
+a, a:active, a:hover, a:visited, a:focus, select, select:active, select:hover, select:focus {
+	outline: 0 !important;
+}
+
+/***** Main Scheduler element *****/
+scheduler {
+	position: relative;
+	display: block;
+	width: 100%;
+	background-color: #FFF;
+	border: 1px solid #DDD;
+	min-height: 100px;
+	font-size: 0.9em;
+	margin: 25px 0 25px 0;
+}
+scheduler header {
+	display: block;
+	width: 100%;
+	padding: 5px 15px;
+	background-color: #EEE;
+	line-height: 3em;
+}
+scheduler header .leftActions {
+	float: left;
+	text-align: left;
+}
+scheduler header .rightActions {
+	float: right;
+	text-align: right;
+}
+scheduler header .centerActions {
+	text-align: center;
+}
+.Hsep {
+	display: inline-block;
+	margin-left:10px;
+	margin-right: 10px;
+}
+
+
+/***** Scheduler grid table *****/
+scheduler table {
+	width: 100%;
+	table-layout: fixed;
+}
+scheduler table tr th, scheduler table tr td {
+	border-right: 1px solid #BBB;
+	padding: 0; margin: 0;
+	cursor: pointer;
+	vertical-align: middle;
+	text-align: center;
+}
+
+/***** Scheduler grid table HEAD *****/
+scheduler table tr.monthLine th {
+	font-size: 1.2em;
+	background-color: #F5F5F5;
+	height: 45px;
+}
+scheduler table tr.dayLine th {
+	font-weight: bold;
+	background-color: #F5F5F5;
+}
+scheduler table tr.hourLine th {
+	border-right: 1px solid #E5E5E5;
+	font-weight: normal;
+	font-size: 0.8em;
+}
+scheduler table tr.hourLine th:last-of-type { border: none; }
+
+/***** Scheduler grid table BODY *****/
+scheduler table tbody tr td {
+	color: #BBB;
+	vertical-align: bottom;
+}
+scheduler table tbody tr td:nth-child(odd) {
+	background-color: #FAFAFA;
+}
+scheduler table tbody tr td:nth-child(even) {
+	background-color: #FFF;
+}
+scheduler table.hourGrid { width: 100%; height: 100%; }
+scheduler table.hourGrid th { vertical-align: bottom; }
+scheduler table.hourGrid th:last-of-type { border:none; }
+
+/***** Scheduler grid special cells *****/
+scheduler table td.today, scheduler table th.today {
+	background-color: #FFDBCE !important;
+}
+scheduler table td.sunday, scheduler table th.sunday {
+	border-right: 1px solid #F88;
+}
+scheduler table td.lastDmonth, scheduler table th.lastDmonth {
+	border-right: 1px solid #F33;
+}
+
+
+/***** Scheduler containers *****/
+scheduler .timelineContainer {
+	width: 100%;
+	z-index: 100;
+}
+scheduler .eventsContainer {
+	position: absolute;
+	width: 100%;
+	top: 127px;
+	height: auto;
+	z-index: 900;
+}
+
+/***** Scheduler events *****/
+scheduler event, scheduler eventhelper {
+	position: absolute;
+	box-sizing: border-box;
+	height: 50px;
+	background-color: #46b8da;
+	padding: 0;
+	border-radius: 5px;
+	box-shadow: 1px 2px 3px rgba(0,0,0,0.5);
+	z-index: 200;
+}
+scheduler event handle {
+	display: block;
+	position: absolute;
+	background-color: rgba(0,0,0,0.1);
+	height: 100%;
+	width: 10%;
+	min-width: 5px;
+	z-index: 300;
+}
+scheduler event handle.leftHandle {
+	left: 0;
+	cursor: w-resize;
+	border-radius: 5px 0 0 5px;
+}
+scheduler event handle.rightHandle {
+	right: 0;
+	cursor: e-resize;
+	border-radius: 0 5px 5px 0;
+}
+scheduler event label {
+	display: block;
+	padding: 17px 10%;
+	text-align: center;
+	font-size: 8pt;
+	color: #FFF;
+	margin: 0;
+	cursor: move;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+scheduler event.overLeft {
+	border-radius: 50px 0 0 50px;
+}
+scheduler event.overLeft handle.leftHandle {
+	display: none;
+}
+scheduler event.overRight {
+	border-radius: 0 50px 50px 0;
+}
+scheduler event.overRight handle.rightHandle {
+	display: none;
+}
+
+/***** Scheduler events special classes *****/
+scheduler event.past {
+	background-color: #888 !important;
+}
+scheduler event.locked {
+	border: 2px dashed red;
+	box-shadow: none;
+}
+scheduler event.locked label {
+	cursor: not-allowed;
+	padding: 15px 10%;
+}
+scheduler event.current {
+	background: linear-gradient(45deg, transparent, transparent 40px, rgba(255,0,0,0.15) 40px, rgba(255,0,0,0.15) 80px, transparent 80px, transparent);
+	background-size: 120px;
+	background-position: 0 0;
+
+	-webkit-animation: animStripes 5s linear infinite;
+	-moz-animation: animStripes 5s linear infinite;
+	-o-animation: animStripes 5s linear infinite;
+	animation: animStripes 5s linear infinite;
+}
+
+/***** Scheduler event helper (when drag & drop) *****/
+scheduler eventhelper {
+	display: none;
+	top: 0;
+	width: 0;
+	background-color: #FFF;
+	border: 2px dashed red;
+	color: #555;
+	text-align: center;
+	padding: 15px 0;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+/***** Animations *****/
+@-webkit-keyframes animStripes {
+    from { background-position: 0 0; }
+	to { background-position: 120px 0; }
+}
+@-moz-keyframes animStripes {
+    from { background-position: 0 0; }
+	to { background-position: 120px 0; }
+}
+@-o-keyframes animStripes {
+    from { background-position: 0 0; }
+	to { background-position: 120px 0; }
+}
+@keyframes animStripes {
+    from { background-position: 0 0; }
+	to { background-position: 120px 0; }
+}

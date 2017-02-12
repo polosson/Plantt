@@ -18,9 +18,9 @@
     ],
     "license": "MIT",
     "main": [
-        "./dist/plantt.css",
-        "./dist/plantt.js",
-        "./dist/plantt-template.html"
+        "./src/plantt.css",
+        "./src/plantt.js",
+        "./src/plantt-template.html"
     ],
     "moduleType": [
         "globals",
