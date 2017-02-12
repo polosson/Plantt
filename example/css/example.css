@@ -1,6 +1,6 @@
 
-scheduler event.normal { background-color: #3AAFAF; }
-scheduler event.urgent { background-color: #D88447; }
+scheduler event.normal { background-color: #3AAFAF !important; }
+scheduler event.urgent { background-color: #D88447 !important; }
 
 code {
     font-weight: bold;
