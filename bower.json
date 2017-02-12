@@ -1,0 +1,42 @@
+{
+    "name": "plantt",
+    "version": "1.5.0",
+    "description": "AngularJS module : Simple scheduler on a timeline",
+    "authors": [
+        "Polosson <polo@polosson.com"
+    ],
+    "keywords": [
+        "scheduler",
+        "timeline",
+        "gantt",
+        "angularjs",
+        "angular",
+        "date",
+        "daily",
+        "hourly",
+        "organizer"
+    ],
+    "license": "MIT",
+    "main": [
+        "./dist/plantt.css",
+        "./dist/plantt.js",
+        "./dist/plantt-template.html"
+    ],
+    "moduleType": [
+        "globals",
+        "amd"
+    ],
+    "ignore": [
+        "**/.*",
+        "example",
+        "node_modules",
+        "bower_components",
+        "test",
+        "tests"
+    ],
+    "dependencies": {
+        "angular": "~1.5.8"
+    },
+    "homepage": "http://www.code.polosson.com/Plantt/",
+    "repository": "https://github.com/polosson/Plantt.git"
+}
