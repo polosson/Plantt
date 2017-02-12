@@ -1,0 +1,34 @@
+
+scheduler event.normal { background-color: #3AAFAF; }
+scheduler event.urgent { background-color: #D88447; }
+
+code {
+    font-weight: bold;
+}
+i {
+    color: #666;
+}
+
+.menuFixed {
+    position: fixed;
+    left: 10px;
+    top: 140px;
+    width: 180px;
+}
+.menuFixed ul {
+    margin: 0;
+    padding: 0;
+    padding-left: 12px;
+}
+.menuFixed li {
+    list-style: none;
+}
+.menuFixed a {
+    font-size: 0.9em;
+}
+
+.mainView {
+    position: relative;
+    left: 180px;
+    width: calc(100% - 180px);
+}

@@ -6,11 +6,11 @@ Check the **live demo** (kept updated) here : [code.polosson.com/Plantt/](http:/
 
 Preview, daily mode:
 
-![Screenshot of daily scheduler](screenshot.png)
+![Screenshot of daily scheduler](http://www.polosson.com/public/screenshot-Plantt-1.png)
 
 Preview, hourly mode:
 
-![Screenshot of hourly scheduler](screenshot2.png)
+![Screenshot of hourly scheduler](http://www.polosson.com/public/screenshot-Plantt-2.png)
 
 
 ## Features
@@ -49,95 +49,16 @@ Among many other features, you can drag & drop them to redefine their dates.
 Note: for the events interactions to be effective, they must be processed in callbacks defined in controller, using Plantt's custom DOM events.
 See `js/example.js` for examples use-cases, but you can make anything you want in your own controller!
 
+### Wiki
+
+See [here](https://github.com/polosson/Plantt/wiki).
+
 ### Known limitations
 
  - Only one scheduler per web page. Else, strange behaviour will happen (duplicates when adding events for instance)
  - Events stacking (Y axis) is limited to a defined number of lines (but it's a scope setting that can be modified in controller)
  - In hourly mode, if event's start or end hour are outside the day's limits (before first hour of day or after end hour of day), they go beyond and are displayed on previous (or next) day.
  - In houlry mode again, when you grab an event which ends after the last displayed day, its end date will be truncated (same for start date if over the first displayed day).
-
-## Installation
-
-Just import AngularJS, and the Plantt's javacript and CSS files:
-
-    <link href="plantt.css" rel="stylesheet" type="text/css" />
-    <script src="js/vendor/angular-1.5.8.min.js"></script>
-    <script src="plantt.js"></script>
-
-Then, make sure the file **`plantt-template.html`** is readable into your project's root folder. You can use this file
-to see how functions are called, then modify it to suits your needs.
-
-To internationalize (translate) the dates, you can add any of the ng-locale providers from AngularJs source code,
-available [here](https://github.com/angular/angular.js/tree/master/src/ngLocale). For example, like in demo, add the
-following line after the angular-1.5.8.min.js script src:
-
-    <script src="js/vendor/angular-locale_fr-fr.js"></script>
-
-
-## Usage
-
-Insert an element **`scheduler`** into your HTML, and attach your controller to it:
-
-    <scheduler ng-controller="planttExample"></scheduler>
-
-Then, inject the module in your app:
-
-	var yourApp = angular.module("yourApp", ["plantt.module"]);
-
-Finally, define your own controller:
-
-	yourApp.controller("planttExample", function($scope){
-
-		// Basic settings (optional)
-		$scope.eventHeight		= 50;				// Height of events elements in pixels
-		$scope.eventMargin		= 10;				// Margin above events elements for spacing in pixels
-		$scope.nbLines			= 5;				// Maximum number of lines we can draw in timeline
-		$scope.autoLock			= true;				// To enable the automatic lock of past events
-		$scope.lockMarginDays	= 0;				// Number of days between today and the start date of events for the automatic lock to take effect
-		$scope.formatDayLong	= 'EEEE MMMM dd';	// The JS date format for the long display of dates
-		$scope.formatDayShort	= 'yyyy-MM-dd';		// The JS date format for the short display of dates
-		$scope.formatMonth		= 'MMMM yyyy';		// The JS date format for the month display in header
-
-		$scope.useHours			= true;				// To specify the use of hours (to display hourly grid and don't force events hours to 12:00)
-		$scope.dayStartHour		= 8;				// The hour number at which the day begins (default 08:00)
-		$scope.dayEndHour		= 20;				// The hour number at which the day ends   (default 20:00)
-
-		// Create the events list
-		$scope.events = [
-		    {
-			id: 0, title: 'Test', type: 'normal',
-			startDate: new Date(2016, 8-1, 20),
-			endDate: new Date(2016, 8-1, 25)
-		    }
-		]
-
-		// Listen to the "eventMove" DOM event, to store the new dates of the event
-		$scope.$on('eventMove', function(e, event, newStartDate, newEndDate, newStartHour, newEndHour){
-			newStartDate.setHours(newStartHour);
-			newEndDate.setHours(newEndHour);
-			event.startDate = newStartDate;
-			event.endDate   = newEndDate;
-			$timeout(function(){
-				$scope.renderView();
-			}, 0);
-		});
-
-		// (...)
-
-		// Listen to the "planttError" DOM event, to do something when an error occurs
-		$scope.$on('planttError', function(e, err){
-			console.log('Plantt '+err.levelName+' ('+err.level+'):', err.message);
-		});
-	}
-
-**To be noticed**:
-  - Your controller must have a **`$scope.events`** variable, which must be an Array object. The following data is needed in the objects of events collection:
-    - **id** (int, must be unique)
-    - **title** (string, as you wish)
-    - **type** (string, corresponding to one or more CSS classes)
-    - **startDate** (date object)
-    - **endDate** (date object)
-  - You must use the **`$timeout`** function to call the **`$scope.renderView()`** function in order to refresh the view after a change of any event in the list.
 
 ## Documentation
 
