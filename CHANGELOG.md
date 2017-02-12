@@ -1,3 +1,9 @@
+v 1.5.2
+  - HotFix: updated bower.json release version
+
+v 1.5.1
+  - HotFix: current events color (CSS)
+
 v 1.5.0
   - Refactored project's structure to allow install with Bower
 
