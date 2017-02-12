@@ -1,4 +1,4 @@
-v 1.5.0 (unreleased)
+v 1.5.0
   - Refactored project's structure to allow install with Bower
 
 v 1.5
